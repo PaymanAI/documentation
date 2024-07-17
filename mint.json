@@ -5,7 +5,7 @@
     "dark": "/logo/dark.png",
     "light": "/logo/light.png"
   },
-  "favicon": "/payman.png",
+  "favicon": "/logo/payman.png",
   "colors": {
     "primary": "#FF7D61",
     "light": "#FF7D61",
@@ -35,11 +35,11 @@
     {
       "name": "Support",
       "icon": "discord",
-      "url": "https://community.payman.dev"
+      "url": "https://discord.gg/uheBscdKas"
     },
     {
       "name": "Twitter",
-      "icon": "twitter",
+      "icon": "X",
       "url": "https://www.x.com/paymanai"
     }
   ],
@@ -52,21 +52,16 @@
       "group": "Capabilities",
       "pages": [
         "capabilities/funding-AI-Wallet",
-        "capabilities/task-Posting",
+        "capabilities/creating-Task",
         "capabilities/task-Assignments",
         "capabilities/marketplace-Tasks",
         "capabilities/submission-Deadlines",
-        "capabilities/multiple-Submissions",
-        "capabilities/verification-Agents"
+        "capabilities/multiple-Submissions"
       ]
     },
     {
       "group": "Webhook",
       "pages": ["webhook/retrieving-Responses"]
-    },
-    {
-      "group": "Example Agents",
-      "pages": ["examples/product-Management-Agent", "examples/interview-Agent"]
     },
     {
       "group": "API Documentation",
@@ -76,21 +71,12 @@
       "group": "Tasks",
       "pages": [
         "api-reference/endpoint/get-task",
-        "api-reference/endpoint/update-task",
         "api-reference/endpoint/get-tasks",
-        "api-reference/endpoint/create-task",
         "api-reference/endpoint/get-task-assignments",
-        "api-reference/endpoint/create-task-assignment",
-        "api-reference/endpoint/get-task-submissions"
+        "api-reference/endpoint/get-task-submissions",
+        "api-reference/endpoint/create-task",
+        "api-reference/endpoint/update-task"
       ]
-    },
-    {
-      "group": "Wallets",
-      "pages": ["api-reference/endpoint/get-wallet"]
-    },
-    {
-      "group": "Files",
-      "pages": ["api-reference/endpoint/download-cloud-file"]
     }
   ],
   "footerSocials": {

@@ -1,1579 +1,1674 @@
 {
   "openapi": "3.0.1",
   "info": {
-  "title": "OpenAPI definition",
-  "version": "v0"
+    "title": "Rest API for AI Agents to interact with the Payman AI platform",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Payman AI Platform Documentation",
+    "url": "https://paymanai.mintlify.app"
   },
   "servers": [
-  {
-  "url": "https://agent.payman.dev/api",
-  "description": "Generated server url"
-  }
+    {
+      "url": "https://agent.payman.ai",
+      "description": "Production server"
+    },
+    {
+      "url": "https://sandbox-agent.payman.ai",
+      "description": "Sandbox (Test Mode) server"
+    }
+  ],
+  "security": [
+    {
+      "x-payman-agent-id": []
+    },
+    {
+      "x-payman-api-secret": []
+    }
   ],
   "paths": {
-  "/tasks/{id}": {
-  "get": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Get task",
-  "description": "Get a task by ID",
-  "operationId": "getTask",
-  "parameters": [
-  {
-  "name": "id",
-  "in": "path",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  }
-  ],
-  "responses": {
-  "200": {
-  "description": "The task specified by the ID",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/Task"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  },
-  "put": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Update task",
-  "description": "Updates an existing task.",
-  "operationId": "updateTask",
-  "parameters": [
-  {
-  "name": "id",
-  "in": "path",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  }
-  ],
-  "requestBody": {
-  "content": {
-  "application/json": {
-  "schema": {
-  "$ref": "#/components/schemas/TaskUpdateRequest"
-  }
-  }
-  },
-  "required": true
-  },
-  "responses": {
-  "200": {
-  "description": "The updated task definition",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/Task"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  }
-  },
-  "/tasks": {
-  "get": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Get tasks",
-  "description": "Get all tasks for the current organization",
-  "operationId": "getTasks",
-  "parameters": [
-  {
-  "name": "page",
-  "in": "query",
-  "description": "The page number to retrieve",
-  "required": false,
-  "schema": {
-  "type": "integer",
-  "default": 0
-  }
-  },
-  {
-  "name": "limit",
-  "in": "query",
-  "description": "The number of items per page",
-  "required": false,
-  "schema": {
-  "type": "integer",
-  "default": 20
-  }
-  }
-  ],
-  "responses": {
-  "200": {
-  "description": "The list of tasks",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/PagedResultsTask"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  },
-  "post": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Create task",
-  "description": "Creates a new task",
-  "operationId": "createTask",
-  "requestBody": {
-  "content": {
-  "application/json": {
-  "schema": {
-  "$ref": "#/components/schemas/TaskCreationRequest"
-  }
-  }
-  },
-  "required": true
-  },
-  "responses": {
-  "200": {
-  "description": "The created task",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/Task"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  }
-  },
-  "/tasks/{id}/assignments": {
-  "get": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Get task assignments",
-  "description": "Get all assignments for a task",
-  "operationId": "getTaskAssignments",
-  "parameters": [
-  {
-  "name": "id",
-  "in": "path",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  },
-  {
-  "name": "statuses",
-  "in": "query",
-  "required": false,
-  "schema": {
-  "uniqueItems": true,
-  "type": "array",
-  "items": {
-  "type": "string",
-  "enum": [
-  "PENDING",
-  "COMPLETED",
-  "EXPIRED",
-  "DELETED"
-  ]
-  }
-  }
-  },
-  {
-  "name": "page",
-  "in": "query",
-  "required": false,
-  "schema": {
-  "type": "integer",
-  "format": "int32",
-  "default": 0
-  }
-  },
-  {
-  "name": "limit",
-  "in": "query",
-  "required": false,
-  "schema": {
-  "type": "integer",
-  "format": "int32",
-  "default": 20
-  }
-  }
-  ],
-  "responses": {
-  "200": {
-  "description": "The paginated list of task assignments",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/PagedResultsTaskAssignment"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  },
-  "post": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Assign a task to a user",
-  "description": "Assign a task to a user by email. The user will receive an email prompting them to log into the Payman system at which  point they will be able to accept the invite.",
-  "operationId": "createTaskAssignment",
-  "parameters": [
-  {
-  "name": "id",
-  "in": "path",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  }
-  ],
-  "requestBody": {
-  "content": {
-  "application/json": {
-  "schema": {
-  "$ref": "#/components/schemas/TaskAssignmentCreationRequest"
-  }
-  }
-  },
-  "required": true
-  },
-  "responses": {
-  "200": {
-  "description": "The created task assignment",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/TaskAssignment"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  }
-  },
-  "/wallets/{id}": {
-  "get": {
-  "tags": [
-  "wallet-controller"
-  ],
-  "summary": "Get wallet",
-  "description": "Get a wallet by ID",
-  "operationId": "getWallet",
-  "parameters": [
-  {
-  "name": "id",
-  "in": "path",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  }
-  ],
-  "responses": {
-  "200": {
-  "description": "The wallet specified by the ID",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/Wallet"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  }
-  },
-  "/tasks/{id}/submissions": {
-  "get": {
-  "tags": [
-  "task-controller"
-  ],
-  "summary": "Get task submissions",
-  "description": "Get all submissions for a task",
-  "operationId": "getTaskSubmissions",
-  "parameters": [
-  {
-  "name": "id",
-  "in": "path",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  },
-  {
-  "name": "statuses",
-  "in": "query",
-  "required": false,
-  "schema": {
-  "uniqueItems": true,
-  "type": "array",
-  "items": {
-  "type": "string",
-  "enum": [
-  "PENDING",
-  "APPROVED_REQUIRES_REVIEW",
-  "REJECTED_REQUIRES_REVIEW",
-  "APPROVED",
-  "REJECTED",
-  "VERIFICATION_FAILED",
-  "DELETED"
-  ]
-  }
-  }
-  },
-  {
-  "name": "page",
-  "in": "query",
-  "required": false,
-  "schema": {
-  "type": "integer",
-  "format": "int32",
-  "default": 0
-  }
-  },
-  {
-  "name": "limit",
-  "in": "query",
-  "required": false,
-  "schema": {
-  "type": "integer",
-  "format": "int32",
-  "default": 20
-  }
-  }
-  ],
-  "responses": {
-  "200": {
-  "description": "The paginated list of task submissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/PagedResultsTaskSubmission"
-  }
-  }
-  }
-  },
-  "400": {
-  "description": "Bad Requesst - the request body or parameters are invalid.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "401": {
-  "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "403": {
-  "description": "Forbidden - the caller does not have sufficient permissions",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "404": {
-  "description": "Not found - the requested entity does not exist",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  },
-  "500": {
-  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-  "content": {
-  "application/vnd.payman.v1+json": {
-  "schema": {
-  "$ref": "#/components/schemas/APIError"
-  }
-  }
-  }
-  }
-  }
-  }
-  },
-  "/files/private/download": {
-  "get": {
-  "tags": [
-  "file-controller"
-  ],
-  "operationId": "downloadCloudFile",
-  "parameters": [
-  {
-  "name": "key",
-  "in": "query",
-  "required": true,
-  "schema": {
-  "type": "string"
-  }
-  }
-  ],
-  "responses": {
-  "200": {
-  "description": "OK",
-  "content": {
-  "*/*": {
-  "schema": {
-  "type": "string",
-  "format": "binary"
-  }
-  }
-  }
-  }
-  }
-  }
-  }
+    "/tasks/{id}": {
+      "get": {
+        "tags": ["task-controller"],
+        "summary": "Get task",
+        "description": "Get a task by ID",
+        "operationId": "getTask",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The task specified by the ID",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["task-controller"],
+        "summary": "Update task",
+        "description": "Updates an existing task.",
+        "operationId": "updateTask",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The updated task definition",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": ["task-controller"],
+        "summary": "Get tasks",
+        "description": "Get all tasks for the current organization",
+        "operationId": "getTasks",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of tasks",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultsTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["task-controller"],
+        "summary": "Create task",
+        "description": "Creates a new task",
+        "operationId": "createTask",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The created task",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/assignments": {
+      "get": {
+        "tags": ["task-controller"],
+        "summary": "Get task assignments",
+        "description": "Get all assignments for a task",
+        "operationId": "getTaskAssignments",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "IN_REVIEW",
+                  "PENDING",
+                  "COMPLETED",
+                  "EXPIRED",
+                  "DELETED",
+                  "REJECTED",
+                  "ACCEPTED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The paginated list of task assignments",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultsTaskAssignment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["task-controller"],
+        "summary": "Assign a task to a user",
+        "description": "Assign a task to a user by email. The user will receive an email prompting them to log into the Payman system at which  point they will be able to accept the invite.",
+        "operationId": "createTaskAssignment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskAssignmentCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The created task assignment",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskAssignment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallets/{id}": {
+      "get": {
+        "tags": ["wallet-controller"],
+        "summary": "Get wallet",
+        "description": "Get a wallet by ID",
+        "operationId": "getWallet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The wallet specified by the ID",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wallet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": ["version-controller"],
+        "operationId": "getVersionInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/submissions": {
+      "get": {
+        "tags": ["task-controller"],
+        "summary": "Get task submissions",
+        "description": "Get all submissions for a task",
+        "operationId": "getTaskSubmissions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PENDING",
+                  "APPROVED_REQUIRES_REVIEW",
+                  "REJECTED_REQUIRES_REVIEW",
+                  "APPROVED",
+                  "REJECTED",
+                  "VERIFICATION_FAILED",
+                  "DELETED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The paginated list of task submissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultsTaskSubmission"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/categories": {
+      "get": {
+        "tags": ["task-controller"],
+        "summary": "List all available task categories",
+        "description": "Provides a list of available task categories that may be used when creating tasks.",
+        "operationId": "getTaskCategories",
+        "responses": {
+          "200": {
+            "description": "The list of task categories",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IPicklistItem"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files/download-url": {
+      "get": {
+        "tags": ["file-controller"],
+        "summary": "Get a file attachment download link",
+        "description": "This provides a link from which the attachment specified by the key may be downloaded.",
+        "operationId": "getDownloadUrl",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "The key identifying the file to download as provided in the task submission details",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The file contents",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "components": {
-  "schemas": {
-  "APIError": {
-  "type": "object",
-  "properties": {
-  "status": {
-  "type": "string",
-  "description": "The HTTP status code for the error",
-  "enum": [
-  "100 CONTINUE",
-  "101 SWITCHING_PROTOCOLS",
-  "102 PROCESSING",
-  "103 EARLY_HINTS",
-  "103 CHECKPOINT",
-  "200 OK",
-  "201 CREATED",
-  "202 ACCEPTED",
-  "203 NON_AUTHORITATIVE_INFORMATION",
-  "204 NO_CONTENT",
-  "205 RESET_CONTENT",
-  "206 PARTIAL_CONTENT",
-  "207 MULTI_STATUS",
-  "208 ALREADY_REPORTED",
-  "226 IM_USED",
-  "300 MULTIPLE_CHOICES",
-  "301 MOVED_PERMANENTLY",
-  "302 FOUND",
-  "302 MOVED_TEMPORARILY",
-  "303 SEE_OTHER",
-  "304 NOT_MODIFIED",
-  "305 USE_PROXY",
-  "307 TEMPORARY_REDIRECT",
-  "308 PERMANENT_REDIRECT",
-  "400 BAD_REQUEST",
-  "401 UNAUTHORIZED",
-  "402 PAYMENT_REQUIRED",
-  "403 FORBIDDEN",
-  "404 NOT_FOUND",
-  "405 METHOD_NOT_ALLOWED",
-  "406 NOT_ACCEPTABLE",
-  "407 PROXY_AUTHENTICATION_REQUIRED",
-  "408 REQUEST_TIMEOUT",
-  "409 CONFLICT",
-  "410 GONE",
-  "411 LENGTH_REQUIRED",
-  "412 PRECONDITION_FAILED",
-  "413 PAYLOAD_TOO_LARGE",
-  "413 REQUEST_ENTITY_TOO_LARGE",
-  "414 URI_TOO_LONG",
-  "414 REQUEST_URI_TOO_LONG",
-  "415 UNSUPPORTED_MEDIA_TYPE",
-  "416 REQUESTED_RANGE_NOT_SATISFIABLE",
-  "417 EXPECTATION_FAILED",
-  "418 I_AM_A_TEAPOT",
-  "419 INSUFFICIENT_SPACE_ON_RESOURCE",
-  "420 METHOD_FAILURE",
-  "421 DESTINATION_LOCKED",
-  "422 UNPROCESSABLE_ENTITY",
-  "423 LOCKED",
-  "424 FAILED_DEPENDENCY",
-  "425 TOO_EARLY",
-  "426 UPGRADE_REQUIRED",
-  "428 PRECONDITION_REQUIRED",
-  "429 TOO_MANY_REQUESTS",
-  "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
-  "451 UNAVAILABLE_FOR_LEGAL_REASONS",
-  "500 INTERNAL_SERVER_ERROR",
-  "501 NOT_IMPLEMENTED",
-  "502 BAD_GATEWAY",
-  "503 SERVICE_UNAVAILABLE",
-  "504 GATEWAY_TIMEOUT",
-  "505 HTTP_VERSION_NOT_SUPPORTED",
-  "506 VARIANT_ALSO_NEGOTIATES",
-  "507 INSUFFICIENT_STORAGE",
-  "508 LOOP_DETECTED",
-  "509 BANDWIDTH_LIMIT_EXCEEDED",
-  "510 NOT_EXTENDED",
-  "511 NETWORK_AUTHENTICATION_REQUIRED"
-  ]
-  },
-  "timestamp": {
-  "type": "string",
-  "description": "The timestamp when the error occurred",
-  "format": "date-time"
-  },
-  "errorCode": {
-  "type": "string",
-  "description": "The Payman error code for the error"
-  },
-  "errorMessage": {
-  "type": "string",
-  "description": "The error message for the error"
+    "schemas": {
+      "APIError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "The HTTP status code for the error",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The timestamp when the error occurred",
+            "format": "date-time"
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "The Payman error code for the error"
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "The error message for the error"
+          }
+        }
+      },
+      "TaskUpdateRequest": {
+        "required": ["description", "title"],
+        "type": "object",
+        "properties": {
+          "title": {
+            "title": "Title",
+            "type": "string",
+            "description": "A descriptive title for this task",
+            "example": "Proofread a legal document"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
+            "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
+          }
+        }
+      },
+      "Currency": {
+        "title": "Currency",
+        "required": ["fractionalUnitName", "name", "symbol", "type"],
+        "type": "object",
+        "properties": {
+          "code": {
+            "title": "Currency Code",
+            "type": "string",
+            "description": "The unique short code for this currency",
+            "readOnly": true,
+            "example": "USD"
+          },
+          "symbol": {
+            "title": "Currency Symbol",
+            "type": "string",
+            "description": "The currency symbol to use",
+            "example": "$"
+          },
+          "name": {
+            "title": "Currency Name",
+            "type": "string",
+            "description": "The name of this currency",
+            "example": "US Dollars"
+          },
+          "fractionalUnitName": {
+            "title": "Fractional Unit Name",
+            "type": "string",
+            "description": "The name of this currency's fractional unit",
+            "example": "cents"
+          },
+          "decimalPlaces": {
+            "title": "Decimal Places",
+            "minimum": 0,
+            "type": "integer",
+            "description": "The number of decimal places this currency supports.",
+            "format": "int32"
+          },
+          "displayDecimalPlaces": {
+            "title": "Decimal Places to Display",
+            "minimum": 0,
+            "type": "integer",
+            "description": "The number of decimal places to show when rendering an amount of this currency.",
+            "format": "int32"
+          },
+          "type": {
+            "title": "Currency Type",
+            "type": "string",
+            "enum": ["CRYPTOCURRENCY", "FIAT"]
+          },
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string",
+            "description": "A descriptive label of the item",
+            "readOnly": true
+          },
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "A longer form description of the item",
+            "readOnly": true
+          },
+          "value": {
+            "title": "Value",
+            "type": "string",
+            "description": "The value of the item",
+            "readOnly": true
+          }
+        },
+        "description": "The currency in which the payout is denominated.",
+        "readOnly": true
+      },
+      "Task": {
+        "required": [
+          "category",
+          "description",
+          "organizationId",
+          "payout",
+          "requiredSubmissions",
+          "submissionPolicy",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "organizationId": {
+            "title": "Organization ID",
+            "type": "string",
+            "description": "The unique identifier for the organization that owns this task"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string",
+            "description": "A descriptive title for this task",
+            "example": "Proofread a legal document"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
+            "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
+          },
+          "payout": {
+            "title": "Payout",
+            "minimum": 0,
+            "type": "integer",
+            "description": "The amount being offered for each approved submission on this task.  Note the amount is denominated in base units of the currency, so a payout of 100 in USD would mean the payout would be $1.00"
+          },
+          "category": {
+            "title": "Category",
+            "type": "string",
+            "description": "The task category this task should be shown under.  Defaults to 'Other'.",
+            "enum": [
+              "MARKETING",
+              "ENGINEERING",
+              "SALES",
+              "DATA_ANALYTICS",
+              "DESIGN",
+              "PRODUCT_MANAGEMENT",
+              "LEGAL",
+              "MEDICAL",
+              "FINANCE",
+              "OTHER"
+            ]
+          },
+          "payoutWalletId": {
+            "title": "Payout Wallet ID",
+            "type": "string",
+            "description": "The ID of the wallet to be used to pay out rewards for this task.  This wallet must be owned by the organization that owns this task, the agent creating the task must have access to the wallet, it must have sufficient funds to cover the payouts, and must be in the same currency as the currency of this task."
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "requiredSubmissions": {
+            "title": "Required Submissions",
+            "minimum": 1,
+            "type": "integer",
+            "description": "The number of submissions required before this task is closed.  If this is set to 1, the task will be closed after the first submission is received and approved. Defaults to 1.",
+            "format": "int32"
+          },
+          "submissionPolicy": {
+            "title": "Submission Policy",
+            "type": "string",
+            "description": "The policy determining who may submit solutions for this task.",
+            "enum": [
+              "OPEN_SUBMISSIONS_ONE_PER_USER",
+              "OPEN_SUBMISSIONS_MANY_PER_USER",
+              "PRE_ASSIGNED_SUBMISSIONS",
+              "OPEN_ASSIGNED_SUBMISSIONS"
+            ]
+          },
+          "status": {
+            "title": "Status",
+            "type": "string",
+            "description": "The current status of this task.",
+            "enum": [
+              "IN_REVIEW_BY_DEVELOPER",
+              "IN_REVIEW_BY_AI",
+              "IN_REVIEW_BY_SYSTEM_USER",
+              "REJECTED",
+              "OPEN",
+              "STARTED",
+              "COMPLETED",
+              "CANCELLED",
+              "SUSPENDED",
+              "EXPIRED"
+            ]
+          },
+          "deadline": {
+            "title": "Deadline",
+            "type": "string",
+            "description": "The deadline for this task.  If this is set, the task will be closed after this time regardless of the number of submissions received and approved.",
+            "format": "date-time"
+          },
+          "reviewNotes": {
+            "title": "Review Notes",
+            "type": "string",
+            "description": "Notes from the Payman review process about the task.  This is used to store any additional information concerning a task's review status (e.g. rejection reasons)."
+          },
+          "verificationConfiguration": {
+            "$ref": "#/components/schemas/VerificationConfiguration"
+          },
+          "inviteLinks": {
+            "title": "Invite Links",
+            "type": "object",
+            "additionalProperties": {
+              "title": "Invite Links",
+              "type": "string",
+              "description": "A map of email address to link containing a link for each inviteEmail.  This map is only populated immediately in response to the creation of the task and will contain the link that was emailedto each invited address.  Also note that these links will only become valid once the task is published."
+            },
+            "description": "A map of email address to link containing a link for each inviteEmail.  This map is only populated immediately in response to the creation of the task and will contain the link that was emailedto each invited address.  Also note that these links will only become valid once the task is published."
+          }
+        }
+      },
+      "VerificationConfiguration": {
+        "title": "Verification Configuration",
+        "type": "object",
+        "properties": {
+          "handler": {
+            "type": "string"
+          },
+          "customPrompt": {
+            "type": "string"
+          }
+        },
+        "description": "The configuration to be applied during task verification.  The Payman verification enginewill use this to customize the verification of this task."
+      },
+      "TaskCreationRequest": {
+        "required": ["description", "payout", "title"],
+        "type": "object",
+        "properties": {
+          "title": {
+            "title": "Title",
+            "type": "string",
+            "description": "A descriptive title for this task",
+            "example": "Proofread a legal document"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
+            "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
+          },
+          "payout": {
+            "title": "Payout",
+            "type": "integer",
+            "description": "The amount being offered for each approved submission on this task.  Note the amount is denominated in base units of the currency, so a payout of 100 in USD would mean the payout would be $1.00. "
+          },
+          "category": {
+            "title": "Category",
+            "type": "string",
+            "description": "The task category this task should be shown under. Defaults to 'OTHER' if omitted.",
+            "enum": [
+              "MARKETING",
+              "ENGINEERING",
+              "SALES",
+              "DATA_ANALYTICS",
+              "DESIGN",
+              "PRODUCT_MANAGEMENT",
+              "LEGAL",
+              "MEDICAL",
+              "FINANCE",
+              "OTHER"
+            ]
+          },
+          "payoutWalletId": {
+            "title": "Payout Wallet ID",
+            "type": "string",
+            "description": "The ID of the wallet to be used to pay out rewards for this task.  This wallet must be owned by the organization that owns this task, the agent creating the task must have access to the wallet, it must have sufficient funds to cover the payouts, and must be in the same currency as the currency of this task."
+          },
+          "requiredSubmissions": {
+            "title": "Required Submissions",
+            "type": "integer",
+            "description": "The number of approved submissions required before this task is closed.  E.g. If this is set to 2, the task will be closed after the 2 submission are received and approved. Defaults to 1 if omitted (or the number of inviteEmails provided if present).",
+            "format": "int32"
+          },
+          "submissionPolicy": {
+            "title": "Submission Policy",
+            "type": "string",
+            "description": "The policy determining who may submit solutions for this task. Defaults to OPEN_SUBMISSIONS_ONE_PER_USER if omitted, or PRE_ASSIGNED_SUBMISSIONS if inviteEmails are specified.",
+            "enum": [
+              "OPEN_SUBMISSIONS_ONE_PER_USER",
+              "OPEN_SUBMISSIONS_MANY_PER_USER",
+              "PRE_ASSIGNED_SUBMISSIONS",
+              "OPEN_ASSIGNED_SUBMISSIONS"
+            ]
+          },
+          "deadline": {
+            "title": "Deadline",
+            "type": "string",
+            "description": "The deadline for this task.  If this is set, the task will be closed after this time regardless of the number of submissions received and approved. If unset, the task will remain open until the required number of submissions are received and approved.",
+            "format": "date-time"
+          },
+          "inviteEmails": {
+            "title": "Invite Emails",
+            "type": "array",
+            "description": "List of email addresses to invite to complete the task.  If this is set, only users with these emails will be able to complete the task.",
+            "items": {
+              "title": "Invite Emails",
+              "type": "string",
+              "description": "List of email addresses to invite to complete the task.  If this is set, only users with these emails will be able to complete the task."
+            }
+          }
+        }
+      },
+      "TaskAssignmentCreationRequest": {
+        "type": "object",
+        "properties": {
+          "inviteEmail": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TaskAssignment": {
+        "required": ["organizationId", "status", "taskId"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "taskId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "assignedToId": {
+            "type": "string"
+          },
+          "inviteCode": {
+            "type": "string"
+          },
+          "inviteEmail": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_REVIEW",
+              "PENDING",
+              "COMPLETED",
+              "EXPIRED",
+              "DELETED",
+              "REJECTED",
+              "ACCEPTED"
+            ]
+          },
+          "assignedTo": {
+            "$ref": "#/components/schemas/User"
+          },
+          "task": {
+            "$ref": "#/components/schemas/Task"
+          }
+        }
+      },
+      "User": {
+        "title": "Assigned To",
+        "required": [
+          "authenticationMethods",
+          "email",
+          "firstName",
+          "kycStatus",
+          "lastName",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "email": {
+            "title": "Email",
+            "type": "string",
+            "description": "The email address for this user. Note: may not be visible subject to caller's authorization scopes."
+          },
+          "authenticationMethods": {
+            "title": "Authentication methods",
+            "maxItems": 2147483647,
+            "minItems": 1,
+            "uniqueItems": true,
+            "type": "array",
+            "description": "The authentication methods for this user. Note: may not be visible subject to caller's authorization scopes.",
+            "items": {
+              "title": "Authentication methods",
+              "type": "string",
+              "description": "The authentication methods for this user. Note: may not be visible subject to caller's authorization scopes.",
+              "enum": ["PASSWORD", "GOOGLE"]
+            }
+          },
+          "status": {
+            "title": "User Status",
+            "type": "string",
+            "description": "The current status of this user account",
+            "enum": ["ACTIVE", "DELETED", "LOCKED", "PENDING"]
+          },
+          "kycStatus": {
+            "title": "KYC Status",
+            "type": "string",
+            "description": "The current KYC status of this user account.  Note: may not be visible subject to caller's authorization scopes.",
+            "enum": ["PENDING", "IN_REVIEW", "APPROVED", "REJECTED"]
+          },
+          "firstName": {
+            "title": "First Name",
+            "type": "string",
+            "description": "The first name of this user."
+          },
+          "lastName": {
+            "title": "Last Name",
+            "type": "string",
+            "description": "The last name of this user."
+          },
+          "phone": {
+            "title": "Phone",
+            "type": "string",
+            "description": "The phone number for this user. Note: may not be visible subject to caller's authorization scopes."
+          }
+        },
+        "description": "The user that this task is assigned to",
+        "readOnly": true
+      },
+      "Wallet": {
+        "required": [
+          "balanceInEscrow",
+          "currency",
+          "spendableBalance",
+          "unconfirmedBalance"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "name": {
+            "title": "Name",
+            "type": "string",
+            "description": "A descriptive name for this wallet",
+            "example": "My Personal Wallet"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "spendableBalance": {
+            "title": "Spendable Balance",
+            "type": "integer",
+            "description": "The amount of currency that can be spent from this wallet."
+          },
+          "balanceInEscrow": {
+            "title": "Balance in Escrow",
+            "type": "integer",
+            "description": "The amount of currency that is currently held in escrow against created tasks."
+          },
+          "unconfirmedBalance": {
+            "title": "Unconfirmed Balance",
+            "type": "integer",
+            "description": "The amount of currency that is currently unconfirmed (e.g. incomplete deposits)."
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string",
+            "description": "Any additional notes or information about this wallet."
+          },
+          "totalBalance": {
+            "title": "Total Balance",
+            "type": "integer",
+            "description": "The total balance of this wallet, including spendable balance, balance in escrow, and unconfirmed balance.",
+            "readOnly": true
+          }
+        }
+      },
+      "PagedResultsTask": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "The list of results for the current page",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          },
+          "more": {
+            "type": "boolean",
+            "description": "Whether there are more results available"
+          },
+          "nextPage": {
+            "type": "integer",
+            "description": "The page number for the next page of results",
+            "format": "int32"
+          }
+        }
+      },
+      "FeedbackElement": {
+        "title": "Feedback",
+        "required": ["createdBy", "createdOn", "feedback", "type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["SYSTEM_INTERNAL", "USER_COMMENT", "AGENT_COMMENT"]
+          },
+          "feedback": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Feedback provided during the verification process after reviewing the submission"
+      },
+      "FileAttachment": {
+        "title": "File Attachments",
+        "required": ["key", "name"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Filename",
+            "type": "string",
+            "description": "A display name for the file."
+          },
+          "size": {
+            "title": "File Size",
+            "type": "integer",
+            "description": "The size of the file in bytes.",
+            "format": "int64",
+            "readOnly": true
+          },
+          "key": {
+            "title": "Download key",
+            "type": "string",
+            "description": "The identifying key for this file - supply this to the file download endpoint to retrieve this file."
+          }
+        },
+        "description": "A list of file attachments that the user uploaded directly to the Payman platform. To access these files they must be downloaded via the 'Download File Attachment' API endpoint."
+      },
+      "PagedResultsTaskSubmission": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "The list of results for the current page",
+            "items": {
+              "$ref": "#/components/schemas/TaskSubmission"
+            }
+          },
+          "more": {
+            "type": "boolean",
+            "description": "Whether there are more results available"
+          },
+          "nextPage": {
+            "type": "integer",
+            "description": "The page number for the next page of results",
+            "format": "int32"
+          }
+        }
+      },
+      "TaskSubmission": {
+        "required": ["details", "submittedById"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "details": {
+            "$ref": "#/components/schemas/TaskSubmissionDetails"
+          },
+          "status": {
+            "title": "Submission Status",
+            "type": "string",
+            "description": "The current status of the submission",
+            "enum": [
+              "PENDING",
+              "APPROVED_REQUIRES_REVIEW",
+              "REJECTED_REQUIRES_REVIEW",
+              "APPROVED",
+              "REJECTED",
+              "VERIFICATION_FAILED",
+              "DELETED"
+            ]
+          },
+          "submittedById": {
+            "title": "Submitted By",
+            "type": "string",
+            "description": "The unique identifier for the user that submitted this task"
+          },
+          "submittedBy": {
+            "$ref": "#/components/schemas/User"
+          },
+          "task": {
+            "$ref": "#/components/schemas/Task"
+          }
+        },
+        "description": "The list of results for the current page"
+      },
+      "TaskSubmissionDetails": {
+        "title": "Submission Details",
+        "required": ["description"],
+        "type": "object",
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "The user's description of the solution they are submitting"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string",
+            "description": "Any additional notes or comments the user wants to provide"
+          },
+          "evidenceUrls": {
+            "title": "Evidence URLs",
+            "type": "array",
+            "description": "A list of URLs to any evidence or supporting documentation the user wants to provide to support their submission. These will be external to the Payman platform.",
+            "items": {
+              "title": "Evidence URLs",
+              "type": "string",
+              "description": "A list of URLs to any evidence or supporting documentation the user wants to provide to support their submission. These will be external to the Payman platform."
+            }
+          },
+          "fileAttachments": {
+            "title": "File Attachments",
+            "type": "array",
+            "description": "A list of file attachments that the user uploaded directly to the Payman platform. To access these files they must be downloaded via the 'Download File Attachment' API endpoint.",
+            "items": {
+              "$ref": "#/components/schemas/FileAttachment"
+            }
+          },
+          "feedback": {
+            "title": "Feedback",
+            "type": "array",
+            "description": "Feedback provided during the verification process after reviewing the submission",
+            "items": {
+              "$ref": "#/components/schemas/FeedbackElement"
+            }
+          }
+        },
+        "description": "The details of the submission, including any evidence or notes provided by the user"
+      },
+      "PagedResultsTaskAssignment": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "The list of results for the current page",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssignment"
+            }
+          },
+          "more": {
+            "type": "boolean",
+            "description": "Whether there are more results available"
+          },
+          "nextPage": {
+            "type": "integer",
+            "description": "The page number for the next page of results",
+            "format": "int32"
+          }
+        }
+      },
+      "IPicklistItem": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string",
+            "description": "A descriptive label of the item"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "A longer form description of the item"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string",
+            "description": "The value of the item"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "x-payman-agent-id": {
+        "type": "apiKey",
+        "name": "x-payman-agent-id",
+        "in": "header"
+      },
+      "x-payman-api-secret": {
+        "type": "apiKey",
+        "name": "x-payman-api-secret",
+        "in": "header"
+      }
+    }
   }
-  }
-  },
-  "TaskUpdateRequest": {
-  "required": [
-  "description",
-  "title"
-  ],
-  "type": "object",
-  "properties": {
-  "title": {
-  "title": "Title",
-  "type": "string",
-  "description": "A descriptive title for this task",
-  "example": "Proofread a legal document"
-  },
-  "description": {
-  "title": "Description",
-  "type": "string",
-  "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
-  "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
-  },
-  "status": {
-  "title": "Status",
-  "type": "string",
-  "description": "The current status of this task.",
-  "enum": [
-  "OPEN",
-  "STARTED",
-  "COMPLETED",
-  "CANCELLED",
-  "SUSPENDED",
-  "EXPIRED"
-  ]
-  },
-  "deadline": {
-  "title": "Deadline",
-  "type": "string",
-  "description": "The deadline for this task.  If this is set, the task will be closed after this time regardless of the number of submissions received and approved.",
-  "format": "date-time"
-  }
-  }
-  },
-  "Currency": {
-  "title": "Currency",
-  "required": [
-  "name",
-  "symbol",
-  "type"
-  ],
-  "type": "object",
-  "properties": {
-  "code": {
-  "title": "Currency Code",
-  "type": "string",
-  "description": "The unique short code for this currency",
-  "readOnly": true,
-  "example": "USD"
-  },
-  "symbol": {
-  "title": "Currency Symbol",
-  "type": "string",
-  "description": "The currency symbol to use",
-  "example": "$"
-  },
-  "name": {
-  "title": "Currency Name",
-  "type": "string",
-  "description": "The name of this currency",
-  "example": "US Dollars"
-  },
-  "decimalPlaces": {
-  "title": "Decimal Places",
-  "minimum": 0,
-  "type": "integer",
-  "description": "The number of decimal places this currency supports.",
-  "format": "int32"
-  },
-  "displayDecimalPlaces": {
-  "title": "Decimal Places to Display",
-  "minimum": 0,
-  "type": "integer",
-  "description": "The number of decimal places to show when rendering an amount of this currency.",
-  "format": "int32"
-  },
-  "type": {
-  "title": "Currency Type",
-  "type": "string",
-  "enum": [
-  "CRYPTOCURRENCY",
-  "FIAT"
-  ]
-  },
-  "active": {
-  "title": "Active",
-  "type": "boolean"
-  }
-  },
-  "description": "The currency in which the payout is denominated.",
-  "readOnly": true
-  },
-  "Task": {
-  "required": [
-  "description",
-  "organizationId",
-  "payout",
-  "submissionPolicy",
-  "title"
-  ],
-  "type": "object",
-  "properties": {
-  "id": {
-  "type": "string",
-  "readOnly": true
-  },
-  "organizationId": {
-  "title": "Organization ID",
-  "type": "string",
-  "description": "The unique identifier for the organization that owns this task"
-  },
-  "title": {
-  "title": "Title",
-  "type": "string",
-  "description": "A descriptive title for this task",
-  "example": "Proofread a legal document"
-  },
-  "description": {
-  "title": "Description",
-  "type": "string",
-  "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
-  "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
-  },
-  "payout": {
-  "title": "Payout",
-  "minimum": 0,
-  "type": "integer",
-  "description": "The amount being offered for each approved submission on this task.  Note the amount is denominated in base units of the currency, so a payout of 100 in USD would mean the payout would be $1.00"
-  },
-  "category": {
-  "title": "Category",
-  "type": "string",
-  "description": "The task category this task should be shown under."
-  },
-  "payoutWalletId": {
-  "title": "Payout Wallet ID",
-  "type": "string",
-  "description": "The ID of the wallet to be used to pay out rewards for this task.  This wallet must be owned by the organization that owns this task, the agent creating the task must have access to the wallet, it must have sufficient funds to cover the payouts, and must be in the same currency as the currency of this task."
-  },
-  "currency": {
-  "$ref": "#/components/schemas/Currency"
-  },
-  "requiredSubmissions": {
-  "title": "Required Submissions",
-  "minimum": 1,
-  "type": "integer",
-  "description": "The number of submissions required before this task is closed.  If this is set to 1, the task will be closed after the first submission is received and approved. Defaults to 1.",
-  "format": "int32"
-  },
-  "submissionPolicy": {
-  "title": "Submission Policy",
-  "type": "string",
-  "description": "The policy determining who may submit solutions for this task.",
-  "enum": [
-  "OPEN_SUBMISSIONS_ONE_PER_USER",
-  "OPEN_SUBMISSIONS_MANY_PER_USER",
-  "PRE_ASSIGNED_SUBMISSIONS",
-  "OPEN_ASSIGNED_SUBMISSIONS"
-  ]
-  },
-  "status": {
-  "title": "Status",
-  "type": "string",
-  "description": "The current status of this task.",
-  "enum": [
-  "OPEN",
-  "STARTED",
-  "COMPLETED",
-  "CANCELLED",
-  "SUSPENDED",
-  "EXPIRED"
-  ]
-  },
-  "deadline": {
-  "title": "Deadline",
-  "type": "string",
-  "description": "The deadline for this task.  If this is set, the task will be closed after this time regardless of the number of submissions received and approved.",
-  "format": "date-time"
-  },
-  "verificationConfiguration": {
-  "$ref": "#/components/schemas/VerificationConfiguration"
-  }
-  }
-  },
-  "VerificationConfiguration": {
-  "title": "Verification Configuration",
-  "type": "object",
-  "properties": {
-  "handler": {
-  "type": "string"
-  },
-  "customPrompt": {
-  "type": "string"
-  }
-  },
-  "description": "The configuration to be applied during task verification.  The Payman verification enginewill use this to customize the verification of this task."
-  },
-  "TaskCreationRequest": {
-  "required": [
-  "description",
-  "organizationId",
-  "submissionPolicy",
-  "title"
-  ],
-  "type": "object",
-  "properties": {
-  "organizationId": {
-  "title": "Organization ID",
-  "type": "string",
-  "description": "The unique identifier for the organization that owns this task"
-  },
-  "title": {
-  "title": "Title",
-  "type": "string",
-  "description": "A descriptive title for this task",
-  "example": "Proofread a legal document"
-  },
-  "description": {
-  "title": "Description",
-  "type": "string",
-  "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
-  "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
-  },
-  "payout": {
-  "title": "Payout",
-  "type": "integer",
-  "description": "The amount being offered for each approved submission on this task.  Note the amount is denominated in base units of the currency, so a payout of 100 in USD would mean the payout would be $1.00.  Defaults to 0."
-  },
-  "category": {
-  "title": "Category",
-  "type": "string",
-  "description": "The task category this task should be shown under."
-  },
-  "payoutWalletId": {
-  "title": "Payout Wallet ID",
-  "type": "string",
-  "description": "The ID of the wallet to be used to pay out rewards for this task.  This wallet must be owned by the organization that owns this task, the agent creating the task must have access to the wallet, it must have sufficient funds to cover the payouts, and must be in the same currency as the currency of this task."
-  },
-  "requiredSubmissions": {
-  "title": "Required Submissions",
-  "type": "integer",
-  "description": "The number of submissions required before this task is closed.  If this is set to 1, the task will be closed after the first submission is received and approved. Defaults to unlimited.",
-  "format": "int32"
-  },
-  "submissionPolicy": {
-  "title": "Submission Policy",
-  "type": "string",
-  "description": "The policy determining who may submit solutions for this task.",
-  "enum": [
-  "OPEN_SUBMISSIONS_ONE_PER_USER",
-  "OPEN_SUBMISSIONS_MANY_PER_USER",
-  "PRE_ASSIGNED_SUBMISSIONS",
-  "OPEN_ASSIGNED_SUBMISSIONS"
-  ]
-  },
-  "deadline": {
-  "title": "Deadline",
-  "type": "string",
-  "description": "The deadline for this task.  If this is set, the task will be closed after this time regardless of the number of submissions received and approved.",
-  "format": "date-time"
-  }
-  }
-  },
-  "TaskAssignmentCreationRequest": {
-  "type": "object",
-  "properties": {
-  "inviteEmail": {
-  "type": "string"
-  },
-  "expiresAt": {
-  "type": "string",
-  "format": "date-time"
-  }
-  }
-  },
-  "Address": {
-  "title": "Address",
-  "type": "object",
-  "properties": {
-  "addressLine1": {
-  "type": "string"
-  },
-  "addressLine2": {
-  "type": "string"
-  },
-  "addressLine3": {
-  "type": "string"
-  },
-  "addressLine4": {
-  "type": "string"
-  },
-  "locality": {
-  "type": "string"
-  },
-  "region": {
-  "type": "string"
-  },
-  "postcode": {
-  "type": "string"
-  },
-  "country": {
-  "type": "string"
-  }
-  },
-  "description": "The user's mailing address. Note: may not be visible subject to caller's authorization scopes."
-  },
-  "TaskAssignment": {
-  "required": [
-  "organizationId",
-  "status",
-  "taskId"
-  ],
-  "type": "object",
-  "properties": {
-  "id": {
-  "type": "string",
-  "readOnly": true
-  },
-  "taskId": {
-  "type": "string"
-  },
-  "organizationId": {
-  "type": "string"
-  },
-  "assignedToId": {
-  "type": "string"
-  },
-  "inviteCode": {
-  "type": "string"
-  },
-  "inviteEmail": {
-  "type": "string"
-  },
-  "expiresAt": {
-  "type": "string",
-  "format": "date-time"
-  },
-  "completedAt": {
-  "type": "string",
-  "format": "date-time"
-  },
-  "status": {
-  "type": "string",
-  "enum": [
-  "PENDING",
-  "COMPLETED",
-  "EXPIRED",
-  "DELETED"
-  ]
-  },
-  "assignedTo": {
-  "$ref": "#/components/schemas/User"
-  },
-  "task": {
-  "$ref": "#/components/schemas/Task"
-  }
-  }
-  },
-  "User": {
-  "title": "Assigned To",
-  "required": [
-  "authenticationMethods",
-  "email",
-  "firstName",
-  "kycStatus",
-  "lastName",
-  "status"
-  ],
-  "type": "object",
-  "properties": {
-  "id": {
-  "type": "string",
-  "readOnly": true
-  },
-  "email": {
-  "title": "Email",
-  "type": "string",
-  "description": "The email address for this user. Note: may not be visible subject to caller's authorization scopes."
-  },
-  "authenticationMethods": {
-  "title": "Authentication methods",
-  "maxItems": 2147483647,
-  "minItems": 1,
-  "uniqueItems": true,
-  "type": "array",
-  "description": "The authentication methods for this user. Note: may not be visible subject to caller's authorization scopes.",
-  "items": {
-  "title": "Authentication methods",
-  "type": "string",
-  "description": "The authentication methods for this user. Note: may not be visible subject to caller's authorization scopes.",
-  "enum": [
-  "PASSWORD",
-  "GOOGLE"
-  ]
-  }
-  },
-  "status": {
-  "title": "User Status",
-  "type": "string",
-  "description": "The current status of this user account",
-  "enum": [
-  "ACTIVE",
-  "INACTIVE",
-  "DELETED",
-  "LOCKED",
-  "PENDING",
-  "INVITED"
-  ]
-  },
-  "kycStatus": {
-  "title": "KYC Status",
-  "type": "string",
-  "description": "The current KYC status of this user account.  Note: may not be visible subject to caller's authorization scopes.",
-  "enum": [
-  "PENDING",
-  "IN_REVIEW",
-  "APPROVED",
-  "REJECTED"
-  ]
-  },
-  "firstName": {
-  "title": "First Name",
-  "type": "string",
-  "description": "The first name of this user."
-  },
-  "lastName": {
-  "title": "Last Name",
-  "type": "string",
-  "description": "The last name of this user."
-  },
-  "phone": {
-  "title": "Phone",
-  "type": "string",
-  "description": "The phone number for this user. Note: may not be visible subject to caller's authorization scopes."
-  },
-  "address": {
-  "$ref": "#/components/schemas/Address"
-  }
-  },
-  "description": "The user that this task is assigned to",
-  "readOnly": true
-  },
-  "Wallet": {
-  "required": [
-  "balanceInEscrow",
-  "currency",
-  "spendableBalance",
-  "unconfirmedBalance"
-  ],
-  "type": "object",
-  "properties": {
-  "id": {
-  "type": "string",
-  "readOnly": true
-  },
-  "name": {
-  "title": "Name",
-  "type": "string",
-  "description": "A descriptive name for this wallet",
-  "example": "My Personal Wallet"
-  },
-  "currency": {
-  "$ref": "#/components/schemas/Currency"
-  },
-  "spendableBalance": {
-  "title": "Spendable Balance",
-  "type": "integer",
-  "description": "The amount of currency that can be spent from this wallet."
-  },
-  "balanceInEscrow": {
-  "title": "Balance in Escrow",
-  "type": "integer",
-  "description": "The amount of currency that is currently held in escrow against created tasks."
-  },
-  "unconfirmedBalance": {
-  "title": "Unconfirmed Balance",
-  "type": "integer",
-  "description": "The amount of currency that is currently unconfirmed (e.g. incomplete deposits)."
-  },
-  "notes": {
-  "title": "Notes",
-  "type": "string",
-  "description": "Any additional notes or information about this wallet."
-  },
-  "totalBalance": {
-  "title": "Total Balance",
-  "type": "integer",
-  "description": "The total balance of this wallet, including spendable balance, balance in escrow, and unconfirmed balance.",
-  "readOnly": true
-  }
-  }
-  },
-  "PagedResultsTask": {
-  "type": "object",
-  "properties": {
-  "results": {
-  "type": "array",
-  "description": "The list of results for the current page",
-  "items": {
-  "$ref": "#/components/schemas/Task"
-  }
-  },
-  "more": {
-  "type": "boolean",
-  "description": "Whether there are more results available"
-  },
-  "nextPage": {
-  "type": "integer",
-  "description": "The page number for the next page of results",
-  "format": "int32"
-  }
-  }
-  },
-  "FeedbackElement": {
-  "title": "Feedback",
-  "required": [
-  "createdBy",
-  "createdOn",
-  "feedback",
-  "type"
-  ],
-  "type": "object",
-  "properties": {
-  "type": {
-  "type": "string",
-  "enum": [
-  "SYSTEM_INTERNAL",
-  "USER_COMMENT",
-  "AGENT_COMMENT"
-  ]
-  },
-  "feedback": {
-  "type": "string"
-  },
-  "createdBy": {
-  "type": "string"
-  },
-  "createdOn": {
-  "type": "string",
-  "format": "date-time"
-  }
-  },
-  "description": "Feedback provided by the verification process after reviewing the submission"
-  },
-  "PagedResultsTaskSubmission": {
-  "type": "object",
-  "properties": {
-  "results": {
-  "type": "array",
-  "description": "The list of results for the current page",
-  "items": {
-  "$ref": "#/components/schemas/TaskSubmission"
-  }
-  },
-  "more": {
-  "type": "boolean",
-  "description": "Whether there are more results available"
-  },
-  "nextPage": {
-  "type": "integer",
-  "description": "The page number for the next page of results",
-  "format": "int32"
-  }
-  }
-  },
-  "TaskSubmission": {
-  "required": [
-  "details",
-  "submittedById",
-  "taskId"
-  ],
-  "type": "object",
-  "properties": {
-  "id": {
-  "type": "string",
-  "readOnly": true
-  },
-  "taskId": {
-  "title": "Task ID",
-  "type": "string",
-  "description": "The unique identifier for the task that this submission is for"
-  },
-  "details": {
-  "$ref": "#/components/schemas/TaskSubmissionDetails"
-  },
-  "status": {
-  "title": "Submission Status",
-  "type": "string",
-  "description": "The current status of the submission",
-  "enum": [
-  "PENDING",
-  "APPROVED_REQUIRES_REVIEW",
-  "REJECTED_REQUIRES_REVIEW",
-  "APPROVED",
-  "REJECTED",
-  "VERIFICATION_FAILED",
-  "DELETED"
-  ]
-  },
-  "submittedById": {
-  "title": "Submitted By",
-  "type": "string",
-  "description": "The unique identifier for the user that submitted this task"
-  },
-  "submittedBy": {
-  "$ref": "#/components/schemas/User"
-  },
-  "task": {
-  "$ref": "#/components/schemas/Task"
-  }
-  },
-  "description": "The list of results for the current page"
-  },
-  "TaskSubmissionDetails": {
-  "title": "Submission Details",
-  "type": "object",
-  "properties": {
-  "description": {
-  "title": "Description",
-  "type": "string",
-  "description": "The user's description of the solution they are submitting"
-  },
-  "notes": {
-  "title": "Notes",
-  "type": "string",
-  "description": "Any additional notes or comments the user wants to provide"
-  },
-  "evidenceUrls": {
-  "title": "Evidence URLs",
-  "type": "array",
-  "description": "A list of URLs to any evidence or supporting documentation the user wants to provide",
-  "items": {
-  "title": "Evidence URLs",
-  "type": "string",
-  "description": "A list of URLs to any evidence or supporting documentation the user wants to provide"
-  }
-  },
-  "feedback": {
-  "title": "Feedback",
-  "type": "array",
-  "description": "Feedback provided by the verification process after reviewing the submission",
-  "items": {
-  "$ref": "#/components/schemas/FeedbackElement"
-  }
-  }
-  },
-  "description": "The details of the submission, including any evidence or notes provided by the user"
-  },
-  "PagedResultsTaskAssignment": {
-  "type": "object",
-  "properties": {
-  "results": {
-  "type": "array",
-  "description": "The list of results for the current page",
-  "items": {
-  "$ref": "#/components/schemas/TaskAssignment"
-  }
-  },
-  "more": {
-  "type": "boolean",
-  "description": "Whether there are more results available"
-  },
-  "nextPage": {
-  "type": "integer",
-  "description": "The page number for the next page of results",
-  "format": "int32"
-  }
-  }
-  }
-  }
-  }
-  }
+}

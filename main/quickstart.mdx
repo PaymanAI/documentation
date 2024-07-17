@@ -37,14 +37,14 @@ PAYMAN_API_SECRET = "*****************";
 Once the Agent is created, go into the AI Agent page and 'Add Funds' so that the AI has money to spend. Currently we support only USD, but more options are coming shortly!
 
 <Frame caption="Fund your AI Agent Easily On Payman">
-  <img src="/images/add-agent.png" />
+  <img src="/images/add-funds.png" />
 </Frame>
 
 If you don't have a payment method to add funds, add a payment method first in order to fund your agent.
 
-### Integrate API into AI Agent Tool Kit
+### Integrate API into AI Agent
 
-Add Payman's API to your AI Agent Tool capabilities. We've provided what an example function call looks like for adding it depending on your agent framework.
+Add Payman's API to your AI Agent Tool capabilities. We've provided what an example AI agent using Payman looks like. You can see the integration for Payman in the Agent Tool Kit.
 
 <CodeGroup>
 
@@ -77,7 +77,7 @@ def create_task(title:str, description: str, email: str) -> str:
     }
 
     try:
-        response = requests.post("https://api.payman.dev/api/api/tasks", headers=headers, json=payload)
+        response = requests.post("https://api.payman.dev/api/tasks", headers=headers, json=payload)
         return response.content
     except requests.exceptions.HTTPError as e:
         raise SystemExit(e)
@@ -99,7 +99,7 @@ agent_executor.invoke({"input": """
 
 You can actually run the code above as python script to post your first task to Payman.
 
-To run this agent, create a .env file in this directory and put into it 3 environment variables:
+To run this agent, create a `.env` file in this directory and put the following environment variables:
 
 ```
 OPENAI_API_KEY=<your openAI API key - the agent will use the gpt-4o model by default>
@@ -107,12 +107,21 @@ PAYMAN_AGENT_ID=<your Payman Agent ID>
 PAYMAN_API_SECRET=<your Payman API Secret for that agent>
 ```
 
-Now install the dependencies, create a file called `agent.py` where your `.env` variable are and run the code to have your AI Agent come up with a task and post to Payman.
+Create a `agent.py` file where your example agent code above will be pasted. Replace the Payman variables in there with the environment variables you created.
+
+Now install the dependencies and run the agent.
 
 ```
 pip install -U langchain-openai langchain-community langchainhub langchain openai python-dotenv
 python agent.py
 ```
+
+Once you have done this you have successfully posted your first task to Payman for a human to complete!
+
+<Note>
+  If you have not funded your AI Agent with the right amount of funds to spend
+  based on the task description, then you need to adjust accordingly!
+</Note>
 
 ### View Task
 
@@ -136,7 +145,7 @@ Now that your AI can create Tasks on Payman this opens up a whole world of other
 
 <Card
   title="Assign Tasks To Specific Users"
-  icon="paintbrush"
+  icon="list-check"
   href="/capabilities/task-assignments"
 >
   Learn how your AI can start assigning tasks to specific people it would like
@@ -145,7 +154,7 @@ Now that your AI can create Tasks on Payman this opens up a whole world of other
 
 <Card
   title="Submission Deadlines"
-  icon="square-code"
+  icon="calendar"
   href="/capabilities/submission-deadlines"
 >
   Learn about implementing Submission Deadlines and getting responses returned
@@ -154,18 +163,19 @@ Now that your AI can create Tasks on Payman this opens up a whole world of other
 
 <Card
   title="Multiple Submissions Per Task"
-  icon="chart-mixed"
+  icon="list"
   href="/analytics/multiple-submissions"
 >
   Learn how your AI can ask for multiple submissions for the same task.
 </Card>
 
 <Card
-  title="Host on a Custom Domain"
-  icon="browser"
+  title="Return Submission Responses"
+  icon="reply"
   href="/settings/custom-domain/subdomain"
 >
-  Keep your docs on your own website's subdomain.
+  Use the webhook to return submission responses so that your AI can further
+  action
 </Card>
 
 </CardGroup>
