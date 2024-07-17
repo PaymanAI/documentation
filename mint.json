@@ -18,7 +18,7 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:support@payman.dev"
+      "url": "mailto:support@paymanai.com"
     }
   ],
   "topbarCtaButton": {
@@ -33,7 +33,7 @@
   ],
   "anchors": [
     {
-      "name": "Support",
+      "name": "Discord",
       "icon": "discord",
       "url": "https://discord.gg/uheBscdKas"
     },
