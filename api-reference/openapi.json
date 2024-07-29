@@ -6,26 +6,19 @@
   },
   "externalDocs": {
     "description": "Payman AI Platform Documentation",
-    "url": "https://paymanai.mintlify.app"
+    "url": "https://docs.paymanai.com"
   },
   "servers": [
     {
-      "url": "https://agent.payman.ai",
+      "url": "https://agent.payman.ai/api",
       "description": "Production server"
     },
     {
-      "url": "https://sandbox-agent.payman.ai",
+      "url": "https://agent-sandbox.payman.ai/api",
       "description": "Sandbox (Test Mode) server"
     }
   ],
-  "security": [
-    {
-      "x-payman-agent-id": []
-    },
-    {
-      "x-payman-api-secret": []
-    }
-  ],
+  "security": [{ "x-payman-agent-id": [], "x-payman-api-secret": [] }],
   "paths": {
     "/tasks/{id}": {
       "get": {
@@ -38,9 +31,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -48,9 +39,7 @@
             "description": "The task specified by the ID",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
+                "schema": { "$ref": "#/components/schemas/Task" }
               }
             }
           },
@@ -58,9 +47,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -68,9 +55,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -78,9 +63,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -88,9 +71,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -98,9 +79,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -116,17 +95,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TaskUpdateRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/TaskUpdateRequest" }
             }
           },
           "required": true
@@ -136,9 +111,7 @@
             "description": "The updated task definition",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
+                "schema": { "$ref": "#/components/schemas/Task" }
               }
             }
           },
@@ -146,9 +119,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -156,9 +127,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -166,9 +135,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -176,9 +143,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -186,9 +151,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -207,20 +170,14 @@
             "in": "query",
             "description": "The page number to retrieve",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 0
-            }
+            "schema": { "type": "integer", "default": 0 }
           },
           {
             "name": "limit",
             "in": "query",
             "description": "The number of items per page",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 20
-            }
+            "schema": { "type": "integer", "default": 20 }
           }
         ],
         "responses": {
@@ -228,9 +185,7 @@
             "description": "The list of tasks",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagedResultsTask"
-                }
+                "schema": { "$ref": "#/components/schemas/PagedResultsTask" }
               }
             }
           },
@@ -238,9 +193,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -248,9 +201,7 @@
             "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -258,9 +209,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -268,9 +217,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -278,9 +225,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -294,9 +239,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TaskCreationRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/TaskCreationRequest" }
             }
           },
           "required": true
@@ -306,9 +249,7 @@
             "description": "The created task",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Task"
-                }
+                "schema": { "$ref": "#/components/schemas/Task" }
               }
             }
           },
@@ -316,9 +257,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -326,9 +265,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -336,9 +273,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -346,9 +281,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -356,9 +289,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -376,9 +307,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "statuses",
@@ -405,21 +334,13 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "limit",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 20
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 20 }
           }
         ],
         "responses": {
@@ -437,9 +358,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -447,9 +366,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -457,9 +374,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -467,9 +382,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -477,9 +390,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -495,9 +406,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -515,9 +424,7 @@
             "description": "The created task assignment",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaskAssignment"
-                }
+                "schema": { "$ref": "#/components/schemas/TaskAssignment" }
               }
             }
           },
@@ -525,9 +432,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -535,9 +440,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -545,9 +448,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -555,9 +456,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -565,9 +464,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -585,9 +482,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -595,9 +490,7 @@
             "description": "The wallet specified by the ID",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Wallet"
-                }
+                "schema": { "$ref": "#/components/schemas/Wallet" }
               }
             }
           },
@@ -605,9 +498,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -615,9 +506,7 @@
             "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -625,9 +514,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -635,9 +522,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -645,9 +530,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -665,9 +548,7 @@
               "*/*": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": {
-                    "type": "object"
-                  }
+                  "additionalProperties": { "type": "object" }
                 }
               }
             }
@@ -686,9 +567,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "statuses",
@@ -715,21 +594,13 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
           },
           {
             "name": "limit",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 20
-            }
+            "schema": { "type": "integer", "format": "int32", "default": 20 }
           }
         ],
         "responses": {
@@ -747,9 +618,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -757,9 +626,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -767,9 +634,7 @@
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -777,9 +642,7 @@
             "description": "Not found - the requested entity does not exist",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -787,9 +650,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -809,9 +670,7 @@
               "application/vnd.payman.v1+json": {
                 "schema": {
                   "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IPicklistItem"
-                  }
+                  "items": { "$ref": "#/components/schemas/IPicklistItem" }
                 }
               }
             }
@@ -820,9 +679,7 @@
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -830,9 +687,7 @@
             "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           },
@@ -840,9 +695,7 @@
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -861,70 +714,42 @@
             "in": "query",
             "description": "The key identifying the file to download as provided in the task submission details",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
           "200": {
             "description": "The file contents",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "content": { "*/*": { "schema": { "type": "string" } } }
           },
           "400": {
             "description": "Bad Requesst - the request body or parameters are invalid.",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/APIError" } }
             }
           },
           "401": {
             "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/APIError" } }
             }
           },
           "403": {
             "description": "Forbidden - the caller does not have sufficient permissions",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/APIError" } }
             }
           },
           "404": {
             "description": "Not found - the requested entity does not exist",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/APIError" } }
             }
           },
           "500": {
             "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/APIError" } }
             }
           }
         }
@@ -1023,9 +848,12 @@
             "type": "string",
             "enum": ["CRYPTOCURRENCY", "FIAT"]
           },
-          "active": {
-            "title": "Active",
-            "type": "boolean"
+          "active": { "title": "Active", "type": "boolean" },
+          "value": {
+            "title": "Value",
+            "type": "string",
+            "description": "The value of the item",
+            "readOnly": true
           },
           "label": {
             "title": "Label",
@@ -1037,12 +865,6 @@
             "title": "Description",
             "type": "string",
             "description": "A longer form description of the item",
-            "readOnly": true
-          },
-          "value": {
-            "title": "Value",
-            "type": "string",
-            "description": "The value of the item",
             "readOnly": true
           }
         },
@@ -1061,10 +883,7 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "readOnly": true
-          },
+          "id": { "type": "string", "readOnly": true },
           "organizationId": {
             "title": "Organization ID",
             "type": "string",
@@ -1110,9 +929,7 @@
             "type": "string",
             "description": "The ID of the wallet to be used to pay out rewards for this task.  This wallet must be owned by the organization that owns this task, the agent creating the task must have access to the wallet, it must have sufficient funds to cover the payouts, and must be in the same currency as the currency of this task."
           },
-          "currency": {
-            "$ref": "#/components/schemas/Currency"
-          },
+          "currency": { "$ref": "#/components/schemas/Currency" },
           "requiredSubmissions": {
             "title": "Required Submissions",
             "minimum": 1,
@@ -1178,12 +995,8 @@
         "title": "Verification Configuration",
         "type": "object",
         "properties": {
-          "handler": {
-            "type": "string"
-          },
-          "customPrompt": {
-            "type": "string"
-          }
+          "handler": { "type": "string" },
+          "customPrompt": { "type": "string" }
         },
         "description": "The configuration to be applied during task verification.  The Payman verification enginewill use this to customize the verification of this task."
       },
@@ -1268,46 +1081,22 @@
       "TaskAssignmentCreationRequest": {
         "type": "object",
         "properties": {
-          "inviteEmail": {
-            "type": "string"
-          },
-          "expiresAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "inviteEmail": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" }
         }
       },
       "TaskAssignment": {
         "required": ["organizationId", "status", "taskId"],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "readOnly": true
-          },
-          "taskId": {
-            "type": "string"
-          },
-          "organizationId": {
-            "type": "string"
-          },
-          "assignedToId": {
-            "type": "string"
-          },
-          "inviteCode": {
-            "type": "string"
-          },
-          "inviteEmail": {
-            "type": "string"
-          },
-          "expiresAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "completedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
+          "id": { "type": "string", "readOnly": true },
+          "taskId": { "type": "string" },
+          "organizationId": { "type": "string" },
+          "assignedToId": { "type": "string" },
+          "inviteCode": { "type": "string" },
+          "inviteEmail": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "completedAt": { "type": "string", "format": "date-time" },
           "status": {
             "type": "string",
             "enum": [
@@ -1320,12 +1109,8 @@
               "ACCEPTED"
             ]
           },
-          "assignedTo": {
-            "$ref": "#/components/schemas/User"
-          },
-          "task": {
-            "$ref": "#/components/schemas/Task"
-          }
+          "assignedTo": { "$ref": "#/components/schemas/User" },
+          "task": { "$ref": "#/components/schemas/Task" }
         }
       },
       "User": {
@@ -1340,10 +1125,7 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "readOnly": true
-          },
+          "id": { "type": "string", "readOnly": true },
           "email": {
             "title": "Email",
             "type": "string",
@@ -1403,19 +1185,14 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "readOnly": true
-          },
+          "id": { "type": "string", "readOnly": true },
           "name": {
             "title": "Name",
             "type": "string",
             "description": "A descriptive name for this wallet",
             "example": "My Personal Wallet"
           },
-          "currency": {
-            "$ref": "#/components/schemas/Currency"
-          },
+          "currency": { "$ref": "#/components/schemas/Currency" },
           "spendableBalance": {
             "title": "Spendable Balance",
             "type": "integer",
@@ -1450,9 +1227,7 @@
           "results": {
             "type": "array",
             "description": "The list of results for the current page",
-            "items": {
-              "$ref": "#/components/schemas/Task"
-            }
+            "items": { "$ref": "#/components/schemas/Task" }
           },
           "more": {
             "type": "boolean",
@@ -1474,16 +1249,9 @@
             "type": "string",
             "enum": ["SYSTEM_INTERNAL", "USER_COMMENT", "AGENT_COMMENT"]
           },
-          "feedback": {
-            "type": "string"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "feedback": { "type": "string" },
+          "createdBy": { "type": "string" },
+          "createdOn": { "type": "string", "format": "date-time" }
         },
         "description": "Feedback provided during the verification process after reviewing the submission"
       },
@@ -1518,9 +1286,7 @@
           "results": {
             "type": "array",
             "description": "The list of results for the current page",
-            "items": {
-              "$ref": "#/components/schemas/TaskSubmission"
-            }
+            "items": { "$ref": "#/components/schemas/TaskSubmission" }
           },
           "more": {
             "type": "boolean",
@@ -1537,13 +1303,8 @@
         "required": ["details", "submittedById"],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "readOnly": true
-          },
-          "details": {
-            "$ref": "#/components/schemas/TaskSubmissionDetails"
-          },
+          "id": { "type": "string", "readOnly": true },
+          "details": { "$ref": "#/components/schemas/TaskSubmissionDetails" },
           "status": {
             "title": "Submission Status",
             "type": "string",
@@ -1563,12 +1324,8 @@
             "type": "string",
             "description": "The unique identifier for the user that submitted this task"
           },
-          "submittedBy": {
-            "$ref": "#/components/schemas/User"
-          },
-          "task": {
-            "$ref": "#/components/schemas/Task"
-          }
+          "submittedBy": { "$ref": "#/components/schemas/User" },
+          "task": { "$ref": "#/components/schemas/Task" }
         },
         "description": "The list of results for the current page"
       },
@@ -1601,17 +1358,13 @@
             "title": "File Attachments",
             "type": "array",
             "description": "A list of file attachments that the user uploaded directly to the Payman platform. To access these files they must be downloaded via the 'Download File Attachment' API endpoint.",
-            "items": {
-              "$ref": "#/components/schemas/FileAttachment"
-            }
+            "items": { "$ref": "#/components/schemas/FileAttachment" }
           },
           "feedback": {
             "title": "Feedback",
             "type": "array",
             "description": "Feedback provided during the verification process after reviewing the submission",
-            "items": {
-              "$ref": "#/components/schemas/FeedbackElement"
-            }
+            "items": { "$ref": "#/components/schemas/FeedbackElement" }
           }
         },
         "description": "The details of the submission, including any evidence or notes provided by the user"
@@ -1622,9 +1375,7 @@
           "results": {
             "type": "array",
             "description": "The list of results for the current page",
-            "items": {
-              "$ref": "#/components/schemas/TaskAssignment"
-            }
+            "items": { "$ref": "#/components/schemas/TaskAssignment" }
           },
           "more": {
             "type": "boolean",
@@ -1640,6 +1391,11 @@
       "IPicklistItem": {
         "type": "object",
         "properties": {
+          "value": {
+            "title": "Value",
+            "type": "string",
+            "description": "The value of the item"
+          },
           "label": {
             "title": "Label",
             "type": "string",
@@ -1649,11 +1405,6 @@
             "title": "Description",
             "type": "string",
             "description": "A longer form description of the item"
-          },
-          "value": {
-            "title": "Value",
-            "type": "string",
-            "description": "The value of the item"
           }
         }
       }
