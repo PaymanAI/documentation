@@ -18,7 +18,7 @@
       "description": "Sandbox (Test Mode) server"
     }
   ],
-  "security": [{ "x-payman-agent-id": [], "x-payman-api-secret": [] }],
+  "security": [{ "x-payman-api-secret": [] }],
   "paths": {
     "/tasks/{id}": {
       "get": {
@@ -471,6 +471,142 @@
         }
       }
     },
+    "/tasks/submissions/{id}/reject": {
+      "post": {
+        "tags": ["task-controller"],
+        "summary": "Reject task submission",
+        "description": "Mark the task submission as rejected. Only available when verification configuration of the task is set to Developer Managed.",
+        "operationId": "rejectTaskSubmission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "If the submission was successfully rejected",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/OperationResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/submissions/{id}/approve": {
+      "post": {
+        "tags": ["task-controller"],
+        "summary": "Approve task submission",
+        "description": "Mark the task submission as approved and release the funds. Only available when verification configuration of the task is set to Developer Managed.",
+        "operationId": "approveTaskSubmission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the submission was successfully approved",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/OperationResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated. Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/wallets/{id}": {
       "get": {
         "tags": ["wallet-controller"],
@@ -585,7 +721,8 @@
                   "APPROVED",
                   "REJECTED",
                   "VERIFICATION_FAILED",
-                  "DELETED"
+                  "DELETED",
+                  "CANCELLED"
                 ]
               }
             }
@@ -801,7 +938,7 @@
       },
       "Currency": {
         "title": "Currency",
-        "required": ["fractionalUnitName", "name", "symbol", "type"],
+        "required": ["baseUnitName", "name", "symbol", "type"],
         "type": "object",
         "properties": {
           "code": {
@@ -823,10 +960,10 @@
             "description": "The name of this currency",
             "example": "US Dollars"
           },
-          "fractionalUnitName": {
-            "title": "Fractional Unit Name",
+          "baseUnitName": {
+            "title": "Base Unit Name",
             "type": "string",
-            "description": "The name of this currency's fractional unit",
+            "description": "The name of this currency's base currency unit",
             "example": "cents"
           },
           "decimalPlaces": {
@@ -855,16 +992,16 @@
             "description": "The value of the item",
             "readOnly": true
           },
-          "label": {
-            "title": "Label",
-            "type": "string",
-            "description": "A descriptive label of the item",
-            "readOnly": true
-          },
           "description": {
             "title": "Description",
             "type": "string",
             "description": "A longer form description of the item",
+            "readOnly": true
+          },
+          "label": {
+            "title": "Label",
+            "type": "string",
+            "description": "A descriptive label of the item",
             "readOnly": true
           }
         },
@@ -948,6 +1085,16 @@
               "OPEN_ASSIGNED_SUBMISSIONS"
             ]
           },
+          "metadata": {
+            "title": "Metadata",
+            "type": "object",
+            "additionalProperties": {
+              "title": "Metadata",
+              "type": "string",
+              "description": "Agent provided metadata related to this task.  You may use this to store correlation data.When a task related payload is sent to any registered webhook, this metadata will be included"
+            },
+            "description": "Agent provided metadata related to this task.  You may use this to store correlation data.When a task related payload is sent to any registered webhook, this metadata will be included"
+          },
           "status": {
             "title": "Status",
             "type": "string",
@@ -979,6 +1126,11 @@
           "verificationConfiguration": {
             "$ref": "#/components/schemas/VerificationConfiguration"
           },
+          "cancelReason": {
+            "title": "Cancel Reason",
+            "type": "string",
+            "description": "In case the task is canceled, this stores the reason why it is canceled"
+          },
           "inviteLinks": {
             "title": "Invite Links",
             "type": "object",
@@ -995,7 +1147,10 @@
         "title": "Verification Configuration",
         "type": "object",
         "properties": {
-          "handler": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["default", "custom_prompt", "developer_managed", "none"]
+          },
           "customPrompt": { "type": "string" }
         },
         "description": "The configuration to be applied during task verification.  The Payman verification enginewill use this to customize the verification of this task."
@@ -1066,6 +1221,9 @@
             "description": "The deadline for this task.  If this is set, the task will be closed after this time regardless of the number of submissions received and approved. If unset, the task will remain open until the required number of submissions are received and approved.",
             "format": "date-time"
           },
+          "verificationConfiguration": {
+            "$ref": "#/components/schemas/VerificationConfiguration"
+          },
           "inviteEmails": {
             "title": "Invite Emails",
             "type": "array",
@@ -1075,6 +1233,16 @@
               "type": "string",
               "description": "List of email addresses to invite to complete the task.  If this is set, only users with these emails will be able to complete the task."
             }
+          },
+          "metadata": {
+            "title": "Metadata",
+            "type": "object",
+            "additionalProperties": {
+              "title": "Metadata",
+              "type": "string",
+              "description": "Agent provided metadata related to this task.  You may use this to store correlation data.When a task related payload is sent to any registered webhook, this metadata will be included"
+            },
+            "description": "Agent provided metadata related to this task.  You may use this to store correlation data.When a task related payload is sent to any registered webhook, this metadata will be included"
           }
         }
       },
@@ -1083,6 +1251,13 @@
         "properties": {
           "inviteEmail": { "type": "string" },
           "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ReputationScore": {
+        "type": "object",
+        "properties": {
+          "score": { "type": "number", "format": "double" },
+          "rawScore": { "type": "number", "format": "double" }
         }
       },
       "TaskAssignment": {
@@ -1171,10 +1346,18 @@
             "title": "Phone",
             "type": "string",
             "description": "The phone number for this user. Note: may not be visible subject to caller's authorization scopes."
-          }
+          },
+          "reputationScore": { "$ref": "#/components/schemas/ReputationScore" }
         },
         "description": "The user that this task is assigned to",
         "readOnly": true
+      },
+      "OperationResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" }
+        }
       },
       "Wallet": {
         "required": [
@@ -1316,7 +1499,8 @@
               "APPROVED",
               "REJECTED",
               "VERIFICATION_FAILED",
-              "DELETED"
+              "DELETED",
+              "CANCELLED"
             ]
           },
           "submittedById": {
@@ -1396,25 +1580,20 @@
             "type": "string",
             "description": "The value of the item"
           },
-          "label": {
-            "title": "Label",
-            "type": "string",
-            "description": "A descriptive label of the item"
-          },
           "description": {
             "title": "Description",
             "type": "string",
             "description": "A longer form description of the item"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string",
+            "description": "A descriptive label of the item"
           }
         }
       }
     },
     "securitySchemes": {
-      "x-payman-agent-id": {
-        "type": "apiKey",
-        "name": "x-payman-agent-id",
-        "in": "header"
-      },
       "x-payman-api-secret": {
         "type": "apiKey",
         "name": "x-payman-api-secret",

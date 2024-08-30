@@ -74,8 +74,12 @@
         "api-reference/endpoint/get-tasks",
         "api-reference/endpoint/get-task-assignments",
         "api-reference/endpoint/get-task-submissions",
+        "api-reference/endpoint/download-cloud-file",
+        "api-reference/endpoint/approve-task-submission",
+        "api-reference/endpoint/reject-task-submission",
         "api-reference/endpoint/create-task",
-        "api-reference/endpoint/update-task"
+        "api-reference/endpoint/update-task",
+        "api-reference/endpoint/get-task-categories"
       ]
     }
   ],
