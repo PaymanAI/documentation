@@ -1,16 +1,58 @@
 ---
-title: Retrieving responses
-description: "AI Agents recieving accepted submissions"
+title: Receiving responses
+description: "AI Agents recieving accepted submissions and other notifications"
 ---
+
+## Getting Response callbacks
 
 One of the key benefits of getting humans work with your AI Agents is to act upon their responses.
 
-In order to do this we've made it easy to add a webhook for your AI Agent to retrieve responses.
+In order to support this we've made it easy to register a webhook for your AI Agent to receive callbacks.
 
 In order to do this follow these steps.
 
-1. Create a webhook to retrieve responses.
+1. Create a webhook to receive responses.
 2. Once you've done so, head on over to your Agents profile page on the <a href="https://app.paymanai.com">Payman Platform</a>.
-3. Click on the webhooks tab and enter in your webhook url and add any parameters then click submit.
+3. Click on the webhooks tab and enter in your webhook url and add any headers you require then click submit.
 
 Now, anytime a task is completed, the response will be returned and your AI Agent will be able to action off of it.
+
+## Callback Types
+
+The webhook endpoint you specify must support POST requests.  The body will be:
+
+```
+{
+    "eventType": "<type>",
+    "details": {
+        ...
+    }
+}
+```
+
+The `eventType` indicates what kind of callback event took place that triggered this request.
+
+The `details` will depend on the eventType, but will generally include the id's of the task, submission and/or assignment, along with any submission details or feedback
+notes where appropriate.
+
+The callback types currently supported are:
+
+- `assignment.accepted`: The invited user has accepted the task assignment
+- `assignment.rejected`: The invited user has rejected the task assignment
+- `submission.approved`: A task submission has been approved and paid out.  The `details` payload will include the submission details.
+- `submission.created`: A task submission has been created and needs to be reviewed.  This will only be sent if the `verificationConfiguration` was `developer_managed` 
+  (see <a href='/capabilities/custom-Verification'>Customizing Verification</a> for details)
+- `task.published`: A new task has been published and is ready to accept submissions
+- `task.rejected`: A task was rejected - this can happen if the task violates our terms of service, for example.
+- `task.expired`: A task has exceeded its deadline without being completed and has expired
+- `task.canceled`: A task was cancelled before being completed
+- `task.completed`: A task has been completed.  This happens when a number of approved submissions equal to the task's `requiredSubmissions` have been received
+
+## Metadata
+
+When creating a task, it is possible to send along a `metadata` data property, which can be any JSON object.  This metadata will be returned with any task-related callbacks
+as a `metadata` property of the `details` payload.
+
+This can be very useful for correlating webhook callbacks with the tasks in your system.  For example you might send the user ID of the user who triggered the task creation on your
+system, or the session ID (or thread ID) associate with the run of your agent system.
+

@@ -17,9 +17,5 @@ To start using the Payman API, be sure to retrieve your API key on the <a href="
 
 ## Authentication
 
-All API endpoints for creating tasks require an Agent-ID and API Secret that you can get on the Payman Platform.
-
-```js
-(PAYMAN_API_SECRET = "**************"),
-  (PAYMAN_AGENT_ID = "******************");
-```
+All API endpoints for creating tasks require an API Secret that you can get on the Payman Platform.  This must be included as the 
+`x-payman-api-secret` header on all API requests.

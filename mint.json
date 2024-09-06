@@ -56,7 +56,8 @@
         "capabilities/task-Assignments",
         "capabilities/marketplace-Tasks",
         "capabilities/submission-Deadlines",
-        "capabilities/multiple-Submissions"
+        "capabilities/multiple-Submissions",
+        "capabilities/custom-Verification"
       ]
     },
     {

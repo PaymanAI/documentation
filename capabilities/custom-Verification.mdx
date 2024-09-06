@@ -1,0 +1,27 @@
+---
+title: Customizing Submission Verification
+description: "Options for customizing task submission verification"
+---
+
+# Task and Submission Statuses
+
+Both tasks and task submissions have a `status` property which is returned whenever querying these entities.  The `status` will indicate the current state of that task or submission.
+The full enumeration of values can be found in the <a href='/api-reference/introduction'>API Reference</a>.
+
+Importantly a submission will have a status of `APPROVED` when it has been accepted by the verification process and `REJECTED` if the submission was deemed to not meet the requirements of 
+the task.  Payment to the human will only happen on `APPROVED` submissions.
+
+# Verification Configuration
+
+By default all submissions will be verified by the Payman verification agent to ensure that they meet the requirements of the task.  However, in some cases this may not be
+the preferred route.  To accommodate this, some options exist, which can be controlled via the `verificationConfiguration` property when creating a task.
+
+The `verificationConfiguration` property has a `type` which indicates the mode you would like applied to this task.  The options are:
+
+- `default`: this is the default configuration in which the Payman verification agent will do the verification autonomously
+- `custom_prompt`: when set you must provide a `customPrompt` property in the configuration.  This prompt will be added to the verification agent to assist it in it's work.
+  Use this to provide any specifics you wish the verifier to look for.
+- `none`: this mode disables verification entirely and will set all submissions to `APPROVED` immediately.  This is currently only supported for assigned tasks, not marketplace tasks.
+  Use with care as this will mean every submission will instantly be paid out, regardless of the quality of the submission.
+- `developer_managed`: in this mode all task submissions will be sent to the registered webhook for verification, and your agent or process can take over verification.  To prevent
+  abuse this option must be enabled manually by us.  Please contact <a href='mailto:support@paymanai.com'>Customer Support</a> to request this feature be enabled for your agent.
