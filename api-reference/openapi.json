@@ -475,7 +475,7 @@
       "post": {
         "tags": ["task-controller"],
         "summary": "Reject task submission",
-        "description": "Mark the task submission as rejected. Only available when verification configuration of the task is set to Developer Managed.",
+        "description": "Mark the task submission as rejected",
         "operationId": "rejectTaskSubmission",
         "parameters": [
           {
@@ -545,7 +545,7 @@
       "post": {
         "tags": ["task-controller"],
         "summary": "Approve task submission",
-        "description": "Mark the task submission as approved and release the funds. Only available when verification configuration of the task is set to Developer Managed.",
+        "description": "Mark the task submission as approved and release the funds",
         "operationId": "approveTaskSubmission",
         "parameters": [
           {
@@ -938,7 +938,7 @@
       },
       "Currency": {
         "title": "Currency",
-        "required": ["baseUnitName", "name", "symbol", "type"],
+        "required": ["name", "symbol", "type"],
         "type": "object",
         "properties": {
           "code": {
@@ -960,12 +960,6 @@
             "description": "The name of this currency",
             "example": "US Dollars"
           },
-          "baseUnitName": {
-            "title": "Base Unit Name",
-            "type": "string",
-            "description": "The name of this currency's base currency unit",
-            "example": "cents"
-          },
           "decimalPlaces": {
             "title": "Decimal Places",
             "minimum": 0,
@@ -973,19 +967,11 @@
             "description": "The number of decimal places this currency supports.",
             "format": "int32"
           },
-          "displayDecimalPlaces": {
-            "title": "Decimal Places to Display",
-            "minimum": 0,
-            "type": "integer",
-            "description": "The number of decimal places to show when rendering an amount of this currency.",
-            "format": "int32"
-          },
           "type": {
             "title": "Currency Type",
             "type": "string",
             "enum": ["CRYPTOCURRENCY", "FIAT"]
           },
-          "active": { "title": "Active", "type": "boolean" },
           "value": {
             "title": "Value",
             "type": "string",
@@ -1255,21 +1241,14 @@
       },
       "ReputationScore": {
         "type": "object",
-        "properties": {
-          "score": { "type": "number", "format": "double" },
-          "rawScore": { "type": "number", "format": "double" }
-        }
+        "properties": { "score": { "type": "number", "format": "double" } }
       },
       "TaskAssignment": {
-        "required": ["organizationId", "status", "taskId"],
+        "required": ["status", "taskId"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "readOnly": true },
           "taskId": { "type": "string" },
-          "organizationId": { "type": "string" },
-          "assignedToId": { "type": "string" },
-          "inviteCode": { "type": "string" },
-          "inviteEmail": { "type": "string" },
           "expiresAt": { "type": "string", "format": "date-time" },
           "completedAt": { "type": "string", "format": "date-time" },
           "status": {
@@ -1290,48 +1269,10 @@
       },
       "User": {
         "title": "Assigned To",
-        "required": [
-          "authenticationMethods",
-          "email",
-          "firstName",
-          "kycStatus",
-          "lastName",
-          "status"
-        ],
+        "required": ["firstName", "lastName"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "readOnly": true },
-          "email": {
-            "title": "Email",
-            "type": "string",
-            "description": "The email address for this user. Note: may not be visible subject to caller's authorization scopes."
-          },
-          "authenticationMethods": {
-            "title": "Authentication methods",
-            "maxItems": 2147483647,
-            "minItems": 1,
-            "uniqueItems": true,
-            "type": "array",
-            "description": "The authentication methods for this user. Note: may not be visible subject to caller's authorization scopes.",
-            "items": {
-              "title": "Authentication methods",
-              "type": "string",
-              "description": "The authentication methods for this user. Note: may not be visible subject to caller's authorization scopes.",
-              "enum": ["PASSWORD", "GOOGLE"]
-            }
-          },
-          "status": {
-            "title": "User Status",
-            "type": "string",
-            "description": "The current status of this user account",
-            "enum": ["ACTIVE", "DELETED", "LOCKED", "PENDING"]
-          },
-          "kycStatus": {
-            "title": "KYC Status",
-            "type": "string",
-            "description": "The current KYC status of this user account.  Note: may not be visible subject to caller's authorization scopes.",
-            "enum": ["PENDING", "IN_REVIEW", "APPROVED", "REJECTED"]
-          },
           "firstName": {
             "title": "First Name",
             "type": "string",
@@ -1341,11 +1282,6 @@
             "title": "Last Name",
             "type": "string",
             "description": "The last name of this user."
-          },
-          "phone": {
-            "title": "Phone",
-            "type": "string",
-            "description": "The phone number for this user. Note: may not be visible subject to caller's authorization scopes."
           },
           "reputationScore": { "$ref": "#/components/schemas/ReputationScore" }
         },
@@ -1483,7 +1419,7 @@
         }
       },
       "TaskSubmission": {
-        "required": ["details", "submittedById"],
+        "required": ["details"],
         "type": "object",
         "properties": {
           "id": { "type": "string", "readOnly": true },
@@ -1502,11 +1438,6 @@
               "DELETED",
               "CANCELLED"
             ]
-          },
-          "submittedById": {
-            "title": "Submitted By",
-            "type": "string",
-            "description": "The unique identifier for the user that submitted this task"
           },
           "submittedBy": { "$ref": "#/components/schemas/User" },
           "task": { "$ref": "#/components/schemas/Task" }
