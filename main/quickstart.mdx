@@ -81,11 +81,11 @@ def create_task(title:str, description: str, email: str) -> str:
         "currency": "USD",
         "category": "MARKETING",  # the category of the task, put whatever here
         "requiredSubmissions": 1, # how many submissions are required
-        "submissionPolicy": "OPEN_SUBMISSIONS_ONE_PER_USER", # only one submission per user
+        "inviteEmails": [email],  # who should be assigned to the task
     }
 
     try:
-        # Replace the URL with "https://api.paymanai.com/api/tasks" if you want to use the non-Playground and create real tasks with real money
+        # Replace the URL with "https://api.paymanai.com/api/tasks" if you want to create real tasks with real money on the live system
         response = requests.post("https://api-sandbox.paymanai.com/api/tasks", headers=headers, json=payload)
         return response.content
     except requests.exceptions.HTTPError as e:
