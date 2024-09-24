@@ -54,7 +54,6 @@
         "capabilities/funding-AI-Wallet",
         "capabilities/creating-Task",
         "capabilities/task-Assignments",
-        "capabilities/marketplace-Tasks",
         "capabilities/submission-Deadlines",
         "capabilities/multiple-Submissions",
         "capabilities/custom-Verification"

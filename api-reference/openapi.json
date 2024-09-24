@@ -1190,17 +1190,6 @@
             "description": "The number of approved submissions required before this task is closed.  E.g. If this is set to 2, the task will be closed after the 2 submission are received and approved. Defaults to 1 if omitted (or the number of inviteEmails provided if present).",
             "format": "int32"
           },
-          "submissionPolicy": {
-            "title": "Submission Policy",
-            "type": "string",
-            "description": "The policy determining who may submit solutions for this task. Defaults to OPEN_SUBMISSIONS_ONE_PER_USER if omitted, or PRE_ASSIGNED_SUBMISSIONS if inviteEmails are specified.",
-            "enum": [
-              "OPEN_SUBMISSIONS_ONE_PER_USER",
-              "OPEN_SUBMISSIONS_MANY_PER_USER",
-              "PRE_ASSIGNED_SUBMISSIONS",
-              "OPEN_ASSIGNED_SUBMISSIONS"
-            ]
-          },
           "deadline": {
             "title": "Deadline",
             "type": "string",

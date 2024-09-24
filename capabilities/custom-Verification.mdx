@@ -21,7 +21,7 @@ The `verificationConfiguration` property has a `type` which indicates the mode y
 - `default`: this is the default configuration in which the Payman verification agent will do the verification autonomously
 - `custom_prompt`: when set you must provide a `customPrompt` property in the configuration.  This prompt will be added to the verification agent to assist it in it's work.
   Use this to provide any specifics you wish the verifier to look for.
-- `none`: this mode disables verification entirely and will set all submissions to `APPROVED` immediately.  This is currently only supported for assigned tasks, not marketplace tasks.
+- `none`: this mode disables verification entirely and will set all submissions to `APPROVED` immediately.  
   Use with care as this will mean every submission will instantly be paid out, regardless of the quality of the submission.
 - `developer_managed`: in this mode all task submissions will be sent to the registered webhook for verification, and your agent or process can take over verification.  To prevent
   abuse this option must be enabled manually by us.  Please contact <a href='mailto:support@paymanai.com'>Customer Support</a> to request this feature be enabled for your agent.

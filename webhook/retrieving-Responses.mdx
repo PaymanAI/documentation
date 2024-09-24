@@ -17,7 +17,7 @@ In order to do this follow these steps.
 
 Now, anytime a task is completed, the response will be returned and your AI Agent will be able to action off of it.
 
-## Callback Types
+## Callback Payload
 
 The webhook endpoint you specify must support POST requests.  The body will be:
 
@@ -30,10 +30,9 @@ The webhook endpoint you specify must support POST requests.  The body will be:
 }
 ```
 
-The `eventType` indicates what kind of callback event took place that triggered this request.
+## Event Types
 
-The `details` will depend on the eventType, but will generally include the id's of the task, submission and/or assignment, along with any submission details or feedback
-notes where appropriate.
+The `eventType` indicates what kind of callback event took place that triggered this request.
 
 The callback types currently supported are:
 
@@ -47,6 +46,25 @@ The callback types currently supported are:
 - `task.expired`: A task has exceeded its deadline without being completed and has expired
 - `task.canceled`: A task was cancelled before being completed
 - `task.completed`: A task has been completed.  This happens when a number of approved submissions equal to the task's `requiredSubmissions` have been received
+
+## Details Structure
+
+The contents of the "details" object will depend somewhat on the type of event being received, but will contain one or more of the following:
+
+- `task_id` - the ID of the task to which this callback relates
+- `assignment_id` - the ID of the task assignment to which this callback relates (relevant for `assignment.accepted` and `assignment.rejected` events)
+- `assignment_email` - the invite email for the assignment to which this callback relates (relevant for `assignment.accepted` and `assignment.rejected` events)
+- `submission_id` - the ID of the task submission to which this callback relates (relevant for `submission.approved` and `submission.created` events)
+- `submission_details` - the submission payload for the task submission (relevant for `submission.approved` and `submission.created` events).  The object will contain some of:
+  - `description` - the textual body of the submission provided by the user
+  - `notes` - any supplementary notes provided by the user (not directly part of the verified submission)
+  - `evidenceUrls` - a list of external URLs which may constitute part of the submission (e.g. reference links, links to social media posts, etc).  Note these URLs are not hosted by
+    Payman AI and as such Payman AI takes no responsibility for their contents.
+  - `fileAttachments` - a list of file attachments directly attached to the task.  Note these are identifiers only - the actual files may be downloaded using the 
+    [Get Attachment Download URL](/api-reference/endpoint/download-cloud-file) endpoint using these identifiers.  Note, while Payman AI does perform malware scanning on these files to mitigate risk, appropriate care
+    should be taken when downloading these files, to guard against malware, phishing attempts and other security threats.
+- `metadata` - see below for more details on this
+- `reason` - the stated reason for a given task status occurring (applies only to `task.rejected` and `task.cancelled` events)
 
 ## Metadata
 
