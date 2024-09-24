@@ -61,7 +61,7 @@ The contents of the "details" object will depend somewhat on the type of event b
   - `evidenceUrls` - a list of external URLs which may constitute part of the submission (e.g. reference links, links to social media posts, etc).  Note these URLs are not hosted by
     Payman AI and as such Payman AI takes no responsibility for their contents.
   - `fileAttachments` - a list of file attachments directly attached to the task.  Note these are identifiers only - the actual files may be downloaded using the 
-    `Get Attachment Download URL` endpoint using these identifiers.  Note, while Payman AI does perform malware scanning on these files to mitigate risk, appropriate care
+    [Get Attachment Download URL](/api-reference/endpoint/download-cloud-file) endpoint using these identifiers.  Note, while Payman AI does perform malware scanning on these files to mitigate risk, appropriate care
     should be taken when downloading these files, to guard against malware, phishing attempts and other security threats.
 - `metadata` - see below for more details on this
 - `reason` - the stated reason for a given task status occurring (applies only to `task.rejected` and `task.cancelled` events)
