@@ -1135,7 +1135,7 @@
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["default", "custom_prompt", "developer_managed", "none"]
+            "enum": ["generic", "custom_prompt", "developer_managed", "none"]
           },
           "customPrompt": { "type": "string" }
         },

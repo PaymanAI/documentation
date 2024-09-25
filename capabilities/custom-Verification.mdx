@@ -13,15 +13,16 @@ the task.  Payment to the human will only happen on `APPROVED` submissions.
 
 # Verification Configuration
 
-By default all submissions will be verified by the Payman verification agent to ensure that they meet the requirements of the task.  However, in some cases this may not be
-the preferred route.  To accommodate this, some options exist, which can be controlled via the `verificationConfiguration` property when creating a task.
+By default verification of tasks is disabled, meaning all tasks will automatically be approved.  This is because in many cases, since tasks are assigned to individuals directly
+the only indication of completion is to have made a submission.  However, Payman supports other verification methods.  To configure an alternative option set the 
+`verificationConfiguration` property when creating a task.
 
 The `verificationConfiguration` property has a `type` which indicates the mode you would like applied to this task.  The options are:
 
-- `default`: this is the default configuration in which the Payman verification agent will do the verification autonomously
-- `custom_prompt`: when set you must provide a `customPrompt` property in the configuration.  This prompt will be added to the verification agent to assist it in it's work.
+- `none`: this mode disables verification entirely and will set all submissions to `APPROVED` immediately. This is the default setting unless overridden.
+- `developer_managed`: in this mode all task submissions will be sent to the registered webhook for verification, and your agent or process can take over verification.  Alternatively,
+you can view all task submissions waiting for review on the Payman dashboard.  If you wish to automate this process using the webhook, your agent can use the [Approve Submission](https://docs.paymanai.com/api-reference/endpoint/approve-task-submission)
+and [Reject Submission](https://docs.paymanai.com/api-reference/endpoint/reject-task-submission) endpoints on the API to do so.
+- `generic`: In this mode, the Payman verification AI agent will do the verification autonomously, using a generic prompt.
+- `custom_prompt`: when set you must provide a `customPrompt` property in the configuration.  This prompt will be added to the Payman verification agent to assist it in it's work.
   Use this to provide any specifics you wish the verifier to look for.
-- `none`: this mode disables verification entirely and will set all submissions to `APPROVED` immediately.  
-  Use with care as this will mean every submission will instantly be paid out, regardless of the quality of the submission.
-- `developer_managed`: in this mode all task submissions will be sent to the registered webhook for verification, and your agent or process can take over verification.  To prevent
-  abuse this option must be enabled manually by us.  Please contact <a href='mailto:support@paymanai.com'>Customer Support</a> to request this feature be enabled for your agent.
