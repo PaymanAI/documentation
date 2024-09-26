@@ -65,7 +65,13 @@
     },
     {
       "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/authentication",
+        "api-reference/error-handling",
+        "api-reference/pagination",
+        "api-reference/entity-statuses"
+      ]
     },
     {
       "group": "Tasks",

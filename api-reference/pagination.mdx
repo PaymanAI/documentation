@@ -1,0 +1,19 @@
+---
+title: "Pagination"
+description: "Handling Paginated endpoints"
+---
+
+Many of the API endpoints which return lists do so in a paginated fashion.  Whenever this is the case, there are two key query parameters which may be included.  These are:
+
+- `page`: This is the index of the page to fetch, starting at 0
+- `limit`: The number of items to fetch per page, limited to 100
+
+The response from any such queries will be of the format:
+
+```js
+{
+  results: any[], //the list of results objects in the queried page
+  more: boolean, //true if there are more results after this page, and false otherwise
+  nextPage: number, //the next page index (which can be added to the `page` attribute for the next query)
+}
+```

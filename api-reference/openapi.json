@@ -168,7 +168,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "The page number to retrieve",
+            "description": "The page number to retrieve (0-indexed)",
             "required": false,
             "schema": { "type": "integer", "default": 0 }
           },
@@ -304,43 +304,42 @@
         "operationId": "getTaskAssignments",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "statuses",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "IN_REVIEW",
-                  "PENDING",
-                  "COMPLETED",
-                  "EXPIRED",
-                  "DELETED",
-                  "REJECTED",
-                  "ACCEPTED"
-                ]
-              }
-            }
-          },
-          {
             "name": "page",
             "in": "query",
+            "description": "The page number to retrieve (0-indexed)",
             "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 0 }
+            "schema": { "type": "integer", "default": 0 }
           },
           {
             "name": "limit",
             "in": "query",
+            "description": "The number of items per page",
             "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 20 }
+            "schema": { "type": "integer", "default": 20 }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "The statuses you want to filter by.  Defaults to PENDING, ACCEPTED and COMPLETED",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "IN_REVIEW",
+                "PENDING",
+                "COMPLETED",
+                "EXPIRED",
+                "DELETED",
+                "REJECTED",
+                "ACCEPTED"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -700,44 +699,43 @@
         "operationId": "getTaskSubmissions",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "statuses",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "PENDING",
-                  "APPROVED_REQUIRES_REVIEW",
-                  "REJECTED_REQUIRES_REVIEW",
-                  "APPROVED",
-                  "REJECTED",
-                  "VERIFICATION_FAILED",
-                  "DELETED",
-                  "CANCELLED"
-                ]
-              }
-            }
-          },
-          {
             "name": "page",
             "in": "query",
+            "description": "The page number to retrieve (0-indexed)",
             "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 0 }
+            "schema": { "type": "integer", "default": 0 }
           },
           {
             "name": "limit",
             "in": "query",
+            "description": "The number of items per page",
             "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 20 }
+            "schema": { "type": "integer", "default": 20 }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "The statuses you want to filter by. Defaults to PENDING and APPROVED",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "APPROVED_REQUIRES_REVIEW",
+                "REJECTED_REQUIRES_REVIEW",
+                "APPROVED",
+                "REJECTED",
+                "VERIFICATION_FAILED",
+                "DELETED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
