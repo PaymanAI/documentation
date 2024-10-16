@@ -606,6 +606,140 @@
         }
       }
     },
+    "/payments/initiate-direct-payment": {
+      "post": {
+        "tags": ["payments-controller"],
+        "summary": "Pay a user directly, without creating a task.",
+        "description": "Sends funds from an agent controlled wallet to a Payman user.  The user is identifiedby the email property and if the user is not yet on payman, the transfer will still besent and the user will be invited to join the platform to withdraw the funds.  The walletmay be specified by supplying either a wallet ID, or customer ID in which case a matching walletwill be used.  If no wallet is specified, the default wallet for the agent will be used.",
+        "operationId": "initiatePaymentToUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DirectPaymentRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The URL to redirect the user to",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/OperationResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/initiate-customer-deposit": {
+      "post": {
+        "tags": ["payments-controller"],
+        "summary": "Get a deposit url for a customer of yours.",
+        "description": "Get a deposit url that you can present to the user to let them deposit fundsinto a wallet of their own.  The wallet will be auto-created and the funds will flowinto that wallet once they complete the checkout process.",
+        "operationId": "initiateCustomerDeposit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerDepositRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The URL to redirect the user to",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "type": "string" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/wallets/{id}": {
       "get": {
         "tags": ["wallet-controller"],
@@ -889,6 +1023,144 @@
           }
         }
       }
+    },
+    "/balances/customers/{customerId}/currencies/{currency}": {
+      "get": {
+        "tags": ["balance-controller"],
+        "summary": "Get a customer's spendable balance of a specific currency",
+        "description": "Get a customer's spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's base units. The customer ID provided can be either a Payman customer ID or the customer ID you provided when you first referenced the customer (e.g. when creating a checkout link or creating a task).",
+        "operationId": "getCustomerSpendableBalance",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "currency",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The balance for the currency",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "type": "integer" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balances/currencies/{currency}": {
+      "get": {
+        "tags": ["balance-controller"],
+        "summary": "Get current agent's spendable balance of a specific currency",
+        "description": "Get the current agent's own spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's base units. ",
+        "operationId": "getSpendableBalance",
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The balance for the currency",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "type": "integer" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1050,6 +1322,11 @@
             "type": "string",
             "description": "The ID of the wallet to be used to pay out rewards for this task.  This wallet must be owned by the organization that owns this task, the agent creating the task must have access to the wallet, it must have sufficient funds to cover the payouts, and must be in the same currency as the currency of this task."
           },
+          "customerId": {
+            "title": "Customer ID",
+            "type": "string",
+            "description": "The unique identifier for your end user that paid for this task.  Note you may supply either your own unique ID, or the Payman generated one (if you have it)."
+          },
           "currency": { "$ref": "#/components/schemas/Currency" },
           "requiredSubmissions": {
             "title": "Required Submissions",
@@ -1140,7 +1417,7 @@
         "description": "The configuration to be applied during task verification.  The Payman verification enginewill use this to customize the verification of this task."
       },
       "TaskCreationRequest": {
-        "required": ["description", "payout", "title"],
+        "required": ["description", "title"],
         "type": "object",
         "properties": {
           "title": {
@@ -1156,9 +1433,18 @@
             "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
           },
           "payout": {
-            "title": "Payout",
+            "title": "Payout Amount",
             "type": "integer",
             "description": "The amount being offered for each approved submission on this task.  Note the amount is denominated in base units of the currency, so a payout of 100 in USD would mean the payout would be $1.00. "
+          },
+          "currency": {
+            "title": "Currency code.  One of USD or USDCBASE",
+            "type": "string",
+            "description": "The currency is only required if a customerId is provided."
+          },
+          "customerId": {
+            "title": "The ID of the customer paying for this task.This can be the unique ID as held within your system or the equivalent customer's ID within Payman. If you provide a customerId as the payout mechanism, do not specify a payoutWalletId as it will takeprecedence.  You must also specify the currency to use.",
+            "type": "string"
           },
           "category": {
             "title": "Category",
@@ -1280,6 +1566,68 @@
         "properties": {
           "success": { "type": "boolean" },
           "message": { "type": "string" }
+        }
+      },
+      "DirectPaymentRequest": {
+        "required": ["amount", "currencyCode", "email"],
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "The ID of the customer from whose wallet the funds are to be transferred. This can be any unique ID as held within your system. You may specify at most one of customerId and walletId."
+          },
+          "walletId": {
+            "type": "string",
+            "description": "The ID of the specific wallet from which to send the funds.  This can be any unique ID as held within your system. You may specify at most one of customerId and walletId."
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "The currency code in which to send the funds (must match the walletId currency if specified). Either USD or USDCBASE."
+          },
+          "amount": {
+            "type": "integer",
+            "description": "The amount to send.  Note this is denoted in base unitsof the currency.  For example, 1000 for USD is $10.00 or 1000000 USDCBASE is 1.000000 USDC."
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the user to whom the funds are to be sent."
+          }
+        }
+      },
+      "CustomerDepositRequest": {
+        "required": ["amount", "currencyCode", "customerId"],
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "The ID of the customer to deposit funds for.  This can be any unique ID as held within your system."
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "The currency code for which to generate a URL.  Either USD or USDCBASE."
+          },
+          "amount": {
+            "type": "integer",
+            "description": "The amount to generate a checkout link for.  Note this is denoted in base unitsof the currency.  For example, 1000 for USD is $10.00 or 1000000 USDCBASE is 1.000000 USDC."
+          },
+          "email": {
+            "type": "string",
+            "description": "An email address to associate with this customer."
+          },
+          "name": {
+            "type": "string",
+            "description": "A name to associate with this customer."
+          },
+          "metadata": {
+            "title": "Metadata",
+            "type": "object",
+            "additionalProperties": {
+              "title": "Metadata",
+              "type": "string",
+              "description": "Agent provided metadata related to this deposit.  You may use this to store correlation data.When a task related payload is sent to any registered webhook, this metadata will be included"
+            },
+            "description": "Agent provided metadata related to this deposit.  You may use this to store correlation data.When a task related payload is sent to any registered webhook, this metadata will be included"
+          }
         }
       },
       "Wallet": {

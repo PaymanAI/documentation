@@ -1,0 +1,33 @@
+---
+title: Customer Deposits
+description: "You can allow your Agent's customers to directly deposit funds"
+---
+
+Here we'll go over how you AI Agent can generate a deposit link that your customers can use to fund your agent.
+
+## Allow your customers to deposit funds
+
+Sometimes it is preferrable to allow your Agent's users to directly fund their activities, rather than you as the
+agent developer having to fund the agent.  In such circumstances it is possible for your agent
+to generate a checkout link that will allow your users, called Customers in the Payman system, to deposit funds.
+This capability is provided via the [Initiate Customer Deposit API](/api-reference/endpoint/initiate-customer-deposit)
+
+These funds will be placed in a dedicated wallet specifically for that customer.  You can have the 
+agent use that wallet to fund activities either by specifying the wallet ID or by providing the same customer ID
+when creating tasks.
+
+## Customer IDs
+
+Payman generates a unique ID for every customer added.  However, because you probably have your own ID for these
+users (e.g. your internal user ID or their email, etc) it is possible to provide your own ID and Payman 
+will create a customer for you automatically.  The only requirement is that the ID is unique to your Workspace.
+
+This means that if you create a customer `some_user`, any time your agent references `some_user` (e.g. during task creation)
+it will reference that same customer's wallet.
+
+## Webhooks
+
+Because the API allows the agent to generate a checkout URL which it can show to the user, there is an inherently
+asynchronous nature to the flow.  The user may take time to complete the checkout process, or may choose to 
+abandon it entirely.  To allow for that, there are two webhook events that will be sent back to the Agent
+in response to the customer taking action - see [Webhooks](/webhook/retrieving-Responses) for more details.

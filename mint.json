@@ -56,7 +56,8 @@
         "capabilities/task-Assignments",
         "capabilities/submission-Deadlines",
         "capabilities/multiple-Submissions",
-        "capabilities/custom-Verification"
+        "capabilities/custom-Verification",
+        "capabilities/customer-Deposits"
       ]
     },
     {
@@ -85,7 +86,10 @@
         "api-reference/endpoint/reject-task-submission",
         "api-reference/endpoint/create-task",
         "api-reference/endpoint/update-task",
-        "api-reference/endpoint/get-task-categories"
+        "api-reference/endpoint/get-task-categories",
+        "api-reference/endpoint/initiate-customer-deposit",
+        "api-reference/endpoint/get-currency-balance",
+        "api-reference/endpoint/get-customer-balance"
       ]
     }
   ],

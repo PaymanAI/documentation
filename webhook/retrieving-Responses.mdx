@@ -46,6 +46,9 @@ The callback types currently supported are:
 - `task.expired`: A task has exceeded its deadline without being completed and has expired
 - `task.canceled`: A task was cancelled before being completed
 - `task.completed`: A task has been completed.  This happens when a number of approved submissions equal to the task's `requiredSubmissions` have been received
+- `customer-deposit.successful`: A customer deposit has completed successfully.
+- `customer-deposit.failed`: A customer deposit has failed to complete.
+- `balance.low`: A warning when a wallet balance drops below 50% of its all time maximum funding
 
 ## Details Structure
 
@@ -64,13 +67,18 @@ The contents of the "details" object will depend somewhat on the type of event b
     [Get Attachment Download URL](/api-reference/endpoint/download-cloud-file) endpoint using these identifiers.  Note, while Payman AI does perform malware scanning on these files to mitigate risk, appropriate care
     should be taken when downloading these files, to guard against malware, phishing attempts and other security threats.
 - `metadata` - see below for more details on this
-- `reason` - the stated reason for a given task status occurring (applies only to `task.rejected` and `task.cancelled` events)
+- `reason` - the stated reason for a given task status or deposit event occurring (applies only to `task.rejected`, `task.cancelled` and  `customer-deposit.failed` events)
+- `customerId` - the customer the event relates to (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
+- `amount` - the amount the deposit was for (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
+- `currency` - the currency of the deposit (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
+- `agentId` - the agent ID whose wallet balance is being reported (applies only to `balance.low` events)
+- `balance` - the current wallet balance (applies only to `balance.low` events)
 
 ## Metadata
 
-When creating a task, it is possible to send along a `metadata` data property, which can be any JSON object.  This metadata will be returned with any task-related callbacks
+When creating a task or initiating a customer deposit, it is possible to send along a `metadata` data property, which can be any JSON object.  This metadata will be returned with any task or deposit related callbacks
 as a `metadata` property of the `details` payload.
 
-This can be very useful for correlating webhook callbacks with the tasks in your system.  For example you might send the user ID of the user who triggered the task creation on your
+This can be very useful for correlating webhook callbacks with the tasks or customers in your system.  For example you might send the user ID of the user who triggered the task creation on your
 system, or the session ID (or thread ID) associate with the run of your agent system.
 
