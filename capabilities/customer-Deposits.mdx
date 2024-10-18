@@ -16,6 +16,19 @@ These funds will be placed in a dedicated wallet specifically for that customer.
 agent use that wallet to fund activities either by specifying the wallet ID or by providing the same customer ID
 when creating tasks.
 
+An example payload might be:
+
+```js
+payload = {
+        "customerId": "someuser@test.com",  // Let's assume your Agent system stores users unique by email address, 
+                                            // you can then send this same value when creating a task to use these deposited funds
+
+        "currencyCode": "USDCBASE",         // USDC on the Base network, use "USD" to request US Dollars instead.
+
+        "amountDecimal": "0.5"              // Ask the customer to deposit 0.5 USDC - note Payman fees will be deducted from this so actual amount received will be slightly less
+    }
+```
+
 ## Customer IDs
 
 Payman generates a unique ID for every customer added.  However, because you probably have your own ID for these
