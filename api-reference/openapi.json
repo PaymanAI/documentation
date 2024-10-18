@@ -606,72 +606,6 @@
         }
       }
     },
-    "/payments/initiate-direct-payment": {
-      "post": {
-        "tags": ["payments-controller"],
-        "summary": "Pay a user directly, without creating a task.",
-        "description": "Sends funds from an agent controlled wallet to a Payman user.  The user is identifiedby the email property and if the user is not yet on payman, the transfer will still besent and the user will be invited to join the platform to withdraw the funds.  The walletmay be specified by supplying either a wallet ID, or customer ID in which case a matching walletwill be used.  If no wallet is specified, the default wallet for the agent will be used.",
-        "operationId": "initiatePaymentToUser",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/DirectPaymentRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "The URL to redirect the user to",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/OperationResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
     "/payments/initiate-customer-deposit": {
       "post": {
         "tags": ["payments-controller"],
@@ -1028,7 +962,7 @@
       "get": {
         "tags": ["balance-controller"],
         "summary": "Get a customer's spendable balance of a specific currency",
-        "description": "Get a customer's spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's base units. The customer ID provided can be either a Payman customer ID or the customer ID you provided when you first referenced the customer (e.g. when creating a checkout link or creating a task).",
+        "description": "Get a customer's spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's full units (e.g. '1.000000' is 1 USDC). The customer ID provided can be either a Payman customer ID or the customer ID you provided when you first referenced the customer (e.g. when creating a checkout link or creating a task).",
         "operationId": "getCustomerSpendableBalance",
         "parameters": [
           {
@@ -1049,7 +983,7 @@
             "description": "The balance for the currency",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": { "type": "integer" }
+                "schema": { "type": "number" }
               }
             }
           },
@@ -1100,7 +1034,7 @@
       "get": {
         "tags": ["balance-controller"],
         "summary": "Get current agent's spendable balance of a specific currency",
-        "description": "Get the current agent's own spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's base units. ",
+        "description": "Get the current agent's own spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's full units (e.g. '1.000000' is 1 USDC). ",
         "operationId": "getSpendableBalance",
         "parameters": [
           {
@@ -1115,7 +1049,7 @@
             "description": "The balance for the currency",
             "content": {
               "application/vnd.payman.v1+json": {
-                "schema": { "type": "integer" }
+                "schema": { "type": "number" }
               }
             }
           },
@@ -1182,9 +1116,10 @@
             "type": "string",
             "description": "The Payman error code for the error"
           },
-          "errorMessage": {
+          "message": {
             "type": "string",
-            "description": "The error message for the error"
+            "description": "The error message for the error",
+            "readOnly": true
           }
         }
       },
@@ -1401,6 +1336,11 @@
               "description": "A map of email address to link containing a link for each inviteEmail.  This map is only populated immediately in response to the creation of the task and will contain the link that was emailedto each invited address.  Also note that these links will only become valid once the task is published."
             },
             "description": "A map of email address to link containing a link for each inviteEmail.  This map is only populated immediately in response to the creation of the task and will contain the link that was emailedto each invited address.  Also note that these links will only become valid once the task is published."
+          },
+          "payoutDecimal": {
+            "type": "number",
+            "description": "The amount being offered for each approved submission on this task, denominated in currency units.  For example a payout of '1.00' in USD would mean the payout would be $1.00",
+            "readOnly": true
           }
         }
       },
@@ -1417,7 +1357,7 @@
         "description": "The configuration to be applied during task verification.  The Payman verification enginewill use this to customize the verification of this task."
       },
       "TaskCreationRequest": {
-        "required": ["description", "title"],
+        "required": ["description", "payoutDecimal", "title"],
         "type": "object",
         "properties": {
           "title": {
@@ -1432,9 +1372,9 @@
             "description": "A detailed description of the task.  This should include enough information for the user to complete the task to the expected standard.",
             "example": "Proofread a 10-page legal document for spelling and grammar errors.  Please include a summary of changes or a confirmation that no errors were found."
           },
-          "payout": {
+          "payoutDecimal": {
             "title": "Payout Amount",
-            "type": "integer",
+            "type": "number",
             "description": "The amount being offered for each approved submission on this task.  Note the amount is denominated in base units of the currency, so a payout of 100 in USD would mean the payout would be $1.00. "
           },
           "currency": {
@@ -1568,34 +1508,8 @@
           "message": { "type": "string" }
         }
       },
-      "DirectPaymentRequest": {
-        "required": ["amount", "currencyCode", "email"],
-        "type": "object",
-        "properties": {
-          "customerId": {
-            "type": "string",
-            "description": "The ID of the customer from whose wallet the funds are to be transferred. This can be any unique ID as held within your system. You may specify at most one of customerId and walletId."
-          },
-          "walletId": {
-            "type": "string",
-            "description": "The ID of the specific wallet from which to send the funds.  This can be any unique ID as held within your system. You may specify at most one of customerId and walletId."
-          },
-          "currencyCode": {
-            "type": "string",
-            "description": "The currency code in which to send the funds (must match the walletId currency if specified). Either USD or USDCBASE."
-          },
-          "amount": {
-            "type": "integer",
-            "description": "The amount to send.  Note this is denoted in base unitsof the currency.  For example, 1000 for USD is $10.00 or 1000000 USDCBASE is 1.000000 USDC."
-          },
-          "email": {
-            "type": "string",
-            "description": "The email address of the user to whom the funds are to be sent."
-          }
-        }
-      },
       "CustomerDepositRequest": {
-        "required": ["amount", "currencyCode", "customerId"],
+        "required": ["amountDecimal", "currencyCode", "customerId"],
         "type": "object",
         "properties": {
           "customerId": {
@@ -1606,9 +1520,9 @@
             "type": "string",
             "description": "The currency code for which to generate a URL.  Either USD or USDCBASE."
           },
-          "amount": {
-            "type": "integer",
-            "description": "The amount to generate a checkout link for.  Note this is denoted in base unitsof the currency.  For example, 1000 for USD is $10.00 or 1000000 USDCBASE is 1.000000 USDC."
+          "amountDecimal": {
+            "type": "number",
+            "description": "The amount to generate a checkout link for. For example, '10.00' for USD is $10.00 or '1.000000' USDCBASE is 1 USDC."
           },
           "email": {
             "type": "string",

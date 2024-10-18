@@ -18,6 +18,11 @@ This will then trigger an email to be sent to these emails inviting them to comp
 
 If they don't have a Payman account the email will walk them through creating one and then allow them to complete the task once created.
 
+## Deferred assignments
+
+If you don't know at the time of task creation who you are going to send the task to for completion, you can just set the `requiredSubmissions` property to the number of responses you want, and leave `inviteEmails` as undefined.
+You can then use the [Create Task Assignment](/api-reference/endpoint/create-task-assignment) endpoint to assign the task to a user after it has been created.  Only `requiredSubmissions` number of assignments can be created though.
+
 ## Verifying Task Completion
 
 See [Customizing Verification](/capabilities/custom-Verification) for details on how to control if and how submissions should be verified.
