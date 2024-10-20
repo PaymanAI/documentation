@@ -12,8 +12,8 @@ agent developer having to fund the agent.  In such circumstances it is possible 
 to generate a checkout link that will allow your users, called Customers in the Payman system, to deposit funds.
 This capability is provided via the [Initiate Customer Deposit API](/api-reference/endpoint/initiate-customer-deposit)
 
-These funds will be placed in a dedicated wallet specifically for that customer.  You can have the 
-agent use that wallet to fund activities either by specifying the wallet ID or by providing the same customer ID
+These funds will be placed in a dedicated wallet specifically for that customer, unless you select a different wallet using the `walletId` property.  
+You can have the agent use that wallet to fund activities either by specifying the wallet ID or by providing the same customer ID
 when creating tasks.
 
 An example payload might be:
@@ -22,9 +22,6 @@ An example payload might be:
 payload = {
         "customerId": "someuser@test.com",  // Let's assume your Agent system stores users unique by email address, 
                                             // you can then send this same value when creating a task to use these deposited funds
-
-        "currencyCode": "USDCBASE",         // USDC on the Base network, use "USD" to request US Dollars instead.
-
         "amountDecimal": "0.5"              // Ask the customer to deposit 0.5 USDC - note Payman fees will be deducted from this so actual amount received will be slightly less
     }
 ```
