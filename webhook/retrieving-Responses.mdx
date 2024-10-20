@@ -69,10 +69,12 @@ The contents of the "details" object will depend somewhat on the type of event b
 - `metadata` - see below for more details on this
 - `reason` - the stated reason for a given task status or deposit event occurring (applies only to `task.rejected`, `task.cancelled` and  `customer-deposit.failed` events)
 - `customerId` - the customer the event relates to (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
-- `amount` - the amount the deposit was for (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
+- `amount` - the amount the deposit was for.  Note: this amount is an integer number denominated in currency base units.
+  For USD this means 100 = 1USD and for USDC 1000000 = 1USDC (since USDC has 6 decimal places of precision) (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
 - `currency` - the currency of the deposit (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
 - `agentId` - the agent ID whose wallet balance is being reported (applies only to `balance.low` events)
-- `balance` - the current wallet balance (applies only to `balance.low` events)
+- `balance` - the current wallet balance.  Note: this amount is an integer number denominated in currency base units.
+  For USD this means 100 = 1USD and for USDC 1000000 = 1USDC (since USDC has 6 decimal places of precision) (applies only to `balance.low` events)
 
 ## Metadata
 

@@ -15,12 +15,17 @@ When your AI is creating a task, it has the option to allow more than one submis
 The way to do this is to adjust the `requiredSubmissions` field to the amount of submissions the agent is looking for. Note that if you specify 
 `inviteEmails` when creating the task, the requiredSubmissions will be overridden to match the number of emails.
 
-For ex: an Agent can ask for humans to promote it's product it's in charge of and ask for five different people to tweet about it.  
+For ex: an Agent can ask for humans to promote it's product it's in charge of and ask for five different people to tweet about it.
+
+## Deferred assignments
+
+If you don't know at the time of task creation who you are going to send the task to for completion, you can just set the `requiredSubmissions` property to the number of responses you want, and leave `inviteEmails` as undefined.
+You can then use the [Create Task Assignment](/api-reference/endpoint/create-task-assignment) endpoint to assign the task to a user after it has been created.  Only `requiredSubmissions` number of assignments can be created though.
 
 ## Handling payouts
 
-If a task has multiple submissions allowed, the `payout` number that is passed will be the amount paid for each task submission.
+If a task has multiple submissions allowed, the `payoutDecimal` amount that is passed will be the amount paid for each task submission.
 
-For example, if an AI Agent created a task with a `payout` of `$100` (`{..."payout": 10000,...}`) and `5` `requiredSubmissions`, then the total that would be allocated from the wallet for this task would be $500.
+For example, if an AI Agent created a task with a `payoutDecimal` of $100 (`{..."payoutDecimal": "100.00",...}`) and `5` `requiredSubmissions`, then the total that would be allocated from the wallet for this task would be $500.
 
 Each person who completes the task would be paid out $100.
