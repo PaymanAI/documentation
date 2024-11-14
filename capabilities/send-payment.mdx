@@ -1,0 +1,51 @@
+---
+title: Sending Payments
+description: "Have your AI initiate payments via ACH"
+---
+
+### Sign Up To Payman Platform
+
+Go to the <a href="https://app.paymanai.com">Payman web app</a> and sign up for an account. Sign up as a developer and get onboarded.
+
+### Create a Payee
+
+In order for your Agent to be able to securely pay someone, we first need to register the payment destination details on the Payman platform.
+This prevents the Agent from having to know payment details such as bank accounts or routing numbers.
+
+<Note>
+  In "Developer Mode" the payment destinations must be set up but you can use
+  dummy data, since they will never actually receive any funds.
+</Note>
+
+### Make Payment
+
+Now that you have a payee set up, and you know where you're going to send the funds to, your Agent can make a call to the
+[Send Payment API](/api-reference/endpoint/send-payment) to initiate the payment.
+
+The payload must contain an `amountDecimal` and a `paymentDestinationId` which is the unique ID of the payee you set up in the previous step.
+
+```json
+{
+  "amountDecimal": "100.00",
+  "paymentDestinationId": "<your payment destination id>"
+}
+```
+
+Subject to sufficient funds being available and the Agent's spend limits not being exceeded, the funds will then be sent to the specified Payee. Processing
+times can vary depending on the transfer method.
+
+### Customers
+
+In some circumstances your Agent will want to make a payment on behalf of one of your users. Payman refers to these as "customers". If you provide a `customerId`
+in the payload, the Payman platform will automatically associate the payment with that customer. The `customerId` can be an ID that you internally use to
+refer to that customer, or the Payman generated one, as long as the customer ID is unique to your organization. You can optionally also specify a
+`customerName` or `customerEmail` if you wish to record those details on the Payman system for easy identification later.
+
+By default, when your Agent makes a payment on behalf of a customer, the amount they are permitted to spend is limited to the amount deposited by that customer
+using the [Generate Customer Deposit Link API](/api-reference/endpoint/initiate-customer-deposit). This is to prevent customer A spending funds deposited by
+customer B (or you). However, if you wish to allow this, you can set the `ignoreCustomerSpendLimits` property to true to disable this check.
+
+### Metadata
+
+If there is metadata you wish to associate with this payment, you can provide a `metadata` property in the payload which can be a dictionary of strings. These
+will be stored against the payment transaction on the Payman system.

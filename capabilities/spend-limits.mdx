@@ -1,0 +1,26 @@
+---
+title: Limiting AI Spends
+description: "Limit Your AI's Spending"
+---
+
+### Set Spend Limits
+
+If you wish to limit how much a given AI Agent is allowed to spend from a wallet you can do so via the Payman dashboard. Simply log into your Payman account,
+nagivate to the Wallet's API Key in question and set a spend limit for it.
+
+You can specify daily, weekly, monthly, all time or per-transaction limits. For example, you could allow an Agent to spend at most $2000 per day and
+no more than $100 per payment. Weekly and Monthly limits are calendar aligned, meaning a week is any period from Sunday to Saturday, and a month is any
+calendar month.
+
+<Note>
+  Setting an "all time" limit will create an absolute cap on the amount of money
+  the Agent can spend from that wallet. Once they hit it, they will be unable to
+  spend any further funds unless you increase the limit.
+</Note>
+
+### Customers and Spend Limits
+
+When you associate a customer (i.e. one of your Agent's users) with a payment, the spend is, by default limited to the amount that customer has deposited
+into the wallet. However, any spend limits will be applied on top of this amount. For example, if a customer deposits $1000 into your wallet, and you have a
+per-transaction spend limit of $100, the $100 limit will be applied to a customer's spend also. Conversely, if a customer deposits $20 into your wallet,
+and you haev a per-transaction spend limit of $100, the customer will still only be allowed to spend the $20 they deposited.

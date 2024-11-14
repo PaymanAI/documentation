@@ -51,18 +51,15 @@
     {
       "group": "Capabilities",
       "pages": [
-        "capabilities/funding-AI-Wallet",
-        "capabilities/creating-Task",
-        "capabilities/task-Assignments",
-        "capabilities/submission-Deadlines",
-        "capabilities/multiple-Submissions",
-        "capabilities/custom-Verification",
-        "capabilities/customer-Deposits"
+        "capabilities/funding-ai-wallet",
+        "capabilities/send-payment",
+        "capabilities/spend-limits",
+        "capabilities/customer-deposits"
       ]
     },
     {
       "group": "Webhook",
-      "pages": ["webhook/retrieving-Responses"]
+      "pages": ["webhook/retrieving-responses"]
     },
     {
       "group": "API Documentation",
@@ -70,23 +67,13 @@
         "api-reference/introduction",
         "api-reference/authentication",
         "api-reference/error-handling",
-        "api-reference/pagination",
-        "api-reference/entity-statuses"
+        "api-reference/pagination"
       ]
     },
     {
-      "group": "Tasks",
+      "group": "API Endpoints",
       "pages": [
-        "api-reference/endpoint/get-task",
-        "api-reference/endpoint/get-tasks",
-        "api-reference/endpoint/get-task-assignments",
-        "api-reference/endpoint/get-task-submissions",
-        "api-reference/endpoint/download-cloud-file",
-        "api-reference/endpoint/approve-task-submission",
-        "api-reference/endpoint/reject-task-submission",
-        "api-reference/endpoint/create-task",
-        "api-reference/endpoint/update-task",
-        "api-reference/endpoint/get-task-categories",
+        "api-reference/endpoint/send-payment",
         "api-reference/endpoint/initiate-customer-deposit",
         "api-reference/endpoint/get-currency-balance",
         "api-reference/endpoint/get-customer-balance"
