@@ -8,7 +8,6 @@ description: "Start integrating Payman in less than 5 minutes"
 Here we'll walk you through how to
 
 - Get your AI Agent API Key
-- Fund your AI Agent
 - Have your AI Agent make a payment
 
 ### Sign Up To Payman Platform
@@ -17,43 +16,52 @@ Go to the <a href="https://app.paymanai.com">Payman web app</a> and sign up for 
 
 ### Link an Account
 
-In order to fund a Wallet with real funds you will need to verify your identity and link an account. However, if you enable _Developer Mode_
-mode using the switch at the top of the screen this will place you in a sandbox area where we will automatically create a test wallet for you.
+In "Developer Mode" we automatically set up a first Agent, and prefund your account with 1000 USD of test funds. In "Developer Mode" no real money
+is ever spent so you can test the system freely. To get access to "Live Mode" and connect your real account, please request access on the Dashboard.
 
 <Frame caption="Enter Developer Mode to experiment with test funds">
   <img src="/images/developer-mode-switch.png" />
 </Frame>
 
-### Create a Wallet
+### Get API Key
 
-Allow your AI Agent access to the platform by creating a Wallet and getting your Payman API Key.
-This will give the Agent the ability to spend funds.
+In order for your AI Agent to access the Payman API it will need an API Key. You can get this by navigating to the AI Agents
+tab in the sidebar menu and selecting the "Default Agent".
 
-<Frame caption="Create a Wallet on the Payman Platform">
-  <img src="/images/add-agent.png" />
+<Frame caption="View your agent details">
+  <img src="/images/agent-details.png" />
 </Frame>
 
-### Fund your Wallet & Get API Key
+Clicking the "Regenerate Credentials" button will generate a new API key which you can save for future use.
 
-In order to create a new wallet you will need to add funds. Currently we support USD, with USDC coming soon.
-
-<Frame caption="Fund your AI Agent Easily On Payman">
-  <img src="/images/add-funds.png" />
+<Frame caption="Save your API Key">
+  <img src="/images/api-key-secret.png" />
 </Frame>
 
-Make sure you added a payment method for the currency you are trying to use as you will need it to fund your wallet.
+<Warning>
+  This API key is only shown once and if regenerated will invalidate previous
+  API keys, so keep it safe.
+</Warning>
 
-Once you've funded the wallet, be sure to store the secret API Key you are shown:
+### Setting up a Payee
 
-```js API Secret
-PAYMAN_API_SECRET = "*****************";
-```
+In order for the AI Agent to have somewhere to send the funds, you will need a payee set up on the Payman system. There are two options:
 
-### Create Payee
+1. You can create the Payee via the Dashboard UI manually; or
+2. The AI Agent can create it as part of its payment request
 
-In order for the AI Agent to have somewhere to send the funds, you will need to first set up a payee on the Payman system.
+In either event you will need the bank details to which you wish to send the funds. This needs to be a US Bank Account's ACH details. It should include:
 
--- TODO add more details here
+1. Account Type (checking or savings)
+2. Account Holder Name
+3. Account Number
+4. Routing Number
+
+For now we will create it manually by navigating to the Payees page on the Dashboard and selecting "Add New Payee"
+
+<Frame caption="Add a New Payee">
+  <img src="/images/add-payee.png" />
+</Frame>
 
 ### Integrate API into AI Agent
 
@@ -88,8 +96,8 @@ def make_payment() -> str:
     }
 
     try:
-        # Replace the URL with "https://api.paymanai.com/api/tasks" if you want to create real tasks with real money on the live system
-        response = requests.post("https://api-sandbox.paymanai.com/api/tasks", headers=headers, json=payload)
+        # Replace the URL with "https://api.paymanai.com/api/payments/send-payment" if you want to send real money on the live system once you've been onboarded there
+        response = requests.post("https://api-sandbox.paymanai.com/api/payments/send-payment", headers=headers, json=payload)
         return response.content
     except requests.exceptions.HTTPError as e:
         raise SystemExit(e)
@@ -109,7 +117,7 @@ agent_executor.invoke({"input": """
 
 ### Run The Code Above To Make a Payment
 
-You can actually run the code above as python script to post your first task to Payman.
+You can actually run the code above as python script to make your first payment via Payman.
 
 To run this agent, create a `.env` file in this directory and put the following environment variables:
 
@@ -133,3 +141,14 @@ Once you have done this you can communicate with the agent and have it make the 
   If you have not funded your AI Agent with the right amount of funds to spend
   based on the payment above, then you need to adjust accordingly!
 </Note>
+
+### Approving Payments
+
+By default Payman AI will require all payments by an Agent to be approved by a human before the funds are transferred.
+You can change this behavior on the Agent's details page, where you can set a different limit for the "Approvals Required" field.
+When doing so, any payments above the specified amount will require human approvals, any payments below will be automatically processed.
+This means you can adjust your limit as you gain trust in the Agent's behavior over time without worrying about it misspending funds.
+
+Let's approve the payment now by going to the "Requests" page on the side bar and approving the Pending request. Once done, the funds will be deducted from your
+balance and the payment will be on its way. In "Developer Mode" this will resolve instantly. In the case of a live payment the ACH transfer can take 1-3 business days
+to complete, during which time the funds will show as Pending.

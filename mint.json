@@ -75,6 +75,7 @@
       "pages": [
         "api-reference/endpoint/send-payment",
         "api-reference/endpoint/initiate-customer-deposit",
+        "api-reference/endpoint/search-destinations",
         "api-reference/endpoint/get-currency-balance",
         "api-reference/endpoint/get-customer-balance"
       ]

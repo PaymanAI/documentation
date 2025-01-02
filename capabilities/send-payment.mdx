@@ -7,14 +7,18 @@ description: "Have your AI initiate payments via ACH"
 
 Go to the <a href="https://app.paymanai.com">Payman web app</a> and sign up for an account. Sign up as a developer and get onboarded.
 
-### Create a Payee
+### Create a Payee (Optional)
 
-In order for your Agent to be able to securely pay someone, we first need to register the payment destination details on the Payman platform.
-This prevents the Agent from having to know payment details such as bank accounts or routing numbers.
+While your agent can search for and create payees directly, you may prefer to manage that part of the process yourself. If so, you can add a Payee on the
+Payee's section of the site.
+
+<Frame caption="Add a New Payee">
+  <img src="/images/add-payee.png" />
+</Frame>
 
 <Note>
-  In "Developer Mode" the payment destinations must be set up but you can use
-  dummy data, since they will never actually receive any funds.
+  In "Developer Mode" the Payees must be set up but you can use dummy data,
+  since they will never actually receive any funds.
 </Note>
 
 ### Make Payment
@@ -22,17 +26,37 @@ This prevents the Agent from having to know payment details such as bank account
 Now that you have a payee set up, and you know where you're going to send the funds to, your Agent can make a call to the
 [Send Payment API](/api-reference/endpoint/send-payment) to initiate the payment.
 
-The payload must contain an `amountDecimal` and a `paymentDestinationId` which is the unique ID of the payee you set up in the previous step.
+The payload must contain an `amountDecimal` and either a `paymentDestinationId` or a `paymentDestination` payload. The former is the
+ID of the Payee you created in the previous step. If you decide to use the `paymentDestination` field, you can allow the Agent to create the
+Payee itself.
 
 ```json
 {
   "amountDecimal": "100.00",
-  "paymentDestinationId": "<your payment destination id>"
+  "paymentDestination": {
+    "type": "US_ACH",
+    "accountType": "checking",
+    "accountNumber": "111111111111",
+    "routingNumber": "10000000",
+    "accountHolderName": "Payman Demo Person",
+    "name": "A Payman Demo Payee"
+  }
 }
 ```
 
-Subject to sufficient funds being available and the Agent's spend limits not being exceeded, the funds will then be sent to the specified Payee. Processing
-times can vary depending on the transfer method.
+Subject to sufficient funds being available and the Agent's spend limits not being exceeded, a payment will be initiated. By default all payments will require
+approval by a human before being processed. Processing times for an ACH payment are 1-3 business days.
+
+### Searching Existing Payees
+
+It may be that your Agent wishes to pay an existing Payee, but doesn't have the ID. If so it can use the [Search Payees](/api-reference/endpoint/search-destinations) end point
+to search for existing Payees by name, account details or contact details.
+
+<Note>
+  It is strongly advisable to have the Agent prompt verify the Payee's details
+  with the human user before making the final payment to ensure the funds are
+  going to the correct place.
+</Note>
 
 ### Customers
 

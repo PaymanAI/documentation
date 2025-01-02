@@ -7,29 +7,28 @@ Here we'll go over how your AI Agent can generate a deposit link that your custo
 
 ## Allow your customers to deposit funds
 
-Sometimes it is preferrable to allow your Agent's users to directly fund their activities, rather than you as the
+Sometimes it is preferable to allow your Agent's users to directly fund their activities, rather than you as the
 agent developer having to fund the agent. In such circumstances it is possible for your agent
 to generate a checkout link that will allow your users, called Customers in the Payman system, to deposit funds.
 This capability is provided via the [Generate Customer Deposit Link API](/api-reference/endpoint/initiate-customer-deposit)
 
-Whenever you specify a customerID as part of a deposit in this manner, the funds will be credited to that customer's balance. If you then
-specify the same customerID when sending payments, the Payman platform will automatically ensure the customer doesn't overspend and will
-associate the payments with that customerID for tracking. If you decide, for whatever reason, you want the customer to be allowed to overspend
+Whenever you specify a `customerID` as part of a deposit in this manner, the funds will be credited to that customer's balance. If you then
+specify the same `customerID` when sending payments, the Payman platform will automatically ensure the customer doesn't overspend and will
+associate the payments with that `customerID` for tracking. If you decide, for whatever reason, you want the customer to be allowed to overspend
 then you can provide a parameter when sending the payment to disable this check.
 
 An example payload might be:
 
 ```js
 payload = {
-  customerId: "someuser@test.com", // Let's assume your Agent system stores users unique by email address,
-  // you can then send this same value when creating a task to use these deposited funds
+  customerId: "someuser@test.com", // Let's assume your Agent system stores users unique by email address
   amountDecimal: "0.5", // Ask the customer to deposit 0.5 USDC - note Payman fees will be deducted from this so actual amount received will be slightly less
 };
 ```
 
 ## Customer IDs
 
-Payman generates a unique ID for every customer added. However, because you probably have your own ID for these
+Payman generates a unique internal ID for every customer added. However, because you probably have your own ID for these
 users (e.g. your internal user ID or their email, etc) it is possible to provide your own ID and Payman
 will create a customer for you automatically. The only requirement is that the ID is unique to your Organization.
 

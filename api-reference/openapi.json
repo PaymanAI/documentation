@@ -233,10 +233,140 @@
             "description": "OK",
             "content": {
               "*/*": {
+                "schema": { "type": "object", "additionalProperties": true }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payments/search-destinations": {
+      "get": {
+        "tags": ["payments-controller"],
+        "summary": "Search existing payment destinations to make payments to",
+        "description": "Searches existing payment destinations for potential matches.  Additional confirmation from the user is required to verify the correct payment destination is selected.",
+        "operationId": "searchPaymentDestinations",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "The name of the payment destination to search for.  This can be a partial, case-insensitive match.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The name of the payment destination to search for.  This can be a partial, case-insensitive match."
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The type of destination to search for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The type of destination to search for."
+            }
+          },
+          {
+            "name": "contactEmail",
+            "in": "query",
+            "description": "The contact email to search for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The contact email to search for."
+            }
+          },
+          {
+            "name": "contactPhoneNumber",
+            "in": "query",
+            "description": "The contact phone number to search for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The contact phone number to search for."
+            }
+          },
+          {
+            "name": "contactTaxId",
+            "in": "query",
+            "description": "The contact tax id to search for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The contact tax id to search for."
+            }
+          },
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "description": "The US Bank account number to search for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The US Bank account number to search for."
+            }
+          },
+          {
+            "name": "routingNumber",
+            "in": "query",
+            "description": "The US Bank routing number to search for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "The US Bank routing number to search for."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The search was successful and any matches returned.",
+            "content": {
+              "application/vnd.payman.v1+json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": { "type": "object" }
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/PaymentDestination" }
                 }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
               }
             }
           }
@@ -408,8 +538,50 @@
           }
         }
       },
+      "CryptoAddressPaymentDestinationDescriptor": {
+        "required": ["address", "currency", "name", "type"],
+        "type": "object",
+        "description": "A cryptocurrency address-based payment destination",
+        "allOf": [
+          { "$ref": "#/components/schemas/IPaymentDestinationDescriptor" },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of payment destination",
+                "enum": ["CRYPTO_ADDRESS"]
+              },
+              "address": {
+                "type": "string",
+                "description": "The cryptocurrency address to send funds to"
+              },
+              "currency": {
+                "type": "string",
+                "description": "The the blockchain to use for the transaction"
+              },
+              "name": {
+                "type": "string",
+                "description": "The name you wish to associate with this payment destination for future lookups."
+              },
+              "tags": {
+                "uniqueItems": true,
+                "type": "array",
+                "description": "Any additional labels you wish to assign to this payment destination",
+                "items": {
+                  "type": "string",
+                  "description": "Any additional labels you wish to assign to this payment destination"
+                }
+              },
+              "contactDetails": {
+                "$ref": "#/components/schemas/PaymentDestinationContact"
+              }
+            }
+          }
+        ]
+      },
       "DirectPaymentRequest": {
-        "required": ["amountDecimal", "paymentDestinationId"],
+        "required": ["amountDecimal"],
         "type": "object",
         "properties": {
           "customerId": {
@@ -430,7 +602,7 @@
           },
           "walletId": {
             "type": "string",
-            "description": "The ID of the specific wallet from which to send the funds.  This can be any unique ID as held within your system."
+            "description": "The ID of the specific wallet from which to send the funds.  This is only required if the agent has access to multiple wallets (not the case by default)."
           },
           "amountDecimal": {
             "type": "number",
@@ -438,23 +610,121 @@
           },
           "paymentDestinationId": {
             "type": "string",
-            "description": "The id of the payment destination you want to send the funds to. This must have been created using the /payments/destinations endpoint or via the Payman dashboard before sending."
+            "description": "The id of the payment destination you want to send the funds to. This must have been created using the /payments/destinations endpoint or via the Payman dashboard before sending. Exactly one of paymentDestination and paymentDestinationId must be provided."
+          },
+          "paymentDestination": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
+              },
+              {
+                "$ref": "#/components/schemas/USACHPaymentDestinationDescriptor"
+              }
+            ]
           },
           "memo": {
             "type": "string",
             "description": "A note or memo to associate with this payment."
           },
-          "metadata": {
-            "title": "Metadata",
-            "type": "object",
-            "additionalProperties": {
-              "title": "Metadata",
-              "type": "string",
-              "description": "Agent provided metadata related to this payment.  You may use this to store correlation data.When a task related url is sent to any registered webhook, this metadata will be included"
-            },
-            "description": "Agent provided metadata related to this payment.  You may use this to store correlation data.When a task related url is sent to any registered webhook, this metadata will be included"
+          "metadata": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "IPaymentDestinationDescriptor": {
+        "required": ["type"],
+        "type": "object",
+        "properties": { "type": { "type": "string" } },
+        "description": "A payment destination to which to send funds",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "US_ACH": "#/components/schemas/USACHPaymentDestinationDescriptor",
+            "CRYPTO_ADDRESS": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
           }
         }
+      },
+      "PaymentDestinationContact": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address of the payment destination contact"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "The phone number of the payment destination contact"
+          },
+          "address": {
+            "type": "string",
+            "description": "The address string of the payment destination contact"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "The tax identification of the payment destination contact"
+          },
+          "contactType": {
+            "type": "string",
+            "description": "The type of the payment destination contact",
+            "enum": ["individual", "business"]
+          }
+        },
+        "description": "Contact details for this payment destination"
+      },
+      "USACHPaymentDestinationDescriptor": {
+        "required": [
+          "accountHolderName",
+          "accountNumber",
+          "accountType",
+          "name",
+          "routingNumber",
+          "type"
+        ],
+        "type": "object",
+        "description": "A US ACH payment destination",
+        "allOf": [
+          { "$ref": "#/components/schemas/IPaymentDestinationDescriptor" },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of payment destination",
+                "enum": ["US_ACH"]
+              },
+              "accountType": {
+                "type": "string",
+                "description": "The type of account it is (checking or savings)"
+              },
+              "accountNumber": {
+                "type": "string",
+                "description": "The bank account number for the account"
+              },
+              "routingNumber": {
+                "type": "string",
+                "description": "The routing number of the bank"
+              },
+              "accountHolderName": {
+                "type": "string",
+                "description": "The name of the account holder"
+              },
+              "name": {
+                "type": "string",
+                "description": "The name you wish to associate with this payment destination for future lookups."
+              },
+              "tags": {
+                "uniqueItems": true,
+                "type": "array",
+                "description": "Any additional labels you wish to assign to this payment destination",
+                "items": {
+                  "type": "string",
+                  "description": "Any additional labels you wish to assign to this payment destination"
+                }
+              },
+              "contactDetails": {
+                "$ref": "#/components/schemas/PaymentDestinationContact"
+              }
+            }
+          }
+        ]
       },
       "DirectPaymentResponse": {
         "required": ["reference"],
@@ -505,16 +775,7 @@
             "description": "Determines whether to add any processing fees to the requested amount. If set to INCLUDED_IN_AMOUNT, the customer will be charged the exact amount specified, and fees will be deducted from that before the remainder is deposited in the wallet. If set to ADD_TO_AMOUNT, the customer will be charged the amount specified plus any fees required. Defaults to 'INCLUDED_IN_AMOUNT'.",
             "enum": ["INCLUDED_IN_AMOUNT", "ADD_TO_AMOUNT"]
           },
-          "metadata": {
-            "title": "Metadata",
-            "type": "object",
-            "additionalProperties": {
-              "title": "Metadata",
-              "type": "string",
-              "description": "Agent provided metadata related to this deposit.  You may use this to store correlation data.When a task related url is sent to any registered webhook, this metadata will be included"
-            },
-            "description": "Agent provided metadata related to this deposit.  You may use this to store correlation data.When a task related url is sent to any registered webhook, this metadata will be included"
-          }
+          "metadata": { "type": "object", "additionalProperties": true }
         }
       },
       "CustomerDepositResponse": {
@@ -594,6 +855,18 @@
         "type": "object",
         "properties": {
           "id": { "type": "string", "readOnly": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "createdBy": { "type": "string", "readOnly": true },
+          "updatedBy": { "type": "string", "readOnly": true },
           "name": {
             "title": "Name",
             "type": "string",
@@ -625,6 +898,63 @@
             "title": "Total Balance",
             "type": "integer",
             "description": "The total balance of this wallet, including spendable balance, balance in escrow, and unconfirmed balance.",
+            "readOnly": true
+          }
+        }
+      },
+      "PaymentDestination": {
+        "required": ["name", "organizationId", "type"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "readOnly": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "createdBy": { "type": "string", "readOnly": true },
+          "updatedBy": { "type": "string", "readOnly": true },
+          "providerInfo": { "type": "object", "additionalProperties": true },
+          "name": {
+            "type": "string",
+            "description": "The user-assigned name of the payment destination"
+          },
+          "organizationId": { "type": "string" },
+          "tags": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Tags to help categorize the payment destination",
+            "items": {
+              "type": "string",
+              "description": "Tags to help categorize the payment destination"
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of payment destination",
+            "enum": ["US_ACH", "CRYPTO_ADDRESS"]
+          },
+          "destinationDetails": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "contactDetails": {
+            "$ref": "#/components/schemas/PaymentDestinationContact"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the payment destination",
+            "enum": ["ACTIVE", "ARCHIVED", "DELETED"]
+          },
+          "searchHashes": { "type": "object", "additionalProperties": true },
+          "replacesId": {
+            "type": "string",
+            "description": "The ID of the payment method this entity replaces",
             "readOnly": true
           }
         }
