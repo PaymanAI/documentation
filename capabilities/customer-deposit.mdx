@@ -1,0 +1,49 @@
+---
+title: Customer Deposits
+description: "Enable direct user funding for your AI Agent"
+---
+
+# Customer Deposits
+
+Let your AI Agents users fund the AI Agent spends directly through automatically generated payment links.
+
+## Quick Start
+
+```javascript
+// Generate a deposit link for a user
+payload = {
+  customerId: "someuser@test.com", // Let's assume your Agent system stores users unique by email address
+  amountDecimal: "0.5", // Ask the customer to deposit 0.5 USD - note Payman fees will be deducted from this so actual amount received will be slightly less
+  ignoreCustomerSpendLimits: false, //[Optional] enable this to true if you do not care about specific funding by customer
+};
+```
+
+## How It Works
+
+Your agent generates a checkout link using the Generate Customer Deposit Link API.
+
+{" "}
+
+<li>User completes payment through the link</li>
+<li>Funds are credited to that user's balance</li>
+<li>Your agent can now spend from that specific user's balance</li>
+
+## Key Features
+
+### Automatic Balance Tracking
+
+<li>Payman tracks each customers balance for your AI Agent</li>
+<li>Payments automatically deduct from the correct user's balance</li>
+<li>Built-in overspend protection (optional)</li>
+
+### Customer ID System
+
+<li>Use your existing user IDs (email, internal ID, etc.)</li>
+<li>Must be unique within your organization</li>
+<li>Payman automatically creates customer profiles based on your IDs</li>
+
+## Ignore Customer Spend Limits
+
+There may be scenarios in which you do not care for the AI Agent to spend based on customer, but would like it to still collect funds from customers.
+An example of this might be pooling funds from people in a game type setting and then letting the AI Agent decide what to do with those funds.
+In this case enable `ignoreCustomerSpendLimits` to `true`.

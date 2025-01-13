@@ -1,64 +1,106 @@
 ---
 title: Receiving responses
-description: "AI Agents recieving accepted submissions and other notifications"
+description: "AI Agents recieving approvals for spend"
 ---
 
 ## Getting Response callbacks
 
-One of the key benefits of getting humans work with your AI Agents is to act upon their responses.
+One of the key benefits of getting humans to oversee your AI Agents is collaboration and oversight for spend.
 
-In order to support this we've made it easy to register a webhook for your AI Agent to receive callbacks.
+In order to support this we've made it easy to register a webhook for your AI Agent to receive callbacks when spends are approved or rejected.
 
-In order to do this follow these steps.
+## Quick Setup
 
-1. Create a webhook to receive responses.
-2. Once you've done so, head on over to your Agents profile page on the <a href="https://app.paymanai.com">Payman Platform</a>.
-3. Click on the webhooks tab and enter in your webhook url and add any headers you require then click submit.
+1. Create an endpoint to receive webhook events
+2. Go to your [Agent Profile](https://app.paymanai.com) in the Payman dashboard
+3. Add your webhook URL
 
-Now, anytime a noteworthy event takes place, a payload will be sent and your AI Agent will be able to action off of it.
+   <Frame caption="Add webhook URL to the webhook field">
+     <img src="/images/agent-details.png" />
+   </Frame>
+
+<Note>
+  Now anytime a noteworthy event takes place, a payload will be sent and your AI
+  Agent will be able to action off of it.
+</Note>
 
 ## Callback Payload
 
-The webhook endpoint you specify must support POST requests. The body will be:
+The webhook endpoint you specify must support POST requests. The body recieve will be this format:
 
 ```
 {
-    "eventType": "<type>",
+    "eventType": "customer-deposit.successful",
     "details": {
-        ...
+        "customerId": "user_123",
+        "amount": 100,  // 1 USD (returned in cents)
+        "currency": "USD",
+        "metadata": {       // Your custom data from the original request
+            "sessionId": "abc123",
+            "userId": "user_456"
+        }
     }
 }
 ```
 
 ## Event Types
 
-The `eventType` indicates what kind of callback event took place that triggered this request.
+```typescript
+type WebhookEvent = {
+  eventType: EventType;
+  details: EventDetails;
+};
 
-The callback types currently supported are:
+enum EventType {
+  // Customer Deposits
+  WALLET_CUSTOMER_DEPOSIT_PENDING = "customer-deposit.pending",
+  WALLET_CUSTOMER_DEPOSIT_SUCCESS = "customer-deposit.successful",
+  WALLET_CUSTOMER_DEPOSIT_FAILURE = "customer-deposit.failed",
 
-- `customer-deposit.pending`: A customer deposit has been initiated.
-- `customer-deposit.successful`: A customer deposit has completed successfully.
-- `customer-deposit.failed`: A customer deposit has failed to complete.
-- `balance.low`: A warning when a wallet balance drops below 50% of its all time maximum funding
+  // Balance Alerts
+  BALANCE_LOW_WARNING = "balance.low", // sent at 50% of your highest balance
+
+  // Payment Requests
+  PAYMENT_REQUEST_APPROVED = "approval-request.approved",
+  PAYMENT_REQUEST_REJECTED = "approval-request.rejected",
+  PAYMENT_REQUEST_FAILED = "approval-request.failed",
+}
+```
 
 ## Details Structure
 
 The contents of the "details" object will depend somewhat on the type of event being received, but will contain one or more of the following:
 
-- `customerId` - the customer the event relates to (applies only to `customer-deposit.*` events)
-- `amount` - the amount the deposit was for. Note: this amount is an integer number denominated in currency base units.
-  For USD this means 100 = 1USD and for USDC 1000000 = 1USDC (since USDC has 6 decimal places of precision) (applies only to `customer-deposit.*` events)
-- `currency` - the currency of the deposit (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
-- `reason` - the stated reason for a given task status or deposit event occurring (applies only to `customer-deposit.failed` events)
-- `agentId` - the agent ID whose wallet balance is being reported (applies only to `balance.low` events)
-- `balance` - the current wallet balance. Note: this amount is an integer number denominated in currency base units.
-  For USD this means 100 = 1USD and for USDC 1000000 = 1USDC (since USDC has 6 decimal places of precision) (applies only to `balance.low` events)
-- `metadata` - see below for more details on this
+```javascript
+"eventType": <eventType>
+"details": {
+  "customerId": "user_123", (applies only to customer-deposit.* events)
+  "amount": 100,  // 1 USD (in cents) (applies only to customer-deposit.* events)
+  "currency": "USD",
+  "reason": "xxxx", // (only returned in customer-deposit.failed events)
+  "balance": "100", // (applies only to balance.low events)
+  "metadata": {       // Your custom data from the original request
+      "sessionId": "abc123",
+      "userId": "user_456"
+  }
+}
+```
 
-## Metadata
+## Metadata [Pro Tip]
 
 When an agent takes an action (e.g. send payment or generate a customer link), it is possible to send along a `metadata` data property, which can be any JSON object.
 This metadata will be returned with any corresponding webhook callbacks as a `metadata` property of the `details` payload.
 
 This can be very useful for correlating webhook callbacks with the customer or action in your system. For example you might send the user ID
 of the user who triggered the deposit on your system, or the session ID (or thread ID) associate with the run of your agent system.
+
+```javascript
+const depositLink = await payman.payments.initiateCustomerDeposit({
+  customerId: "user_123",
+  amount: "1.0",
+  metadata: {
+    sessionId: "abc123",
+    orderId: "order_789",
+  },
+});
+```

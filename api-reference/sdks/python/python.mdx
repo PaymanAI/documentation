@@ -1,0 +1,46 @@
+---
+title: "Installation"
+description: "Start using Payman in your Python environment"
+---
+
+## Installation
+
+<CodeGroup>
+```bash pip 
+pip install paymanai
+```
+
+```bash poetry
+poetry add paymanai
+```
+
+```bash pipenv
+pipenv install paymanai
+```
+
+</CodeGroup>
+
+## Usage
+
+Import Paymanai and set up the client with your Agent's API Key alongside the environment
+
+<Warning>Make sure you are in 'sandbox' when testing</Warning>
+
+```python example.py
+from paymanai import Paymanai
+
+client = Paymanai(
+x_payman_api_secret=os.getenv("PAYMAN_API_SECRET"), # This is the default and can be omitted
+environment="sandbox" # defaults to 'sandbox'
+)
+```
+
+## GitHub Repository
+
+<Card
+  title="Python SDK Repo"
+  icon="GitHub"
+  href="https://github.com/PaymanAI/payman-python-sdk"
+>
+  Repository for Payman Python SDK
+</Card>

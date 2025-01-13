@@ -1,11 +1,7 @@
 ---
 title: Sending Payments
-description: "Have your AI initiate payments via ACH"
+description: "Have your AI initiate payments via Payman"
 ---
-
-### Sign Up To Payman Platform
-
-Go to the <a href="https://app.paymanai.com">Payman web app</a> and sign up for an account. Sign up as a developer and get onboarded.
 
 ### Create a Payee (Optional)
 
@@ -60,14 +56,10 @@ to search for existing Payees by name, account details or contact details.
 
 ### Customers
 
-In some circumstances your Agent will want to make a payment on behalf of one of your users. Payman refers to these as "customers". If you provide a `customerId`
-in the payload, the Payman platform will automatically associate the payment with that customer. The `customerId` can be an ID that you internally use to
-refer to that customer, or the Payman generated one, as long as the customer ID is unique to your organization. You can optionally also specify a
-`customerName` or `customerEmail` if you wish to record those details on the Payman system for easy identification later.
-
-By default, when your Agent makes a payment on behalf of a customer, the amount they are permitted to spend is limited to the amount deposited by that customer
-using the [Generate Customer Deposit Link API](/api-reference/endpoint/initiate-customer-deposit). This is to prevent customer A spending funds deposited by
-customer B (or you). However, if you wish to allow this, you can set the `ignoreCustomerSpendLimits` property to true to disable this check.
+In some circumstances you might want your AI Agent to recieve funds from someone else in order to spend them (i.e. a customer).
+In this case you would not be the one providing the capital, but the user who is interacting with the Agent would.
+This opens up tons of valuable use cases where you can commercialize your AI Agents with secure payment rails from Payman.
+To learn more go to the [Customer Deposits](/capabilities/customer-deposit) section.
 
 ### Metadata
 

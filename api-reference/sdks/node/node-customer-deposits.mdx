@@ -1,0 +1,55 @@
+---
+title: "Customer Deposits"
+description: "Give your AI Agent the ability to collect funds"
+---
+
+## Customer Deposits
+
+Generate a checkout URL for customers to deposit funds for your AI Agent to use.
+
+```typescript
+const client = new Paymanai({
+  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
+  environment: "sandbox",
+});
+
+const response = await client.payments.initiateCustomerDeposit({
+  amountDecimal: 10.0, // required - $10.00 for USD, or 1.000000 for USDC
+  customerId: "cust_123", // required - your system's customer ID
+  customerEmail: "user@example.com", // optional
+  customerName: "Jane Smith", // optional
+  memo: "Wallet deposit", // optional
+});
+
+// response.checkoutUrl contains the payment link
+console.log(response.checkoutUrl);
+```
+
+### Checkout Link returned
+
+```typescript
+{
+  checkoutUrl: "https://app.paymanai.com/checkout...";
+}
+```
+
+## Parameters
+
+Required:
+
+- `amountDecimal`: Amount in decimal format
+  - For USD: "10.00" means $10.00
+- `customerId`: Your system's unique customer identifier
+
+Optional:
+
+- `customerEmail`: Customer's email address
+- `customerName`: Customer's display name
+- `memo`: Note for the transaction
+- `feeMode`: How to handle processing fees (choose one of the options below)
+
+  - `INCLUDED_IN_AMOUNT` (default): Fees taken from amount
+  - `ADD_TO_AMOUNT`: Fees added on top
+
+- `walletId`: Target wallet (if agent has multiple)
+- `metadata`: Additional data as key-value pairs

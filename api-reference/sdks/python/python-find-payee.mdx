@@ -1,0 +1,100 @@
+---
+title: "Search Available Payees"
+description: "Your AI Agents list of sending funds to pre-approved payees"
+---
+
+Search for existing payment destinations. This is a simple `GET` request that returns a list of matching destinations.
+
+You can search just by simply putting in the name and the search will return a list of potential payees. You may also just leave it empty and it will return all.
+
+```python
+from paymanai import Paymanai
+
+client = Paymanai(
+    x_payman_api_secret=os.getenv("PAYMAN_API_SECRET"),
+    environment="sandbox"
+)
+
+# Get all destinations
+all_destinations = client.payments.search_destinations()
+
+# Or filter with optional parameters
+filtered_destinations = client.payments.search_destinations(
+    name="John",  # Partial match works
+    contact_email="john@example.com",
+    type="US_ACH"
+)
+```
+
+## Response returned
+
+```python
+[
+    {
+        "id": "dest_123abc",
+        "name": "John Doe",
+        "type": "US_ACH",
+        "organization_id": "org_xyz",
+        "status": "ACTIVE",
+        "contact_details": {
+            "contact_type": "individual",
+            "email": "john@example.com",
+            "phone_number": "+1234567890",
+            "address": "123 Main St",
+            "tax_id": "123-45-6789"
+        },
+        "tags": ["primary"]
+    },
+    # ... more destinations
+]
+```
+
+### Search Filters
+
+Filter results by including any of these parameters:
+
+- `name`: Partial match for destination name
+- `account_number`: Bank account number
+- `routing_number`: Bank routing number
+- `contact_email`: Email address
+- `contact_phone_number`: Phone number
+- `contact_tax_id`: Tax ID
+- `type`: "US_ACH" or "CRYPTO_ADDRESS"
+
+### Using Type Hints
+
+```python
+from paymanai.types import PaymentDestination
+from typing import List, Optional
+
+def search_destinations(
+    name: Optional[str] = None,
+    contact_email: Optional[str] = None
+) -> List[PaymentDestination]:
+    return client.payments.search_destinations(
+        name=name,
+        contact_email=contact_email
+    )
+
+# Example usage
+destinations = search_destinations(name="John")
+for dest in destinations:
+    print(f"Found: {dest.name} ({dest.id})")
+```
+
+### Error Handling
+
+```python
+try:
+    destinations = client.payments.search_destinations(
+        name="John",
+        type="US_ACH"
+    )
+    if not destinations:
+        print("No destinations found")
+    else:
+        for dest in destinations:
+            print(f"Found destination: {dest.name}")
+except PaymanError as e:
+    print(f"Search failed: {e.message}")
+```

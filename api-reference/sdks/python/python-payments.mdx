@@ -1,0 +1,103 @@
+---
+title: "Send Payments"
+description: "Start sending payments"
+---
+
+## Send Payment
+
+AI Agent sending funds to a specified payment destination. You can add a Payee in the [Payman AI](https://app.paymanai.com/) dashboard for an ID. You can also use the SDK to search for all payee's that your AI can find for quick payments.
+
+```python
+from paymanai import Paymanai
+
+client = Paymanai(
+    x_payman_api_secret=os.getenv("PAYMAN_API_SECRET"),
+    environment="sandbox"
+)
+
+client.payments.send_payment(
+    amount_decimal=50.0,     # required in decimal format
+    customer_id="cust_123",  # optional
+    customer_email="customer@example.com",  # optional
+    customer_name="John Doe",  # optional
+    memo="Service payment",
+    payment_destination_id="dest_123"  # either this or payment_destination object
+)
+```
+
+### Payment Destination Object
+
+When no payment destination added your AI Agent can add the details itself.
+
+```python
+client.payments.send_payment(
+    amount_decimal=100.0,
+    payment_destination={
+        "type": "US_ACH",
+        "account_holder_name": "John Doe",
+        "account_number": "123456789",
+        "account_type": "checking",
+        "routing_number": "987654321",
+        "name": "Primary Checking Account",
+        "contact_details": {
+            "contact_type": "individual",
+            "email": "john@example.com",
+            "phone_number": "+1234567890",
+            "address": "123 Main St, City, State 12345",
+            "tax_id": "123-45-6789",
+        },
+    }
+)
+```
+
+#### Field Descriptions
+
+**Required Fields**
+
+- `type`: Must be 'US_ACH' for ACH transfers
+- `account_holder_name`: Legal name of the account holder
+- `account_number`: Bank account number
+- `account_type`: Type of bank account (`checking` or `savings`)
+- `routing_number`: 9-digit ABA routing number
+- `name`: Descriptive name for the payment destination
+
+**Optional Fields**
+
+- `tags`: List of strings for categorizing the payment destination
+- `contact_details`: Dictionary containing contact information:
+  - `contact_type`: Either 'individual' or 'business'
+  - `email`: Contact email address
+  - `phone_number`: Contact phone number
+  - `address`: Full mailing address
+  - `tax_id`: Tax identification (SSN for individuals, EIN for businesses)
+
+### Using Type Hints
+
+```python
+from paymanai.types import PaymentDestination, PaymentResponse
+from typing import Dict, Optional
+
+def send_ach_payment(
+    amount: float,
+    destination: Dict[str, any]
+) -> PaymentResponse:
+    return client.payments.send_payment(
+        amount_decimal=amount,
+        payment_destination=destination
+    )
+```
+
+### Error Handling
+
+```python
+from paymanai.errors import PaymanError
+
+try:
+    payment = client.payments.send_payment(
+        amount_decimal=50.0,
+        payment_destination_id="dest_123"
+    )
+    print(f"Payment sent successfully. Reference: {payment.reference}")
+except PaymanError as e:
+    print(f"Payment failed: {e.message}")
+```

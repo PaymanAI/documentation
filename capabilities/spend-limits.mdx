@@ -1,33 +1,37 @@
 ---
-title: Limiting AI Spends
-description: "Limit Your AI's Spending"
+title: Agent Spending Controls
+description: "Powerful spending controls through an easy-to-use dashboard"
 ---
 
 ### Set Spend Limits
 
-If you wish to limit how much a given AI Agent is allowed to spend from a wallet you can do so via the Payman dashboard. Simply log into your Payman account,
-navigate to the Agent Details Page in question and edit the spend limits for it.
+Managing AI spending shouldn't be complicated. The Payman dashboard gives you powerful controls without writing a single line of code.
 
-You can specify daily, monthly or per-transaction limits. For example, you could allow an Agent to spend at most $2000 per day and
-no more than $100 per payment. Monthly limits are calendar aligned so reset on the 1st of every month.
+Simply log into your Payman dashboard and set:
 
-### Customers and Spend Limits
+- Daily spending caps
+- Monthly budgets (fresh start on the 1st of each month)
+- Per-transaction limits
 
-When you associate a customer (i.e. one of your Agent's users) with a payment, the spend is, by default limited to the amount that customer has deposited
-into the wallet. However, any spend limits will be applied on top of this amount. For example, if a customer deposits $1000 into your wallet, and you have a
-per-transaction spend limit of $100, the $100 limit will be applied to a customer's spend also. Conversely, if a customer deposits $20 into your wallet,
-and you have a per-transaction spend limit of $100, the customer will still only be allowed to spend the $20 they deposited.
+## Streamlined Payment Approvals
 
-### Approval Requirements
+Keep control while maintaining efficiency. Approve AI Agent transactions on the Payman Dashboard.
 
-By default an agent will require all its payments to be approved by a human before they are processed. This is to ensure that the Agent doesn't misspend funds through
-erroneous prompt engineering or hallucinations. However, as confidence in the Agent grows, you may wish to limit this requirement. You can do so by adjusting the
-approval requirements. Setting a new amount will allow the Agent to automatically spend any amounts below that threshold without approval. For example,
-if you set the approval amount to $50.00, the Agent would then be allowed to spend up to $50.00 without an approval being required, but any amount more than that would still
-trigger a human approval request.
+- All payments start with human approval required (safety first!)
+- Set custom approval thresholds as you gain confidence
+- Smaller transactions can flow automatically while keeping oversight on larger ones
+
+For instance, set a $50 approval threshold and let smaller transactions process automatically while maintaining control over larger expenses.
 
 <Note>
-  Approval amounts do not override or replace spend limits. Thus if the agent
-  has a per-transaction spend limit of $30.00, it will never be allowed to spend
-  more than that in a single payment, regardless of the approval amount.
+  Your spending limits are always enforced, regardless of approval settings.
+  Safety and control, guaranteed.
 </Note>
+
+## Intelligent Customer Balance Management
+
+Payman automatically handles the complexity of customer deposits with your spending rules:
+
+- Customer deposits are tracked automatically
+- Spending limits apply intelligently to customer transactions
+- The system always enforces the stricter limit for safety
