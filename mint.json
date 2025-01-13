@@ -59,7 +59,7 @@
     },
     {
       "group": "Webhook",
-      "pages": ["webhook/retrieving-responses"]
+      "pages": ["webhook/retrieving-response"]
     },
     {
       "group": "SDKs",
