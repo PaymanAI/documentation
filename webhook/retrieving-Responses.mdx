@@ -1,86 +1,106 @@
 ---
 title: Receiving responses
-description: "AI Agents recieving accepted submissions and other notifications"
+description: "AI Agents recieving approvals for spend"
 ---
 
 ## Getting Response callbacks
 
-One of the key benefits of getting humans work with your AI Agents is to act upon their responses.
+One of the key benefits of getting humans to oversee your AI Agents is collaboration and oversight for spend.
 
-In order to support this we've made it easy to register a webhook for your AI Agent to receive callbacks.
+In order to support this we've made it easy to register a webhook for your AI Agent to receive callbacks when spends are approved or rejected.
 
-In order to do this follow these steps.
+## Quick Setup
 
-1. Create a webhook to receive responses.
-2. Once you've done so, head on over to your Agents profile page on the <a href="https://app.paymanai.com">Payman Platform</a>.
-3. Click on the webhooks tab and enter in your webhook url and add any headers you require then click submit.
+1. Create an endpoint to receive webhook events
+2. Go to your [Agent Profile](https://app.paymanai.com) in the Payman dashboard
+3. Add your webhook URL
 
-Now, anytime a task is completed, the response will be returned and your AI Agent will be able to action off of it.
+   <Frame caption="Add webhook URL to the webhook field">
+     <img src="/images/agent-details.png" />
+   </Frame>
+
+<Note>
+  Now anytime a noteworthy event takes place, a payload will be sent and your AI
+  Agent will be able to action off of it.
+</Note>
 
 ## Callback Payload
 
-The webhook endpoint you specify must support POST requests.  The body will be:
+The webhook endpoint you specify must support POST requests. The body recieve will be this format:
 
 ```
 {
-    "eventType": "<type>",
+    "eventType": "customer-deposit.successful",
     "details": {
-        ...
+        "customerId": "user_123",
+        "amount": 100,  // 1 USD (returned in cents)
+        "currency": "USD",
+        "metadata": {       // Your custom data from the original request
+            "sessionId": "abc123",
+            "userId": "user_456"
+        }
     }
 }
 ```
 
 ## Event Types
 
-The `eventType` indicates what kind of callback event took place that triggered this request.
+```typescript
+type WebhookEvent = {
+  eventType: EventType;
+  details: EventDetails;
+};
 
-The callback types currently supported are:
+enum EventType {
+  // Customer Deposits
+  WALLET_CUSTOMER_DEPOSIT_PENDING = "customer-deposit.pending",
+  WALLET_CUSTOMER_DEPOSIT_SUCCESS = "customer-deposit.successful",
+  WALLET_CUSTOMER_DEPOSIT_FAILURE = "customer-deposit.failed",
 
-- `assignment.accepted`: The invited user has accepted the task assignment
-- `assignment.rejected`: The invited user has rejected the task assignment
-- `submission.approved`: A task submission has been approved and paid out.  The `details` payload will include the submission details.
-- `submission.created`: A task submission has been created and needs to be reviewed.  This will only be sent if the `verificationConfiguration` was `developer_managed` 
-  (see [Customizing Verification](/capabilities/custom-Verification) for details)
-- `task.published`: A new task has been published and is ready to accept submissions
-- `task.rejected`: A task was rejected - this can happen if the task violates our terms of service, for example.
-- `task.expired`: A task has exceeded its deadline without being completed and has expired
-- `task.canceled`: A task was cancelled before being completed
-- `task.completed`: A task has been completed.  This happens when a number of approved submissions equal to the task's `requiredSubmissions` have been received
-- `customer-deposit.successful`: A customer deposit has completed successfully.
-- `customer-deposit.failed`: A customer deposit has failed to complete.
-- `balance.low`: A warning when a wallet balance drops below 50% of its all time maximum funding
+  // Balance Alerts
+  BALANCE_LOW_WARNING = "balance.low", // sent at 50% of your highest balance
+
+  // Payment Requests
+  PAYMENT_REQUEST_APPROVED = "approval-request.approved",
+  PAYMENT_REQUEST_REJECTED = "approval-request.rejected",
+  PAYMENT_REQUEST_FAILED = "approval-request.failed",
+}
+```
 
 ## Details Structure
 
 The contents of the "details" object will depend somewhat on the type of event being received, but will contain one or more of the following:
 
-- `task_id` - the ID of the task to which this callback relates
-- `assignment_id` - the ID of the task assignment to which this callback relates (relevant for `assignment.accepted` and `assignment.rejected` events)
-- `assignment_email` - the invite email for the assignment to which this callback relates (relevant for `assignment.accepted` and `assignment.rejected` events)
-- `submission_id` - the ID of the task submission to which this callback relates (relevant for `submission.approved` and `submission.created` events)
-- `submission_details` - the submission payload for the task submission (relevant for `submission.approved` and `submission.created` events).  The object will contain some of:
-  - `description` - the textual body of the submission provided by the user
-  - `notes` - any supplementary notes provided by the user (not directly part of the verified submission)
-  - `evidenceUrls` - a list of external URLs which may constitute part of the submission (e.g. reference links, links to social media posts, etc).  Note these URLs are not hosted by
-    Payman AI and as such Payman AI takes no responsibility for their contents.
-  - `fileAttachments` - a list of file attachments directly attached to the task.  Note these are identifiers only - the actual files may be downloaded using the 
-    [Get Attachment Download URL](/api-reference/endpoint/download-cloud-file) endpoint using these identifiers.  Note, while Payman AI does perform malware scanning on these files to mitigate risk, appropriate care
-    should be taken when downloading these files, to guard against malware, phishing attempts and other security threats.
-- `metadata` - see below for more details on this
-- `reason` - the stated reason for a given task status or deposit event occurring (applies only to `task.rejected`, `task.cancelled` and  `customer-deposit.failed` events)
-- `customerId` - the customer the event relates to (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
-- `amount` - the amount the deposit was for.  Note: this amount is an integer number denominated in currency base units.
-  For USD this means 100 = 1USD and for USDC 1000000 = 1USDC (since USDC has 6 decimal places of precision) (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
-- `currency` - the currency of the deposit (applies only to `customer-deposit.successful` and `customer-deposit.failed`)
-- `agentId` - the agent ID whose wallet balance is being reported (applies only to `balance.low` events)
-- `balance` - the current wallet balance.  Note: this amount is an integer number denominated in currency base units.
-  For USD this means 100 = 1USD and for USDC 1000000 = 1USDC (since USDC has 6 decimal places of precision) (applies only to `balance.low` events)
+```javascript
+"eventType": <eventType>
+"details": {
+  "customerId": "user_123", (applies only to customer-deposit.* events)
+  "amount": 100,  // 1 USD (in cents) (applies only to customer-deposit.* events)
+  "currency": "USD",
+  "reason": "xxxx", // (only returned in customer-deposit.failed events)
+  "balance": "100", // (applies only to balance.low events)
+  "metadata": {       // Your custom data from the original request
+      "sessionId": "abc123",
+      "userId": "user_456"
+  }
+}
+```
 
-## Metadata
+## Metadata [Pro Tip]
 
-When creating a task or initiating a customer deposit, it is possible to send along a `metadata` data property, which can be any JSON object.  This metadata will be returned with any task or deposit related callbacks
-as a `metadata` property of the `details` payload.
+When an agent takes an action (e.g. send payment or generate a customer link), it is possible to send along a `metadata` data property, which can be any JSON object.
+This metadata will be returned with any corresponding webhook callbacks as a `metadata` property of the `details` payload.
 
-This can be very useful for correlating webhook callbacks with the tasks or customers in your system.  For example you might send the user ID of the user who triggered the task creation on your
-system, or the session ID (or thread ID) associate with the run of your agent system.
+This can be very useful for correlating webhook callbacks with the customer or action in your system. For example you might send the user ID
+of the user who triggered the deposit on your system, or the session ID (or thread ID) associate with the run of your agent system.
 
+```javascript
+const depositLink = await payman.payments.initiateCustomerDeposit({
+  customerId: "user_123",
+  amount: "1.0",
+  metadata: {
+    sessionId: "abc123",
+    orderId: "order_789",
+  },
+});
+```

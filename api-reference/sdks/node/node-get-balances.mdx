@@ -1,0 +1,54 @@
+---
+title: "Get Balances"
+description: "Get how much your AI Agent can spend (per agent or per customer)"
+---
+
+## Check Balances
+
+Two simple endpoints to check available balances - one for your customers and one for your AI Agent.
+
+```typescript
+const client = new Paymanai({
+  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
+  environment: "sandbox",
+});
+
+// Get a customer's balance
+const customerBalance = await client.balances.getCustomerBalance(
+  "cust_123", // customer ID
+  "USD" // currency
+);
+
+// Get your AI Agent's balance
+const agentBalance = await client.balances.getSpendableBalance(
+  "USD" // currency
+);
+```
+
+## What gets returned
+
+Both endpoints return a number representing the spendable balance in the currency's units:
+
+```typescript
+1.01; // means 1.01 USD
+```
+
+The balance only includes funds that:
+
+- Have been verified as received
+- Aren't reserved for other tasks
+
+## Parameters
+
+For Customer Balance:
+
+- `customerId`: Either:
+
+  - Your system's customer ID
+  - Payman's customer ID
+
+- currency: Currency code (e.g., "USD")
+
+For Agent Balance:
+
+- currency: Currency code (e.g. "USD")

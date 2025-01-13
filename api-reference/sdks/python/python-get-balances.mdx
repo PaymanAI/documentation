@@ -1,0 +1,102 @@
+---
+title: "Get Balances"
+description: "Get how much your AI Agent can spend (per agent or per customer)"
+---
+
+## Check Balances
+
+Two simple endpoints to check available balances - one for your customers and one for your AI Agent.
+
+```python
+from paymanai import Paymanai
+
+client = Paymanai(
+    x_payman_api_secret=os.getenv("PAYMAN_API_SECRET"),
+    environment="sandbox"
+)
+
+# Get a customer's balance
+customer_balance = client.balances.get_customer_balance(
+    "cust_123",  # customer ID
+    "USD"        # currency
+)
+
+# Get your AI Agent's balance
+agent_balance = client.balances.get_spendable_balance(
+    "USD"  # currency
+)
+```
+
+## What gets returned
+
+Both endpoints return a float representing the spendable balance in the currency's units:
+
+```python
+1.01  # means 1.01 USD
+```
+
+The balance only includes funds that:
+
+- Have been verified as received
+- Aren't reserved for other tasks
+
+## Parameters
+
+For Customer Balance:
+
+- `customer_id`: Either:
+  - Your system's customer ID
+  - Payman's customer ID
+- `currency`: Currency code (e.g., "USD")
+
+For Agent Balance:
+
+- `currency`: Currency code (e.g., "USD")
+
+### Using Type Hints
+
+```python
+from decimal import Decimal
+from typing import Union
+
+def get_customer_funds(
+    customer_id: str,
+    currency: str = "USD"
+) -> Union[float, Decimal]:
+    return client.balances.get_customer_balance(
+        customer_id,
+        currency
+    )
+
+# Example usage with error handling
+try:
+    balance = get_customer_funds("cust_123")
+    print(f"Available balance: ${balance:.2f}")
+except PaymanError as e:
+    print(f"Failed to get balance: {e.message}")
+```
+
+### Handling Multiple Currencies
+
+```python
+def check_all_balances(customer_id: str) -> dict:
+    currencies = ["USD", "USDC"]
+    balances = {}
+
+    for currency in currencies:
+        try:
+            balance = client.balances.get_customer_balance(
+                customer_id,
+                currency
+            )
+            balances[currency] = balance
+        except PaymanError:
+            balances[currency] = 0.0
+
+    return balances
+
+# Example usage
+balances = check_all_balances("cust_123")
+for currency, amount in balances.items():
+    print(f"{currency}: {amount}")
+```

@@ -1,0 +1,67 @@
+---
+title: Sending Payments
+description: "Have your AI initiate payments via Payman"
+---
+
+### Create a Payee (Optional)
+
+While your agent can search for and create payees directly, you may prefer to manage that part of the process yourself. If so, you can add a Payee on the
+Payee's section of the site.
+
+<Frame caption="Add a New Payee">
+  <img src="/images/add-payee.png" />
+</Frame>
+
+<Note>
+  In "Developer Mode" the Payees must be set up but you can use dummy data,
+  since they will never actually receive any funds.
+</Note>
+
+### Make Payment
+
+Now that you have a payee set up, and you know where you're going to send the funds to, your Agent can make a call to the
+[Send Payment API](/api-reference/endpoint/send-payment) to initiate the payment.
+
+The payload must contain an `amountDecimal` and either a `paymentDestinationId` or a `paymentDestination` payload. The former is the
+ID of the Payee you created in the previous step. If you decide to use the `paymentDestination` field, you can allow the Agent to create the
+Payee itself.
+
+```json
+{
+  "amountDecimal": "100.00",
+  "paymentDestination": {
+    "type": "US_ACH",
+    "accountType": "checking",
+    "accountNumber": "111111111111",
+    "routingNumber": "10000000",
+    "accountHolderName": "Payman Demo Person",
+    "name": "A Payman Demo Payee"
+  }
+}
+```
+
+Subject to sufficient funds being available and the Agent's spend limits not being exceeded, a payment will be initiated. By default all payments will require
+approval by a human before being processed. Processing times for an ACH payment are 1-3 business days.
+
+### Searching Existing Payees
+
+It may be that your Agent wishes to pay an existing Payee, but doesn't have the ID. If so it can use the [Search Payees](/api-reference/endpoint/search-destinations) end point
+to search for existing Payees by name, account details or contact details.
+
+<Note>
+  It is strongly advisable to have the Agent prompt verify the Payee's details
+  with the human user before making the final payment to ensure the funds are
+  going to the correct place.
+</Note>
+
+### Customers
+
+In some circumstances you might want your AI Agent to recieve funds from someone else in order to spend them (i.e. a customer).
+In this case you would not be the one providing the capital, but the user who is interacting with the Agent would.
+This opens up tons of valuable use cases where you can commercialize your AI Agents with secure payment rails from Payman.
+To learn more go to the [Customer Deposits](/capabilities/customer-deposit) section.
+
+### Metadata
+
+If there is metadata you wish to associate with this payment, you can provide a `metadata` property in the payload which can be a dictionary of strings. These
+will be stored against the payment transaction on the Payman system.

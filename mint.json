@@ -27,7 +27,7 @@
   },
   "tabs": [
     {
-      "name": "API Reference",
+      "name": "API & SDKs",
       "url": "api-reference"
     }
   ],
@@ -51,43 +51,56 @@
     {
       "group": "Capabilities",
       "pages": [
-        "capabilities/funding-AI-Wallet",
-        "capabilities/creating-Task",
-        "capabilities/task-Assignments",
-        "capabilities/submission-Deadlines",
-        "capabilities/multiple-Submissions",
-        "capabilities/custom-Verification",
-        "capabilities/customer-Deposits"
+        "capabilities/register-agent",
+        "capabilities/send-payment",
+        "capabilities/customer-deposit",
+        "capabilities/spend-limits"
       ]
     },
     {
       "group": "Webhook",
-      "pages": ["webhook/retrieving-Responses"]
+      "pages": ["webhook/retrieving-responses"]
     },
     {
-      "group": "API Documentation",
+      "group": "SDKs",
+      "pages": [
+        {
+          "group": "Node.js SDK",
+          "pages": [
+            "api-reference/sdks/node/node",
+            "api-reference/sdks/node/node-payments",
+            "api-reference/sdks/node/node-find-payee",
+            "api-reference/sdks/node/node-customer-deposits",
+            "api-reference/sdks/node/node-get-balances"
+          ]
+        },
+        {
+          "group": "Python SDK",
+          "pages": [
+            "api-reference/sdks/python/python",
+            "api-reference/sdks/python/python-payments",
+            "api-reference/sdks/python/python-find-payee",
+            "api-reference/sdks/python/python-customer-deposits",
+            "api-reference/sdks/python/python-get-balances"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "APIs",
       "pages": [
         "api-reference/introduction",
         "api-reference/authentication",
         "api-reference/error-handling",
-        "api-reference/pagination",
-        "api-reference/entity-statuses"
+        "api-reference/pagination"
       ]
     },
     {
-      "group": "Tasks",
+      "group": "API Endpoints",
       "pages": [
-        "api-reference/endpoint/get-task",
-        "api-reference/endpoint/get-tasks",
-        "api-reference/endpoint/get-task-assignments",
-        "api-reference/endpoint/get-task-submissions",
-        "api-reference/endpoint/download-cloud-file",
-        "api-reference/endpoint/approve-task-submission",
-        "api-reference/endpoint/reject-task-submission",
-        "api-reference/endpoint/create-task",
-        "api-reference/endpoint/update-task",
-        "api-reference/endpoint/get-task-categories",
+        "api-reference/endpoint/send-payment",
         "api-reference/endpoint/initiate-customer-deposit",
+        "api-reference/endpoint/search-destinations",
         "api-reference/endpoint/get-currency-balance",
         "api-reference/endpoint/get-customer-balance"
       ]
