@@ -54,7 +54,8 @@
         "capabilities/register-agent",
         "capabilities/send-payment",
         "capabilities/customer-deposit",
-        "capabilities/spend-limits"
+        "capabilities/spend-limits",
+        "capabilities/funding-sources"
       ]
     },
     {
