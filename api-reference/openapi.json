@@ -88,6 +88,81 @@
         }
       }
     },
+    "/payments/destinations": {
+      "post": {
+        "tags": ["payments-controller"],
+        "summary": "Create a new payee",
+        "description": "Create a new payee (aka payment destination) for future payments to be sent to",
+        "operationId": "createPayee",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
+                  },
+                  {
+                    "$ref": "#/components/schemas/USACHPaymentDestinationDescriptor"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The payment was successful.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/PaymentDestination" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Requesst - the request body or parameters are invalid.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the caller does not have sufficient permissions",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - the requested entity does not exist",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+            "content": {
+              "application/vnd.payman.v1+json": {
+                "schema": { "$ref": "#/components/schemas/APIError" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/payments/customer-deposit-link": {
       "post": {
         "tags": ["payments-controller"],
@@ -243,9 +318,9 @@
     "/payments/search-destinations": {
       "get": {
         "tags": ["payments-controller"],
-        "summary": "Search existing payment destinations to make payments to",
-        "description": "Searches existing payment destinations for potential matches.  Additional confirmation from the user is required to verify the correct payment destination is selected.",
-        "operationId": "searchPaymentDestinations",
+        "summary": "Search existing payee (or payment destinations) to make payments to",
+        "description": "Searches existing payee for potential matches.  Additional confirmation from the user is required to verify the correct payment destination is selected.",
+        "operationId": "searchPayees",
         "parameters": [
           {
             "name": "name",
@@ -742,6 +817,63 @@
           }
         }
       },
+      "PaymentDestination": {
+        "required": ["name", "organizationId", "type"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "readOnly": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "createdBy": { "type": "string", "readOnly": true },
+          "updatedBy": { "type": "string", "readOnly": true },
+          "providerInfo": { "type": "object", "additionalProperties": true },
+          "name": {
+            "type": "string",
+            "description": "The user-assigned name of the payment destination"
+          },
+          "organizationId": { "type": "string" },
+          "tags": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Tags to help categorize the payment destination",
+            "items": {
+              "type": "string",
+              "description": "Tags to help categorize the payment destination"
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of payment destination",
+            "enum": ["US_ACH", "CRYPTO_ADDRESS"]
+          },
+          "destinationDetails": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "contactDetails": {
+            "$ref": "#/components/schemas/PaymentDestinationContact"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the payment destination",
+            "enum": ["ACTIVE", "ARCHIVED", "DELETED"]
+          },
+          "searchHashes": { "type": "object", "additionalProperties": true },
+          "replacesId": {
+            "type": "string",
+            "description": "The ID of the payment method this entity replaces",
+            "readOnly": true
+          }
+        }
+      },
       "CustomerDepositRequest": {
         "required": ["amountDecimal", "customerId"],
         "type": "object",
@@ -898,63 +1030,6 @@
             "title": "Total Balance",
             "type": "integer",
             "description": "The total balance of this wallet, including spendable balance, balance in escrow, and unconfirmed balance.",
-            "readOnly": true
-          }
-        }
-      },
-      "PaymentDestination": {
-        "required": ["name", "organizationId", "type"],
-        "type": "object",
-        "properties": {
-          "id": { "type": "string", "readOnly": true },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "createdBy": { "type": "string", "readOnly": true },
-          "updatedBy": { "type": "string", "readOnly": true },
-          "providerInfo": { "type": "object", "additionalProperties": true },
-          "name": {
-            "type": "string",
-            "description": "The user-assigned name of the payment destination"
-          },
-          "organizationId": { "type": "string" },
-          "tags": {
-            "uniqueItems": true,
-            "type": "array",
-            "description": "Tags to help categorize the payment destination",
-            "items": {
-              "type": "string",
-              "description": "Tags to help categorize the payment destination"
-            }
-          },
-          "type": {
-            "type": "string",
-            "description": "The type of payment destination",
-            "enum": ["US_ACH", "CRYPTO_ADDRESS"]
-          },
-          "destinationDetails": {
-            "type": "object",
-            "additionalProperties": true
-          },
-          "contactDetails": {
-            "$ref": "#/components/schemas/PaymentDestinationContact"
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the payment destination",
-            "enum": ["ACTIVE", "ARCHIVED", "DELETED"]
-          },
-          "searchHashes": { "type": "object", "additionalProperties": true },
-          "replacesId": {
-            "type": "string",
-            "description": "The ID of the payment method this entity replaces",
             "readOnly": true
           }
         }

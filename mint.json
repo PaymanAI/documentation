@@ -100,6 +100,7 @@
       "group": "API Endpoints",
       "pages": [
         "api-reference/endpoint/send-payment",
+        "api-reference/endpoint/create-payment-destination",
         "api-reference/endpoint/initiate-customer-deposit",
         "api-reference/endpoint/search-destinations",
         "api-reference/endpoint/get-currency-balance",
