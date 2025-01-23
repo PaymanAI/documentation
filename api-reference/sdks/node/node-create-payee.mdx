@@ -1,0 +1,130 @@
+---
+title: "Create a Payee"
+description: "Add new payment destinations for your AI Agent to send funds"
+---
+
+Create new payment destinations that your AI Agent can send funds to. This endpoint supports both US ACH bank accounts and cryptocurrency addresses.
+
+## Creating an ACH Payment Destination
+
+```typescript
+const client = new Paymanai({
+  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
+  environment: "sandbox",
+});
+
+const achPayee = await client.payments.createPayee({
+  type: "US_ACH",
+  name: "John Doe",
+  accountHolderName: "John Doe",
+  accountNumber: "1234567890",
+  routingNumber: "011000138",
+  accountType: "checking",
+  contactDetails: {
+    contactType: "individual",
+    email: "john@example.com",
+    phoneNumber: "+1234567890",
+    address: "123 Main St",
+    taxId: "123-45-6789",
+  },
+  tags: ["employee"],
+});
+```
+
+## Creating a Crypto Payment Destination
+
+```typescript
+const cryptoPayee = await client.payments.createPayee({
+  type: "CRYPTO_ADDRESS",
+  name: "Crypto Wallet",
+  address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  currency: "ETH",
+  contactDetails: {
+    contactType: "individual",
+    email: "crypto@example.com",
+  },
+  tags: ["crypto-wallet"],
+});
+```
+
+## Response Structure
+
+```typescript
+{
+  id: "dest_123abc",
+  name: "John Doe",
+  type: "US_ACH", // or "CRYPTO_ADDRESS"
+  organizationId: "org_xyz",
+  status: "ACTIVE",
+  contactDetails: {
+    contactType: "individual",
+    email: "john@example.com",
+    phoneNumber: "+1234567890",
+    address: "123 Main St",
+    taxId: "123-45-6789"
+  },
+  tags: ["primary"],
+  createdAt: "2024-01-22T10:00:00Z",
+  updatedAt: "2024-01-22T10:00:00Z"
+}
+```
+
+### Required Fields
+
+For ACH destinations:
+
+- `type`: Must be "US_ACH"
+- `accountHolderName`: Name on the bank account
+- `accountNumber`: Bank account number
+- `routingNumber`: Bank routing number
+- `accountType`: "checking" or "savings"
+
+For Crypto destinations:
+
+- `type`: Must be "CRYPTO_ADDRESS"
+- `address`: Cryptocurrency wallet address
+- `currency`: Blockchain identifier (e.g., "ETH", "BTC")
+
+### Optional Fields
+
+- `name`: A friendly name for the destination
+- `contactDetails`: Contact information object
+- `tags`: Array of string labels
+
+## AI Agent to Agent Payments (Coming Soon)
+
+Enable direct payments between AI Agents. This feature will allow agents to discover and send funds to each other using their unique agent identifiers.
+
+### Get Your Agent's ID
+
+```typescript
+const myAgentInfo = await client.me.get();
+// Returns: { paygentId: "agent_abc123", ... }
+```
+
+### Add Another Agent as Payee
+
+```typescript
+const agentPayee = await client.payments.createPayee({
+  type: "AGENT",
+  paygentId: "agent_xyz789",
+  name: "Trading Bot Agent",
+  tags: ["agent", "trading"],
+});
+```
+
+### Response Structure
+
+```typescript
+{
+  id: "dest_123abc",
+  name: "Trading Bot Agent",
+  type: "AGENT",
+  paygentId: "agent_xyz789",
+  organizationId: "org_xyz",
+  status: "ACTIVE",
+  tags: ["agent", "trading"],
+  createdAt: "2024-01-22T10:00:00Z",
+  updatedAt: "2024-01-22T10:00:00Z"
+}
+```
