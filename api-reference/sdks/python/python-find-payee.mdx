@@ -16,10 +16,10 @@ client = Paymanai(
 )
 
 # Get all destinations
-all_destinations = client.payments.search_destinations()
+all_destinations = client.payments.search_payees()
 
 # Or filter with optional parameters
-filtered_destinations = client.payments.search_destinations(
+filtered_destinations = client.payments.search_payees(
     name="John",  # Partial match works
     contact_email="john@example.com",
     type="US_ACH"
@@ -67,17 +67,17 @@ Filter results by including any of these parameters:
 from paymanai.types import PaymentDestination
 from typing import List, Optional
 
-def search_destinations(
+def search_payees(
     name: Optional[str] = None,
     contact_email: Optional[str] = None
 ) -> List[PaymentDestination]:
-    return client.payments.search_destinations(
+    return client.payments.search_payees(
         name=name,
         contact_email=contact_email
     )
 
 # Example usage
-destinations = search_destinations(name="John")
+destinations = search_payees(name="John")
 for dest in destinations:
     print(f"Found: {dest.name} ({dest.id})")
 ```
@@ -86,7 +86,7 @@ for dest in destinations:
 
 ```python
 try:
-    destinations = client.payments.search_destinations(
+    destinations = client.payments.search_payees(
         name="John",
         type="US_ACH"
     )
