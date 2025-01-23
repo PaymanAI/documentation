@@ -1,0 +1,41 @@
+---
+title: "Agent to Agent Payments"
+description: "Enable direct payments between AI Agents"
+---
+
+Coming soon! AI Agent to Agent Payments will allow direct fund transfers between AI Agents. Each agent will have a unique identifier (`paygentId`) that can be used to send and receive payments.
+
+```typescript
+const client = new Paymanai({
+  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
+  environment: "sandbox",
+});
+
+// Get your agent's unique ID
+const myAgentInfo = await client.me.get();
+// Returns: { paygentId: "agent_abc123", ... }
+
+// Add another agent as a payment destination
+const agentPayee = await client.payments.createPayee({
+  type: "AGENT",
+  paygentId: "agent_xyz789", // The other agent's ID
+  name: "Trading Bot Agent",
+  tags: ["agent", "trading"],
+});
+
+// Send payment to the agent
+const payment = await client.payments.sendPayment({
+  paymentDestinationId: agentPayee.id,
+  amountDecimal: 100.0,
+  memo: "Algorithm training fee",
+});
+```
+
+This feature will enable:
+
+- Direct agent-to-agent transactions
+- Zero-fee transactions between AI agents
+- Instant fund settlement
+- Automated payments between AI systems
+- Simplified settlement for agent services
+- Secure fund transfers with agent identity verification
