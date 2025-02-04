@@ -1,49 +1,114 @@
 ---
-title: Customer Deposits
-description: "Enable direct user funding for your AI Agent"
+title: "Customer Deposits"
+description: "Enable your AI Agent to accept and manage customer funds"
 ---
 
-# Customer Deposits
+## Overview
 
-Let your AI Agents users fund the AI Agent spends directly through automatically generated payment links.
-
-## Quick Start
-
-```javascript
-// Generate a deposit link for a user
-payload = {
-  customerId: "someuser@test.com", // Let's assume your Agent system stores users unique by email address
-  amountDecimal: "0.5", // Ask the customer to deposit 0.5 USD - note Payman fees will be deducted from this so actual amount received will be slightly less
-  ignoreCustomerSpendLimits: false, //[Optional] enable this to true if you do not care about specific funding by customer
-};
-```
+Customer Deposits allow your AI Agent to accept funds directly from users through secure checkout links. These funds are tracked per customer and can be used by your agent for authorized transactions.
 
 ## How It Works
 
-Your agent generates a checkout link using the Generate Customer Deposit Link API.
+1. Your agent generates a checkout link
+2. Customer completes payment through the secure checkout page
+3. Funds are credited to the customer's balance
+4. Your agent can spend from that customer's balance
 
-{" "}
+## Implementation
 
-<li>User completes payment through the link</li>
-<li>Funds are credited to that user's balance</li>
-<li>Your agent can now spend from that specific user's balance</li>
+### Generate a Checkout Link
 
-## Key Features
+```javascript
+const checkout = await payman.payments.initiateCustomerDeposit({
+  customerId: 'user@example.com',    // Your system's unique user identifier
+  amountDecimal: 50.00,             // Amount to collect
+  customerName: 'John Doe',         // Optional
+  customerEmail: 'user@example.com', // Optional
+  memo: 'Wallet funding'            // Optional
+});
 
-### Automatic Balance Tracking
+// Redirect customer to checkout
+console.log('Checkout URL:', checkout.checkoutUrl);
+```
 
-<li>Payman tracks each customers balance for your AI Agent</li>
-<li>Payments automatically deduct from the correct user's balance</li>
-<li>Built-in overspend protection (optional)</li>
+### Track Customer Balances
 
-### Customer ID System
+```javascript
+const balance = await payman.balances.getCustomerBalance(
+  'user@example.com',  // Customer ID
+  'USD'               // Currency
+);
+console.log('Available balance:', balance);
+```
 
-<li>Use your existing user IDs (email, internal ID, etc.)</li>
-<li>Must be unique within your organization</li>
-<li>Payman automatically creates customer profiles based on your IDs</li>
+## Features
 
-## Ignore Customer Spend Limits
+### Automatic Balance Management
 
-There may be scenarios in which you do not care for the AI Agent to spend based on customer, but would like it to still collect funds from customers.
-An example of this might be pooling funds from people in a game type setting and then letting the AI Agent decide what to do with those funds.
-In this case enable `ignoreCustomerSpendLimits` to `true`.
+- Individual balance tracking per customer
+- Automatic deduction from correct customer balance
+- Real-time balance updates
+- Built-in overspend protection
+
+### Flexible Customer Identification
+
+Use any unique identifier for your customers:
+- Email addresses
+- Internal user IDs
+- Phone numbers
+- Custom identifiers
+
+<Note>
+  Customer IDs must be unique within your organization. Payman automatically creates and manages customer profiles.
+</Note>
+
+## Advanced Usage
+
+### Custom Metadata
+
+Add context to deposits with metadata:
+
+```javascript
+const checkout = await payman.payments.initiateCustomerDeposit({
+  customerId: 'user_123',
+  amountDecimal: 100.00,
+  metadata: {
+    plan: 'premium',
+    source: 'upgrade_flow',
+    campaign: 'summer_promo'
+  }
+});
+```
+
+## Security
+
+- All checkout pages are hosted on Payman's secure infrastructure
+- PCI-compliant payment processing
+- Automatic fraud detection
+- Customer verification checks
+
+## Next Steps
+
+<CardGroup>
+  <Card 
+    title="Send Payments" 
+    icon="money-bill-transfer" 
+    href="/capabilities/send-payment"
+  >
+    Learn how to spend customer funds
+  </Card>
+  <Card 
+    title="Check Balances" 
+    icon="wallet" 
+    href="/api-reference/sdks/node/node-get-balances"
+  >
+    Monitor customer and agent balances
+  </Card>
+  <Card 
+    title="Spending Controls" 
+    icon="shield-check" 
+    href="/capabilities/spend-limits"
+  >
+    Configure customer spending rules
+  </Card>
+</CardGroup>

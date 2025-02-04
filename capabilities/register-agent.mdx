@@ -1,44 +1,92 @@
 ---
-title: Register AI Agent
-description: "Add your AI Agent to your account to give it access to capital"
+title: "Register AI Agent"
+description: "Learn how to register and configure your AI Agent for payments"
 ---
 
-### Sign Up To Payman Platform
+## Overview
 
-Go to the <a href="https://app.paymanai.com">Payman web app</a> and sign up for an account. Sign up as a developer and get onboarded.
+Before your AI Agent can send or receive payments, you'll need to register it on the Payman platform. This process creates a secure identity for your agent and provides the necessary API credentials.
 
-### Register Agent
+## Quick Start
 
-Once you've registered your AI Agent you will recieve the API key which you can provide your agent for its custom access to the balances in the Agent Account.
+1. Sign up at [Payman Dashboard](https://app.paymanai.com)
+2. Register your AI Agent
+3. Get your API key
+4. Start integrating payments
 
-<Frame caption="Register your Agent to your Account on the Payman Platform">
+## Registration Process
+
+### 1. Create Account
+
+Sign up as a developer on the [Payman Platform](https://app.paymanai.com):
+- Complete the developer onboarding
+- Verify your identity
+- Set up two-factor authentication (recommended)
+
+### 2. Register Your Agent
+
+Once logged in to the dashboard:
+1. Navigate to the Agents section
+2. Click "Register New Agent"
+3. Fill in your agent's details:
+   - Name
+   - Description
+   - Spending limits (optional)
+
+<Frame caption="Register your Agent in the Payman Dashboard">
   <img src="/images/register-agent.png" />
 </Frame>
 
 <Note>
-  In "Developer Mode" an AI Agent will automatically be registered for you.
+  In "Developer Mode", an AI Agent will be automatically registered for you to streamline testing.
 </Note>
 
-### Get API Key
+### 3. Get API Credentials
 
-In order to have your AI Agent get access to the capital save your API Key and integrate it into your AI Agent
+After registration, you'll receive your API credentials:
+1. Copy your API key from the dashboard
+2. Store it securely in your environment
+3. Never expose the key in client-side code
 
-<Frame caption="Fund your AI Agent Easily On Payman">
+<Frame caption="Access your API Key">
   <img src="/images/api-key-secret.png" />
 </Frame>
 
-Make sure you added a payment method you are trying to use as you will need it to fund your wallet.
+## Configuration
+
+Before your agent can start processing payments:
+1. Add at least one funding source
+2. Set up spending limits
+3. Configure payment approval rules
 
 <Note>
-  You will need to have funds in your agent account for the agent to start
-  moving money.
+  Your agent needs available funds before it can initiate any payments. Add funds through the dashboard or enable customer deposits.
 </Note>
 
-### Start Making Payments
+## Next Steps
 
-Now that your AI has access to funds, it can start paying for things. Follow along with the documentation to learn how to create payment destinations and
-send funds.
+Now that your agent is registered, you can:
 
-<Card title="Sending a Payment" icon="leaf" href="/capabilities/send-payment">
-  Learn about sending a payment
-</Card>
+<CardGroup>
+  <Card 
+    title="Send Payments" 
+    icon="money-bill-transfer" 
+    href="/capabilities/send-payment"
+  >
+    Learn how to send payments to bank accounts, crypto wallets, or other agents
+  </Card>
+  <Card 
+    title="Accept Deposits" 
+    icon="money-bill-trend-up" 
+    href="/capabilities/customer-deposit"
+  >
+    Enable your agent to accept customer deposits
+  </Card>
+  <Card 
+    title="Manage Limits" 
+    icon="gauge" 
+    href="/capabilities/spend-limits"
+  >
+    Configure spending controls and approval workflows
+  </Card>
+</CardGroup>

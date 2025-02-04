@@ -1,1046 +1,1322 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Rest API for AI Agents to interact with the Payman AI platform",
-    "version": "2.0.0"
+  "title": "Rest API for AI Agents to interact with the Payman AI platform",
+  "version": "2.0.0"
   },
   "externalDocs": {
-    "description": "Payman AI Platform Documentation",
-    "url": "https://docs.paymanai.com"
+  "description": "Payman AI Platform Documentation",
+  "url": "https://docs.paymanai.com"
   },
   "servers": [
-    {
-      "url": "https://agent.payman.ai/api",
-      "description": "Production server"
-    },
-    {
-      "url": "https://agent-sandbox.payman.ai/api",
-      "description": "Sandbox (Test Mode) server"
-    }
+  {
+  "url": "https://agent.payman.ai/api",
+  "description": "Production server"
+  },
+  {
+  "url": "https://agent-sandbox.payman.ai/api",
+  "description": "Sandbox (Test Mode) server"
+  }
   ],
-  "security": [{ "x-payman-api-secret": [] }],
+  "security": [
+  {
+  "x-payman-api-secret": []
+  }
+  ],
   "paths": {
-    "/payments/send-payment": {
-      "post": {
-        "tags": ["payments-controller"],
-        "summary": "Make a payment to a payment destination",
-        "description": "Sends funds from an agent controlled wallet to a payment destination.",
-        "operationId": "sendDirectPayment",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/DirectPaymentRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "The payment was successful.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DirectPaymentResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/payments/destinations": {
-      "post": {
-        "tags": ["payments-controller"],
-        "summary": "Create a new payee",
-        "description": "Create a new payee (aka payment destination) for future payments to be sent to",
-        "operationId": "createPayee",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
-                  },
-                  {
-                    "$ref": "#/components/schemas/USACHPaymentDestinationDescriptor"
-                  }
-                ]
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "The payment was successful.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/PaymentDestination" }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/payments/customer-deposit-link": {
-      "post": {
-        "tags": ["payments-controller"],
-        "summary": "Get a customer deposit link",
-        "description": "Initiates the creation of a checkout link, through which the customer can add funds to the agent's wallet.  For example this could be used to have your customer pay for some activity the agent is going to undertake on their behalf.  The returned JSON checkoutUrl property will contain a URL that the customer can visit to complete the payment.",
-        "operationId": "initiateCustomerDeposit",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CustomerDepositRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "The link creation was successful.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CustomerDepositResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/wallets/{id}": {
-      "get": {
-        "tags": ["wallet-controller"],
-        "summary": "Get wallet",
-        "description": "Get a wallet by ID",
-        "operationId": "getWallet",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The wallet specified by the ID",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/Wallet" }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/version": {
-      "get": {
-        "tags": ["version-controller"],
-        "operationId": "getVersionInfo",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "type": "object", "additionalProperties": true }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/payments/search-destinations": {
-      "get": {
-        "tags": ["payments-controller"],
-        "summary": "Search existing payee (or payment destinations) to make payments to",
-        "description": "Searches existing payee for potential matches.  Additional confirmation from the user is required to verify the correct payment destination is selected.",
-        "operationId": "searchPayees",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "description": "The name of the payment destination to search for.  This can be a partial, case-insensitive match.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The name of the payment destination to search for.  This can be a partial, case-insensitive match."
-            }
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "description": "The type of destination to search for.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The type of destination to search for."
-            }
-          },
-          {
-            "name": "contactEmail",
-            "in": "query",
-            "description": "The contact email to search for.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The contact email to search for."
-            }
-          },
-          {
-            "name": "contactPhoneNumber",
-            "in": "query",
-            "description": "The contact phone number to search for.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The contact phone number to search for."
-            }
-          },
-          {
-            "name": "contactTaxId",
-            "in": "query",
-            "description": "The contact tax id to search for.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The contact tax id to search for."
-            }
-          },
-          {
-            "name": "accountNumber",
-            "in": "query",
-            "description": "The US Bank account number to search for.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The US Bank account number to search for."
-            }
-          },
-          {
-            "name": "routingNumber",
-            "in": "query",
-            "description": "The US Bank routing number to search for.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "The US Bank routing number to search for."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The search was successful and any matches returned.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/PaymentDestination" }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/balances/customers/{customerId}/currencies/{currency}": {
-      "get": {
-        "tags": ["balance-controller"],
-        "summary": "Get a customer's spendable balance of a specific currency",
-        "description": "Get a customer's spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's full units (e.g. '1.000000' is 1 USDC). The customer ID provided can be either a Payman customer ID or the customer ID you provided when you first referenced the customer (e.g. when creating a checkout link or creating a task).",
-        "operationId": "getCustomerSpendableBalance",
-        "parameters": [
-          {
-            "name": "customerId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "currency",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The balance for the currency",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "type": "number" }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/balances/currencies/{currency}": {
-      "get": {
-        "tags": ["balance-controller"],
-        "summary": "Get current agent's spendable balance of a specific currency",
-        "description": "Get the current agent's own spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's full units (e.g. '1.000000' is 1 USDC). ",
-        "operationId": "getSpendableBalance",
-        "parameters": [
-          {
-            "name": "currency",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The balance for the currency",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "type": "number" }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Requesst - the request body or parameters are invalid.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - the caller does not have sufficient permissions",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found - the requested entity does not exist",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
-            "content": {
-              "application/vnd.payman.v1+json": {
-                "schema": { "$ref": "#/components/schemas/APIError" }
-              }
-            }
-          }
-        }
-      }
-    }
+  "/payments/send-payment": {
+  "post": {
+  "tags": [
+  "payments-controller"
+  ],
+  "summary": "Make a payment to a payment destination",
+  "description": "Sends funds from an agent controlled wallet to a payment destination.",
+  "operationId": "sendDirectPayment",
+  "requestBody": {
+  "content": {
+  "application/json": {
+  "schema": {
+  "$ref": "#/components/schemas/DirectPaymentRequest"
+  }
+  }
+  },
+  "required": true
+  },
+  "responses": {
+  "200": {
+  "description": "The payment was successful.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/DirectPaymentResponse"
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/payments/destinations": {
+  "post": {
+  "tags": [
+  "payments-controller"
+  ],
+  "summary": "Create a new payee",
+  "description": "Create a new payee (aka payment destination) for future payments to be sent to",
+  "operationId": "createPayee",
+  "requestBody": {
+  "content": {
+  "application/json": {
+  "schema": {
+  "oneOf": [
+  {
+  "$ref": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
+  },
+  {
+  "$ref": "#/components/schemas/PaymanAgentPaymentDestinationDescriptor"
+  },
+  {
+  "$ref": "#/components/schemas/USACHPaymentDestinationDescriptor"
+  }
+  ]
+  }
+  }
+  },
+  "required": true
+  },
+  "responses": {
+  "200": {
+  "description": "The payment was successful.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/PaymentDestination"
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/payments/customer-deposit-link": {
+  "post": {
+  "tags": [
+  "payments-controller"
+  ],
+  "summary": "Get a customer deposit link",
+  "description": "Initiates the creation of a checkout link, through which the customer can add funds to the agent's wallet.  For example this could be used to have your customer pay for some activity the agent is going to undertake on their behalf.  The returned JSON checkoutUrl property will contain a URL that the customer can visit to complete the payment.",
+  "operationId": "initiateCustomerDeposit",
+  "requestBody": {
+  "content": {
+  "application/json": {
+  "schema": {
+  "$ref": "#/components/schemas/CustomerDepositRequest"
+  }
+  }
+  },
+  "required": true
+  },
+  "responses": {
+  "200": {
+  "description": "The link creation was successful.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/CustomerDepositResponse"
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/wallets/{id}": {
+  "get": {
+  "tags": [
+  "wallet-controller"
+  ],
+  "summary": "Get wallet",
+  "description": "Get a wallet by ID",
+  "operationId": "getWallet",
+  "parameters": [
+  {
+  "name": "id",
+  "in": "path",
+  "required": true,
+  "schema": {
+  "type": "string"
+  }
+  }
+  ],
+  "responses": {
+  "200": {
+  "description": "The wallet specified by the ID",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/Wallet"
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request.  Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/version": {
+  "get": {
+  "tags": [
+  "version-controller"
+  ],
+  "operationId": "getVersionInfo",
+  "responses": {
+  "200": {
+  "description": "OK",
+  "content": {
+  "*/*": {
+  "schema": {
+  "type": "object",
+  "additionalProperties": true
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/payments/search-destinations": {
+  "get": {
+  "tags": [
+  "payments-controller"
+  ],
+  "summary": "Search existing payee (or payment destinations) to make payments to",
+  "description": "Searches existing payee for potential matches.  Additional confirmation from the user is required to verify the correct payment destination is selected.",
+  "operationId": "searchPayees",
+  "parameters": [
+  {
+  "name": "name",
+  "in": "query",
+  "description": "The name of the payment destination to search for.  This can be a partial, case-insensitive match.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The name of the payment destination to search for.  This can be a partial, case-insensitive match."
+  }
+  },
+  {
+  "name": "customerId",
+  "in": "query",
+  "description": "The ID of the customer who owns the payment destination. If the Account API is enabled, this is required to prevent unauthorized access to payment destinations.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The ID of the customer who owns the payment destination. If the Account API is enabled, this is required to prevent unauthorized access to payment destinations."
+  }
+  },
+  {
+  "name": "type",
+  "in": "query",
+  "description": "The type of destination to search for.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The type of destination to search for."
+  }
+  },
+  {
+  "name": "contactEmail",
+  "in": "query",
+  "description": "The contact email to search for.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The contact email to search for."
+  }
+  },
+  {
+  "name": "contactPhoneNumber",
+  "in": "query",
+  "description": "The contact phone number to search for.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The contact phone number to search for."
+  }
+  },
+  {
+  "name": "contactTaxId",
+  "in": "query",
+  "description": "The contact tax id to search for.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The contact tax id to search for."
+  }
+  },
+  {
+  "name": "accountNumber",
+  "in": "query",
+  "description": "The US Bank account number to search for.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The US Bank account number to search for."
+  }
+  },
+  {
+  "name": "routingNumber",
+  "in": "query",
+  "description": "The US Bank routing number to search for.",
+  "required": false,
+  "schema": {
+  "type": "string",
+  "description": "The US Bank routing number to search for."
+  }
+  }
+  ],
+  "responses": {
+  "200": {
+  "description": "The search was successful and any matches returned.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "type": "array",
+  "items": {
+  "$ref": "#/components/schemas/PaymentDestination"
+  }
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/balances/customers/{customerId}/currencies/{currency}": {
+  "get": {
+  "tags": [
+  "balance-controller"
+  ],
+  "summary": "Get a customer's spendable balance of a specific currency",
+  "description": "Get a customer's spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's full units (e.g. '1.000000' is 1 USDC). The customer ID provided can be either a Payman customer ID or the customer ID you provided when you first referenced the customer (e.g. when creating a checkout link or creating a task).",
+  "operationId": "getCustomerSpendableBalance",
+  "parameters": [
+  {
+  "name": "customerId",
+  "in": "path",
+  "required": true,
+  "schema": {
+  "type": "string"
+  }
+  },
+  {
+  "name": "currency",
+  "in": "path",
+  "required": true,
+  "schema": {
+  "type": "string"
+  }
+  }
+  ],
+  "responses": {
+  "200": {
+  "description": "The balance for the currency",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "type": "number"
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  },
+  "/balances/currencies/{currency}": {
+  "get": {
+  "tags": [
+  "balance-controller"
+  ],
+  "summary": "Get current agent's spendable balance of a specific currency",
+  "description": "Get the current agent's own spendable balance for a specific curreny. A balance is considered spendable if it is not reserved for open tasks and has been verified as having arrived in the Payman wallet. The balance will be returned in the  currency's full units (e.g. '1.000000' is 1 USDC). ",
+  "operationId": "getSpendableBalance",
+  "parameters": [
+  {
+  "name": "currency",
+  "in": "path",
+  "required": true,
+  "schema": {
+  "type": "string"
+  }
+  }
+  ],
+  "responses": {
+  "200": {
+  "description": "The balance for the currency",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "type": "number"
+  }
+  }
+  }
+  },
+  "400": {
+  "description": "Bad Requesst - the request body or parameters are invalid.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "401": {
+  "description": "Unauthorized - the caller is not authenticated.  Please check the API key and Agent ID headers.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "403": {
+  "description": "Forbidden - the caller does not have sufficient permissions",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "404": {
+  "description": "Not found - the requested entity does not exist",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  },
+  "500": {
+  "description": "Internal server error - an unknown error occurred while processing the request. Please try again or contact support.",
+  "content": {
+  "application/vnd.payman.v1+json": {
+  "schema": {
+  "$ref": "#/components/schemas/APIError"
+  }
+  }
+  }
+  }
+  }
+  }
+  }
   },
   "components": {
-    "schemas": {
-      "APIError": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "The HTTP status code for the error",
-            "format": "int32"
-          },
-          "timestamp": {
-            "type": "string",
-            "description": "The timestamp when the error occurred",
-            "format": "date-time"
-          },
-          "errorCode": {
-            "type": "string",
-            "description": "The Payman error code for the error"
-          },
-          "message": {
-            "type": "string",
-            "description": "The error message for the error",
-            "readOnly": true
-          }
-        }
-      },
-      "CryptoAddressPaymentDestinationDescriptor": {
-        "required": ["address", "currency", "name", "type"],
-        "type": "object",
-        "description": "A cryptocurrency address-based payment destination",
-        "allOf": [
-          { "$ref": "#/components/schemas/IPaymentDestinationDescriptor" },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "The type of payment destination",
-                "enum": ["CRYPTO_ADDRESS"]
-              },
-              "address": {
-                "type": "string",
-                "description": "The cryptocurrency address to send funds to"
-              },
-              "currency": {
-                "type": "string",
-                "description": "The the blockchain to use for the transaction"
-              },
-              "name": {
-                "type": "string",
-                "description": "The name you wish to associate with this payment destination for future lookups."
-              },
-              "tags": {
-                "uniqueItems": true,
-                "type": "array",
-                "description": "Any additional labels you wish to assign to this payment destination",
-                "items": {
-                  "type": "string",
-                  "description": "Any additional labels you wish to assign to this payment destination"
-                }
-              },
-              "contactDetails": {
-                "$ref": "#/components/schemas/PaymentDestinationContact"
-              }
-            }
-          }
-        ]
-      },
-      "DirectPaymentRequest": {
-        "required": ["amountDecimal"],
-        "type": "object",
-        "properties": {
-          "customerId": {
-            "type": "string",
-            "description": "The ID of the customer on whose behalf you're transferring funds. This can be any unique ID as held within your system.  Providing this will limit the spendableamounts to what the customer has already deposited (unless ignoreCustomerSpendLimits is set to true)."
-          },
-          "customerEmail": {
-            "type": "string",
-            "description": "An email address to associate with this customer."
-          },
-          "customerName": {
-            "type": "string",
-            "description": "A name to associate with this customer."
-          },
-          "ignoreCustomerSpendLimits": {
-            "type": "boolean",
-            "description": "By default Payman will limit spending on behalf of a customer to the amount they have deposited. If you wish to ignore this limit, set this to true. "
-          },
-          "walletId": {
-            "type": "string",
-            "description": "The ID of the specific wallet from which to send the funds.  This is only required if the agent has access to multiple wallets (not the case by default)."
-          },
-          "amountDecimal": {
-            "type": "number",
-            "description": "The amount to generate a checkout link for. For example, '10.00' for USD is $10.00 or '1.000000' USDCBASE is 1 USDC."
-          },
-          "paymentDestinationId": {
-            "type": "string",
-            "description": "The id of the payment destination you want to send the funds to. This must have been created using the /payments/destinations endpoint or via the Payman dashboard before sending. Exactly one of paymentDestination and paymentDestinationId must be provided."
-          },
-          "paymentDestination": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
-              },
-              {
-                "$ref": "#/components/schemas/USACHPaymentDestinationDescriptor"
-              }
-            ]
-          },
-          "memo": {
-            "type": "string",
-            "description": "A note or memo to associate with this payment."
-          },
-          "metadata": { "type": "object", "additionalProperties": true }
-        }
-      },
-      "IPaymentDestinationDescriptor": {
-        "required": ["type"],
-        "type": "object",
-        "properties": { "type": { "type": "string" } },
-        "description": "A payment destination to which to send funds",
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "US_ACH": "#/components/schemas/USACHPaymentDestinationDescriptor",
-            "CRYPTO_ADDRESS": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
-          }
-        }
-      },
-      "PaymentDestinationContact": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "The email address of the payment destination contact"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "description": "The phone number of the payment destination contact"
-          },
-          "address": {
-            "type": "string",
-            "description": "The address string of the payment destination contact"
-          },
-          "taxId": {
-            "type": "string",
-            "description": "The tax identification of the payment destination contact"
-          },
-          "contactType": {
-            "type": "string",
-            "description": "The type of the payment destination contact",
-            "enum": ["individual", "business"]
-          }
-        },
-        "description": "Contact details for this payment destination"
-      },
-      "USACHPaymentDestinationDescriptor": {
-        "required": [
-          "accountHolderName",
-          "accountNumber",
-          "accountType",
-          "name",
-          "routingNumber",
-          "type"
-        ],
-        "type": "object",
-        "description": "A US ACH payment destination",
-        "allOf": [
-          { "$ref": "#/components/schemas/IPaymentDestinationDescriptor" },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "The type of payment destination",
-                "enum": ["US_ACH"]
-              },
-              "accountType": {
-                "type": "string",
-                "description": "The type of account it is (checking or savings)"
-              },
-              "accountNumber": {
-                "type": "string",
-                "description": "The bank account number for the account"
-              },
-              "routingNumber": {
-                "type": "string",
-                "description": "The routing number of the bank"
-              },
-              "accountHolderName": {
-                "type": "string",
-                "description": "The name of the account holder"
-              },
-              "name": {
-                "type": "string",
-                "description": "The name you wish to associate with this payment destination for future lookups."
-              },
-              "tags": {
-                "uniqueItems": true,
-                "type": "array",
-                "description": "Any additional labels you wish to assign to this payment destination",
-                "items": {
-                  "type": "string",
-                  "description": "Any additional labels you wish to assign to this payment destination"
-                }
-              },
-              "contactDetails": {
-                "$ref": "#/components/schemas/PaymentDestinationContact"
-              }
-            }
-          }
-        ]
-      },
-      "DirectPaymentResponse": {
-        "required": ["reference"],
-        "type": "object",
-        "properties": {
-          "reference": {
-            "type": "string",
-            "description": "The Payman reference of the payment",
-            "readOnly": true
-          },
-          "externalReference": {
-            "type": "string",
-            "description": "The external reference of the payment if applicable (e.g. a blockchain transaction hash)",
-            "readOnly": true
-          }
-        }
-      },
-      "PaymentDestination": {
-        "required": ["name", "organizationId", "type"],
-        "type": "object",
-        "properties": {
-          "id": { "type": "string", "readOnly": true },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "createdBy": { "type": "string", "readOnly": true },
-          "updatedBy": { "type": "string", "readOnly": true },
-          "providerInfo": { "type": "object", "additionalProperties": true },
-          "name": {
-            "type": "string",
-            "description": "The user-assigned name of the payment destination"
-          },
-          "organizationId": { "type": "string" },
-          "tags": {
-            "uniqueItems": true,
-            "type": "array",
-            "description": "Tags to help categorize the payment destination",
-            "items": {
-              "type": "string",
-              "description": "Tags to help categorize the payment destination"
-            }
-          },
-          "type": {
-            "type": "string",
-            "description": "The type of payment destination",
-            "enum": ["US_ACH", "CRYPTO_ADDRESS"]
-          },
-          "destinationDetails": {
-            "type": "object",
-            "additionalProperties": true
-          },
-          "contactDetails": {
-            "$ref": "#/components/schemas/PaymentDestinationContact"
-          },
-          "status": {
-            "type": "string",
-            "description": "The status of the payment destination",
-            "enum": ["ACTIVE", "ARCHIVED", "DELETED"]
-          },
-          "searchHashes": { "type": "object", "additionalProperties": true },
-          "replacesId": {
-            "type": "string",
-            "description": "The ID of the payment method this entity replaces",
-            "readOnly": true
-          }
-        }
-      },
-      "CustomerDepositRequest": {
-        "required": ["amountDecimal", "customerId"],
-        "type": "object",
-        "properties": {
-          "customerId": {
-            "type": "string",
-            "description": "The ID of the customer to deposit funds for.  This can be any unique ID as held within your system."
-          },
-          "customerEmail": {
-            "type": "string",
-            "description": "An email address to associate with this customer."
-          },
-          "customerName": {
-            "type": "string",
-            "description": "A name to associate with this customer."
-          },
-          "walletId": {
-            "type": "string",
-            "description": "The ID of the wallet you would like the customer to add funds to.  Only required if the agent has access to more than one wallet."
-          },
-          "amountDecimal": {
-            "type": "number",
-            "description": "The amount to generate a checkout link for. For example, '10.00' for USD is $10.00 or '1.000000' USDCBASE is 1 USDC."
-          },
-          "memo": {
-            "type": "string",
-            "description": "A memo to associate with any transactions created in the Payman ledger."
-          },
-          "feeMode": {
-            "type": "string",
-            "description": "Determines whether to add any processing fees to the requested amount. If set to INCLUDED_IN_AMOUNT, the customer will be charged the exact amount specified, and fees will be deducted from that before the remainder is deposited in the wallet. If set to ADD_TO_AMOUNT, the customer will be charged the amount specified plus any fees required. Defaults to 'INCLUDED_IN_AMOUNT'.",
-            "enum": ["INCLUDED_IN_AMOUNT", "ADD_TO_AMOUNT"]
-          },
-          "metadata": { "type": "object", "additionalProperties": true }
-        }
-      },
-      "CustomerDepositResponse": {
-        "required": ["checkoutUrl"],
-        "type": "object",
-        "properties": {
-          "checkoutUrl": {
-            "type": "string",
-            "description": "A URL that you can redirect the user to in order to complete the deposit."
-          }
-        }
-      },
-      "Currency": {
-        "title": "Currency",
-        "required": ["name", "symbol", "type"],
-        "type": "object",
-        "properties": {
-          "code": {
-            "title": "Currency Code",
-            "type": "string",
-            "description": "The unique short code for this currency",
-            "readOnly": true,
-            "example": "USD"
-          },
-          "symbol": {
-            "title": "Currency Symbol",
-            "type": "string",
-            "description": "The currency symbol to use",
-            "example": "$"
-          },
-          "name": {
-            "title": "Currency Name",
-            "type": "string",
-            "description": "The name of this currency",
-            "example": "US Dollars"
-          },
-          "decimalPlaces": {
-            "title": "Decimal Places",
-            "minimum": 0,
-            "type": "integer",
-            "description": "The number of decimal places this currency supports.",
-            "format": "int32"
-          },
-          "type": {
-            "title": "Currency Type",
-            "type": "string",
-            "enum": ["CRYPTOCURRENCY", "FIAT"]
-          },
-          "value": {
-            "title": "Value",
-            "type": "string",
-            "description": "The value of the item",
-            "readOnly": true
-          },
-          "description": {
-            "title": "Description",
-            "type": "string",
-            "description": "A longer form description of the item",
-            "readOnly": true
-          },
-          "label": {
-            "title": "Label",
-            "type": "string",
-            "description": "A descriptive label of the item",
-            "readOnly": true
-          }
-        },
-        "description": "The currency this wallet is denominated in."
-      },
-      "Wallet": {
-        "required": [
-          "balanceInEscrow",
-          "currency",
-          "spendableBalance",
-          "unconfirmedBalance"
-        ],
-        "type": "object",
-        "properties": {
-          "id": { "type": "string", "readOnly": true },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "createdBy": { "type": "string", "readOnly": true },
-          "updatedBy": { "type": "string", "readOnly": true },
-          "name": {
-            "title": "Name",
-            "type": "string",
-            "description": "A descriptive name for this wallet",
-            "example": "My Personal Wallet"
-          },
-          "currency": { "$ref": "#/components/schemas/Currency" },
-          "spendableBalance": {
-            "title": "Spendable Balance",
-            "type": "integer",
-            "description": "The amount of currency that can be spent from this wallet."
-          },
-          "balanceInEscrow": {
-            "title": "Balance in Escrow",
-            "type": "integer",
-            "description": "The amount of currency that is currently held in escrow against created tasks."
-          },
-          "unconfirmedBalance": {
-            "title": "Unconfirmed Balance",
-            "type": "integer",
-            "description": "The amount of currency that is currently unconfirmed (e.g. incomplete deposits)."
-          },
-          "notes": {
-            "title": "Notes",
-            "type": "string",
-            "description": "Any additional notes or information about this wallet."
-          },
-          "totalBalance": {
-            "title": "Total Balance",
-            "type": "integer",
-            "description": "The total balance of this wallet, including spendable balance, balance in escrow, and unconfirmed balance.",
-            "readOnly": true
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "x-payman-api-secret": {
-        "type": "apiKey",
-        "name": "x-payman-api-secret",
-        "in": "header"
-      }
-    }
+  "schemas": {
+  "APIError": {
+  "type": "object",
+  "properties": {
+  "status": {
+  "type": "integer",
+  "description": "The HTTP status code for the error",
+  "format": "int32"
+  },
+  "timestamp": {
+  "type": "string",
+  "description": "The timestamp when the error occurred",
+  "format": "date-time"
+  },
+  "errorCode": {
+  "type": "string",
+  "description": "The Payman error code for the error"
+  },
+  "message": {
+  "type": "string",
+  "description": "The error message for the error",
+  "readOnly": true
   }
-}
+  }
+  },
+  "CryptoAddressPaymentDestinationDescriptor": {
+  "required": [
+  "address",
+  "currency",
+  "name",
+  "type"
+  ],
+  "type": "object",
+  "description": "A cryptocurrency address-based payment destination",
+  "allOf": [
+  {
+  "$ref": "#/components/schemas/IPaymentDestinationDescriptor"
+  },
+  {
+  "type": "object",
+  "properties": {
+  "type": {
+  "type": "string",
+  "description": "The type of payment destination",
+  "enum": [
+  "CRYPTO_ADDRESS"
+  ]
+  },
+  "address": {
+  "type": "string",
+  "description": "The cryptocurrency address to send funds to"
+  },
+  "currency": {
+  "type": "string",
+  "description": "The the blockchain to use for the transaction"
+  },
+  "name": {
+  "type": "string",
+  "description": "The name you wish to associate with this payment destination for future lookups."
+  },
+  "customerId": {
+  "type": "string",
+  "description": "The ID of your customer who owns this payment destination.  This is optional unless you are using the Account API, in which case it is required."
+  },
+  "tags": {
+  "uniqueItems": true,
+  "type": "array",
+  "description": "Any additional labels you wish to assign to this payment destination",
+  "items": {
+  "type": "string",
+  "description": "Any additional labels you wish to assign to this payment destination"
+  }
+  },
+  "contactDetails": {
+  "$ref": "#/components/schemas/PaymentDestinationContact"
+  }
+  }
+  }
+  ]
+  },
+  "DirectPaymentRequest": {
+  "required": [
+  "amountDecimal"
+  ],
+  "type": "object",
+  "properties": {
+  "customerId": {
+  "type": "string",
+  "description": "The ID of the customer on whose behalf you're transferring funds. This can be any unique ID as held within your system.  Providing this will limit the spendableamounts to what the customer has already deposited (unless ignoreCustomerSpendLimits is set to true).Note that if the Account API is enabled for your account, this field becomes mandatory to preventaccidental unauthorized transfers."
+  },
+  "customerEmail": {
+  "type": "string",
+  "description": "An email address to associate with this customer."
+  },
+  "customerName": {
+  "type": "string",
+  "description": "A name to associate with this customer."
+  },
+  "ignoreCustomerSpendLimits": {
+  "type": "boolean",
+  "description": "By default Payman will limit spending on behalf of a customer to the amount they have deposited. If you wish to ignore this limit, set this to true. Note, if the Account API is enabled for your account, this field may not be used."
+  },
+  "walletId": {
+  "type": "string",
+  "description": "The ID of the specific wallet from which to send the funds.  This is only required if the agent has access to multiple wallets (not the case by default)."
+  },
+  "amountDecimal": {
+  "type": "number",
+  "description": "The amount to generate a checkout link for. For example, '10.00' for USD is $10.00 or '1.000000' USDCBASE is 1 USDC."
+  },
+  "paymentDestinationId": {
+  "type": "string",
+  "description": "The id of the payment destination you want to send the funds to. This must have been created using the /payments/destinations endpoint or via the Payman dashboard before sending. Exactly one of paymentDestination and paymentDestinationId must be provided."
+  },
+  "paymentDestination": {
+  "oneOf": [
+  {
+  "$ref": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor"
+  },
+  {
+  "$ref": "#/components/schemas/PaymanAgentPaymentDestinationDescriptor"
+  },
+  {
+  "$ref": "#/components/schemas/USACHPaymentDestinationDescriptor"
+  }
+  ]
+  },
+  "memo": {
+  "type": "string",
+  "description": "A note or memo to associate with this payment."
+  },
+  "metadata": {
+  "type": "object",
+  "additionalProperties": true
+  }
+  }
+  },
+  "IPaymentDestinationDescriptor": {
+  "required": [
+  "type"
+  ],
+  "type": "object",
+  "properties": {
+  "type": {
+  "type": "string"
+  }
+  },
+  "description": "A payment destination to which to send funds",
+  "discriminator": {
+  "propertyName": "type",
+  "mapping": {
+  "US_ACH": "#/components/schemas/USACHPaymentDestinationDescriptor",
+  "CRYPTO_ADDRESS": "#/components/schemas/CryptoAddressPaymentDestinationDescriptor",
+  "PAYMAN_AGENT": "#/components/schemas/PaymanAgentPaymentDestinationDescriptor"
+  }
+  }
+  },
+  "PaymanAgentPaymentDestinationDescriptor": {
+  "required": [
+  "name",
+  "paymanAgentId",
+  "type"
+  ],
+  "type": "object",
+  "description": "A Payman Agent payment destination",
+  "allOf": [
+  {
+  "$ref": "#/components/schemas/IPaymentDestinationDescriptor"
+  },
+  {
+  "type": "object",
+  "properties": {
+  "type": {
+  "type": "string",
+  "description": "The type of payment destination",
+  "enum": [
+  "PAYMAN_AGENT"
+  ]
+  },
+  "paymanAgentId": {
+  "type": "string",
+  "description": "The Payman unique id assigned to the receiver agent"
+  },
+  "name": {
+  "type": "string",
+  "description": "The name you wish to associate with this payment destination for future lookups."
+  },
+  "tags": {
+  "uniqueItems": true,
+  "type": "array",
+  "description": "Any additional labels you wish to assign to this payment destination",
+  "items": {
+  "type": "string",
+  "description": "Any additional labels you wish to assign to this payment destination"
+  }
+  },
+  "contactDetails": {
+  "$ref": "#/components/schemas/PaymentDestinationContact"
+  }
+  }
+  }
+  ]
+  },
+  "PaymentDestinationContact": {
+  "type": "object",
+  "properties": {
+  "email": {
+  "type": "string",
+  "description": "The email address of the payment destination contact"
+  },
+  "phoneNumber": {
+  "type": "string",
+  "description": "The phone number of the payment destination contact"
+  },
+  "address": {
+  "type": "string",
+  "description": "The address string of the payment destination contact"
+  },
+  "taxId": {
+  "type": "string",
+  "description": "The tax identification of the payment destination contact"
+  }
+  },
+  "description": "Contact details for this payment destination"
+  },
+  "USACHPaymentDestinationDescriptor": {
+  "required": [
+  "accountHolderName",
+  "accountHolderType",
+  "accountNumber",
+  "accountType",
+  "name",
+  "routingNumber",
+  "type"
+  ],
+  "type": "object",
+  "description": "A US ACH payment destination",
+  "allOf": [
+  {
+  "$ref": "#/components/schemas/IPaymentDestinationDescriptor"
+  },
+  {
+  "type": "object",
+  "properties": {
+  "type": {
+  "type": "string",
+  "description": "The type of payment destination",
+  "enum": [
+  "US_ACH"
+  ]
+  },
+  "accountType": {
+  "type": "string",
+  "description": "The type of account it is (checking or savings)"
+  },
+  "accountNumber": {
+  "type": "string",
+  "description": "The bank account number for the account"
+  },
+  "routingNumber": {
+  "type": "string",
+  "description": "The routing number of the bank"
+  },
+  "accountHolderName": {
+  "type": "string",
+  "description": "The name of the account holder"
+  },
+  "accountHolderType": {
+  "type": "string",
+  "description": "The type of the account holder",
+  "enum": [
+  "individual",
+  "business"
+  ]
+  },
+  "name": {
+  "type": "string",
+  "description": "The name you wish to associate with this payment destination for future lookups."
+  },
+  "customerId": {
+  "type": "string",
+  "description": "The ID of your customer who owns this payment destination.  This is optional unless you are using the Account API, in which case it is required."
+  },
+  "tags": {
+  "uniqueItems": true,
+  "type": "array",
+  "description": "Any additional labels you wish to assign to this payment destination",
+  "items": {
+  "type": "string",
+  "description": "Any additional labels you wish to assign to this payment destination"
+  }
+  },
+  "contactDetails": {
+  "$ref": "#/components/schemas/PaymentDestinationContact"
+  }
+  }
+  }
+  ]
+  },
+  "DirectPaymentResponse": {
+  "required": [
+  "reference"
+  ],
+  "type": "object",
+  "properties": {
+  "reference": {
+  "type": "string",
+  "description": "The Payman reference of the payment",
+  "readOnly": true
+  },
+  "externalReference": {
+  "type": "string",
+  "description": "The external reference of the payment if applicable (e.g. a blockchain transaction hash)",
+  "readOnly": true
+  }
+  }
+  },
+  "PaymentDestination": {
+  "required": [
+  "name",
+  "organizationId",
+  "type"
+  ],
+  "type": "object",
+  "properties": {
+  "id": {
+  "type": "string",
+  "readOnly": true
+  },
+  "createdAt": {
+  "type": "string",
+  "format": "date-time",
+  "readOnly": true
+  },
+  "updatedAt": {
+  "type": "string",
+  "format": "date-time",
+  "readOnly": true
+  },
+  "createdBy": {
+  "type": "string",
+  "readOnly": true
+  },
+  "updatedBy": {
+  "type": "string",
+  "readOnly": true
+  },
+  "providerInfo": {
+  "type": "object",
+  "additionalProperties": true
+  },
+  "name": {
+  "type": "string",
+  "description": "The user-assigned name of the payment destination"
+  },
+  "organizationId": {
+  "type": "string"
+  },
+  "tags": {
+  "uniqueItems": true,
+  "type": "array",
+  "description": "Tags to help categorize the payment destination",
+  "items": {
+  "type": "string",
+  "description": "Tags to help categorize the payment destination"
+  }
+  },
+  "type": {
+  "type": "string",
+  "description": "The type of payment destination",
+  "enum": [
+  "US_ACH",
+  "CRYPTO_ADDRESS",
+  "PAYMAN_AGENT"
+  ]
+  },
+  "destinationDetails": {
+  "type": "object",
+  "additionalProperties": true
+  },
+  "contactDetails": {
+  "$ref": "#/components/schemas/PaymentDestinationContact"
+  },
+  "status": {
+  "type": "string",
+  "description": "The status of the payment destination",
+  "enum": [
+  "ACTIVE",
+  "ARCHIVED",
+  "DELETED"
+  ]
+  },
+  "searchHashes": {
+  "type": "object",
+  "additionalProperties": true
+  },
+  "replacesId": {
+  "type": "string",
+  "description": "The ID of the payment method this entity replaces",
+  "readOnly": true
+  },
+  "customerId": {
+  "type": "string",
+  "description": "The ID of the customer this payment destination is associated with"
+  }
+  }
+  },
+  "CustomerDepositRequest": {
+  "required": [
+  "amountDecimal",
+  "customerId"
+  ],
+  "type": "object",
+  "properties": {
+  "customerId": {
+  "type": "string",
+  "description": "The ID of the customer to deposit funds for.  This can be any unique ID as held within your system."
+  },
+  "customerEmail": {
+  "type": "string",
+  "description": "An email address to associate with this customer."
+  },
+  "customerName": {
+  "type": "string",
+  "description": "A name to associate with this customer."
+  },
+  "walletId": {
+  "type": "string",
+  "description": "The ID of the wallet you would like the customer to add funds to.  Only required if the agent has access to more than one wallet."
+  },
+  "amountDecimal": {
+  "type": "number",
+  "description": "The amount to generate a checkout link for. For example, '10.00' for USD is $10.00 or '1.000000' USDCBASE is 1 USDC."
+  },
+  "memo": {
+  "type": "string",
+  "description": "A memo to associate with any transactions created in the Payman ledger."
+  },
+  "feeMode": {
+  "type": "string",
+  "description": "Determines whether to add any processing fees to the requested amount. If set to INCLUDED_IN_AMOUNT, the customer will be charged the exact amount specified, and fees will be deducted from that before the remainder is deposited in the wallet. If set to ADD_TO_AMOUNT, the customer will be charged the amount specified plus any fees required. Defaults to 'INCLUDED_IN_AMOUNT'.",
+  "enum": [
+  "INCLUDED_IN_AMOUNT",
+  "ADD_TO_AMOUNT"
+  ]
+  },
+  "metadata": {
+  "type": "object",
+  "additionalProperties": true
+  }
+  }
+  },
+  "CustomerDepositResponse": {
+  "required": [
+  "checkoutUrl"
+  ],
+  "type": "object",
+  "properties": {
+  "checkoutUrl": {
+  "type": "string",
+  "description": "A URL that you can redirect the user to in order to complete the deposit."
+  }
+  }
+  },
+  "Currency": {
+  "title": "Currency",
+  "required": [
+  "name",
+  "symbol",
+  "type"
+  ],
+  "type": "object",
+  "properties": {
+  "code": {
+  "title": "Currency Code",
+  "type": "string",
+  "description": "The unique short code for this currency",
+  "readOnly": true,
+  "example": "USD"
+  },
+  "symbol": {
+  "title": "Currency Symbol",
+  "type": "string",
+  "description": "The currency symbol to use",
+  "example": "$"
+  },
+  "name": {
+  "title": "Currency Name",
+  "type": "string",
+  "description": "The name of this currency",
+  "example": "US Dollars"
+  },
+  "decimalPlaces": {
+  "title": "Decimal Places",
+  "minimum": 0,
+  "type": "integer",
+  "description": "The number of decimal places this currency supports.",
+  "format": "int32"
+  },
+  "type": {
+  "title": "Currency Type",
+  "type": "string",
+  "enum": [
+  "CRYPTOCURRENCY",
+  "FIAT"
+  ]
+  },
+  "value": {
+  "title": "Value",
+  "type": "string",
+  "description": "The value of the item",
+  "readOnly": true
+  },
+  "description": {
+  "title": "Description",
+  "type": "string",
+  "description": "A longer form description of the item",
+  "readOnly": true
+  },
+  "label": {
+  "title": "Label",
+  "type": "string",
+  "description": "A descriptive label of the item",
+  "readOnly": true
+  }
+  },
+  "description": "The currency this wallet is denominated in."
+  },
+  "Wallet": {
+  "required": [
+  "balanceInEscrow",
+  "currency",
+  "spendableBalance",
+  "unconfirmedBalance"
+  ],
+  "type": "object",
+  "properties": {
+  "id": {
+  "type": "string",
+  "readOnly": true
+  },
+  "createdAt": {
+  "type": "string",
+  "format": "date-time",
+  "readOnly": true
+  },
+  "updatedAt": {
+  "type": "string",
+  "format": "date-time",
+  "readOnly": true
+  },
+  "createdBy": {
+  "type": "string",
+  "readOnly": true
+  },
+  "updatedBy": {
+  "type": "string",
+  "readOnly": true
+  },
+  "name": {
+  "title": "Name",
+  "type": "string",
+  "description": "A descriptive name for this wallet",
+  "example": "My Personal Wallet"
+  },
+  "currency": {
+  "$ref": "#/components/schemas/Currency"
+  },
+  "spendableBalance": {
+  "title": "Spendable Balance",
+  "type": "integer",
+  "description": "The amount of currency that can be spent from this wallet."
+  },
+  "balanceInEscrow": {
+  "title": "Balance in Escrow",
+  "type": "integer",
+  "description": "The amount of currency that is currently held in escrow against created tasks."
+  },
+  "unconfirmedBalance": {
+  "title": "Unconfirmed Balance",
+  "type": "integer",
+  "description": "The amount of currency that is currently unconfirmed (e.g. incomplete deposits)."
+  },
+  "notes": {
+  "title": "Notes",
+  "type": "string",
+  "description": "Any additional notes or information about this wallet."
+  },
+  "totalBalance": {
+  "title": "Total Balance",
+  "type": "integer",
+  "description": "The total balance of this wallet, including spendable balance, balance in escrow, and unconfirmed balance.",
+  "readOnly": true
+  }
+  }
+  }
+  },
+  "securitySchemes": {
+  "x-payman-api-secret": {
+  "type": "apiKey",
+  "name": "x-payman-api-secret",
+  "in": "header"
+  }
+  }
+  }
+  }

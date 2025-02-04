@@ -1,102 +1,122 @@
 ---
 title: "Customer Deposits"
-description: "Give your AI Agent the ability to collect funds"
+description: "Learn how to generate checkout links for customer deposits"
 ---
 
-## Customer Deposits
+## Generate a Checkout Link
 
-Generate a checkout URL for customers to deposit funds for your AI Agent to use.
+Create a checkout URL that allows customers to deposit funds into your AI Agent's wallet. When customers complete the payment, the funds will be available for your agent to use.
 
 ```python
-from paymanai import Paymanai
-
-client = Paymanai(
-    x_payman_api_secret=os.getenv("PAYMAN_API_SECRET"),
-    environment="sandbox"
+checkout = payman.payments.initiate_customer_deposit(
+    amount_decimal=100.00,
+    customer_id='cust_123',
+    customer_email='customer@example.com',
+    customer_name='Jane Smith',
+    memo='Wallet deposit'
 )
 
-response = client.payments.initiate_customer_deposit(
-    amount_decimal=10.0,    # required - $10.00 for USD, or 1.000000 for USDC
-    customer_id="cust_123", # required - your system's customer ID
-    customer_email="user@example.com",  # optional
-    customer_name="Jane Smith",         # optional
-    memo="Wallet deposit"              # optional
-)
-
-# response.checkout_url contains the payment link
-print(response.checkout_url)
+# Redirect customer to the checkout URL
+print('Checkout URL:', checkout.checkout_url)
 ```
 
-### Checkout Link returned
+### Required Parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `amount_decimal` | The deposit amount (e.g., 100.00 for $100.00) |
+| `customer_id` | Your system's unique customer identifier |
+
+### Optional Parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `customer_email` | Customer's email address |
+| `customer_name` | Customer's display name |
+| `memo` | Note for the transaction |
+| `fee_mode` | How to handle processing fees |
+| `wallet_id` | Target wallet (if agent has multiple) |
+| `metadata` | Additional key-value data |
+
+## Fee Handling
+
+You can control how processing fees are handled using the `fee_mode` parameter:
+
+```python
+# Fees are deducted from the deposit amount
+included_fees = payman.payments.initiate_customer_deposit(
+    amount_decimal=100.00,
+    customer_id='cust_123',
+    fee_mode='INCLUDED_IN_AMOUNT'  # Customer pays exactly $100.00
+)
+
+# Fees are added on top of the deposit amount
+added_fees = payman.payments.initiate_customer_deposit(
+    amount_decimal=100.00,
+    customer_id='cust_123',
+    fee_mode='ADD_TO_AMOUNT'  # Customer pays $100.00 plus fees
+)
+```
+
+## Response
 
 ```python
 {
-    "checkout_url": "https://app.paymanai.com/checkout..."
+    'checkout_url': str  # URL where customer completes the deposit
 }
 ```
 
-## Parameters
+## With Metadata
 
-Required:
-
-- `amount_decimal`: Amount in decimal format
-  - For USD: "10.00" means $10.00
-- `customer_id`: Your system's unique customer identifier
-
-Optional:
-
-- `customer_email`: Customer's email address
-- `customer_name`: Customer's display name
-- `memo`: Note for the transaction
-- `fee_mode`: How to handle processing fees (choose one of the options below)
-  - `INCLUDED_IN_AMOUNT` (default): Fees taken from amount
-  - `ADD_TO_AMOUNT`: Fees added on top
-- `wallet_id`: Target wallet (if agent has multiple)
-- `metadata`: Additional data as dictionary key-value pairs
-
-### Using Type Hints
+You can include additional data with the deposit:
 
 ```python
-from typing import Optional, Dict
+checkout = payman.payments.initiate_customer_deposit(
+    amount_decimal=50.00,
+    customer_id='cust_123',
+    metadata={
+        'order_id': 'order_789',
+        'product_name': 'Premium Plan',
+        'source': 'web_checkout'
+    }
+)
+```
+
+## Type Hints
+
+```python
 from paymanai.types import CheckoutResponse
+from typing import Dict, Optional
 
 def create_deposit_link(
     amount: float,
     customer_id: str,
-    customer_email: Optional[str] = None,
     metadata: Optional[Dict[str, any]] = None
 ) -> CheckoutResponse:
-    return client.payments.initiate_customer_deposit(
+    return payman.payments.initiate_customer_deposit(
         amount_decimal=amount,
         customer_id=customer_id,
-        customer_email=customer_email,
         metadata=metadata
     )
-
-# Example usage with error handling
-try:
-    response = create_deposit_link(
-        amount=50.0,
-        customer_id="cust_123",
-        customer_email="user@example.com"
-    )
-    print(f"Checkout URL: {response.checkout_url}")
-except PaymanError as e:
-    print(f"Failed to create deposit link: {e.message}")
 ```
 
-### Handling Custom Metadata
+## Error Handling
 
 ```python
-# Example with metadata and fee mode
-deposit = client.payments.initiate_customer_deposit(
-    amount_decimal=100.0,
-    customer_id="cust_123",
-    fee_mode="ADD_TO_AMOUNT",
-    metadata={
-        "source": "api",
-        "project_id": "proj_456",
-        "department": "sales"
-    }
-)
+try:
+    checkout = payman.payments.initiate_customer_deposit(
+        amount_decimal=100.00,
+        customer_id='cust_123'
+    )
+except PaymanError as e:
+    if e.code == 'invalid_amount':
+        print('Invalid deposit amount')
+    elif e.code == 'customer_not_found':
+        print('Customer not found')
+    else:
+        print('Failed to create checkout:', e.message)
 ```
+
+<Note>
+  The checkout URL is valid for 24 hours. After that, you'll need to generate a new one.
+</Note>

@@ -1,55 +1,106 @@
 ---
 title: "Customer Deposits"
-description: "Give your AI Agent the ability to collect funds"
+description: "Learn how to generate checkout links for customer deposits"
 ---
 
-## Customer Deposits
+## Generate a Checkout Link
 
-Generate a checkout URL for customers to deposit funds for your AI Agent to use.
+Create a checkout URL that allows customers to deposit funds into your AI Agent's wallet. When customers complete the payment, the funds will be available for your agent to use.
 
 ```typescript
-const client = new Paymanai({
-  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
-  environment: "sandbox",
+const checkout = await payman.payments.initiateCustomerDeposit({
+  amountDecimal: 100.00,
+  customerId: 'cust_123',
+  customerEmail: 'customer@example.com',
+  customerName: 'Jane Smith',
+  memo: 'Wallet deposit',
 });
 
-const response = await client.payments.initiateCustomerDeposit({
-  amountDecimal: 10.0, // required - $10.00 for USD, or 1.000000 for USDC
-  customerId: "cust_123", // required - your system's customer ID
-  customerEmail: "user@example.com", // optional
-  customerName: "Jane Smith", // optional
-  memo: "Wallet deposit", // optional
-});
-
-// response.checkoutUrl contains the payment link
-console.log(response.checkoutUrl);
+// Redirect customer to the checkout URL
+console.log('Checkout URL:', checkout.checkoutUrl);
 ```
 
-### Checkout Link returned
+### Required Parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `amountDecimal` | The deposit amount (e.g., 100.00 for $100.00) |
+| `customerId` | Your system's unique customer identifier |
+
+### Optional Parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `customerEmail` | Customer's email address |
+| `customerName` | Customer's display name |
+| `memo` | Note for the transaction |
+| `feeMode` | How to handle processing fees |
+| `walletId` | Target wallet (if agent has multiple) |
+| `metadata` | Additional key-value data |
+
+## Fee Handling
+
+You can control how processing fees are handled using the `feeMode` parameter:
+
+```typescript
+// Fees are deducted from the deposit amount
+const includedFees = await payman.payments.initiateCustomerDeposit({
+  amountDecimal: 100.00,
+  customerId: 'cust_123',
+  feeMode: 'INCLUDED_IN_AMOUNT' // Customer pays exactly $100.00
+});
+
+// Fees are added on top of the deposit amount
+const addedFees = await payman.payments.initiateCustomerDeposit({
+  amountDecimal: 100.00,
+  customerId: 'cust_123',
+  feeMode: 'ADD_TO_AMOUNT' // Customer pays $100.00 plus fees
+});
+```
+
+## Response
 
 ```typescript
 {
-  checkoutUrl: "https://app.paymanai.com/checkout...";
+  checkoutUrl: string  // URL where customer completes the deposit
 }
 ```
 
-## Parameters
+## With Metadata
 
-Required:
+You can include additional data with the deposit:
 
-- `amountDecimal`: Amount in decimal format
-  - For USD: "10.00" means $10.00
-- `customerId`: Your system's unique customer identifier
+```typescript
+const checkout = await payman.payments.initiateCustomerDeposit({
+  amountDecimal: 50.00,
+  customerId: 'cust_123',
+  metadata: {
+    orderId: 'order_789',
+    productName: 'Premium Plan',
+    source: 'web_checkout'
+  }
+});
+```
 
-Optional:
+## Error Handling
 
-- `customerEmail`: Customer's email address
-- `customerName`: Customer's display name
-- `memo`: Note for the transaction
-- `feeMode`: How to handle processing fees (choose one of the options below)
+```typescript
+try {
+  const checkout = await payman.payments.initiateCustomerDeposit({
+    amountDecimal: 100.00,
+    customerId: 'cust_123'
+  });
+} catch (error) {
+  if (error.code === 'invalid_amount') {
+    console.error('Invalid deposit amount');
+  } else if (error.code === 'customer_not_found') {
+    console.error('Customer not found');
+  } else {
+    console.error('Failed to create checkout:', error.message);
+  }
+}
+```
 
-  - `INCLUDED_IN_AMOUNT` (default): Fees taken from amount
-  - `ADD_TO_AMOUNT`: Fees added on top
-
-- `walletId`: Target wallet (if agent has multiple)
-- `metadata`: Additional data as key-value pairs
+<Note>
+  The checkout URL is valid for 24 hours. After that, you'll need to generate a new one.
+</Note>

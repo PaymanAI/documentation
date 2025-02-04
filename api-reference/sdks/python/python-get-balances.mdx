@@ -1,59 +1,66 @@
 ---
-title: "Get Balances"
-description: "Get how much your AI Agent can spend (per agent or per customer)"
+title: "Check Balances"
+description: "Learn how to check available balances for your AI Agent and customers"
 ---
 
-## Check Balances
+## Overview
 
-Two simple endpoints to check available balances - one for your customers and one for your AI Agent.
+The Balances API allows you to check available funds for both your AI Agent and your customers. A balance is considered "spendable" when:
+- Funds have been fully verified and received
+- Funds aren't reserved for pending tasks
 
-```python
-from paymanai import Paymanai
+## Check Agent Balance
 
-client = Paymanai(
-    x_payman_api_secret=os.getenv("PAYMAN_API_SECRET"),
-    environment="sandbox"
-)
-
-# Get a customer's balance
-customer_balance = client.balances.get_customer_balance(
-    "cust_123",  # customer ID
-    "USD"        # currency
-)
-
-# Get your AI Agent's balance
-agent_balance = client.balances.get_spendable_balance(
-    "USD"  # currency
-)
-```
-
-## What gets returned
-
-Both endpoints return a float representing the spendable balance in the currency's units:
+Check your AI Agent's available balance in a specific currency:
 
 ```python
-1.01  # means 1.01 USD
+agent_balance = payman.balances.get_spendable_balance('USD')
+print(f"Available balance: ${agent_balance}")  # e.g., "Available balance: $150.00"
 ```
 
-The balance only includes funds that:
+### Parameters
 
-- Have been verified as received
-- Aren't reserved for other tasks
+| Parameter | Description |
+| --------- | ----------- |
+| `currency` | Currency code (e.g., 'USD', 'USDC') |
 
-## Parameters
+## Check Customer Balance
 
-For Customer Balance:
+Check a specific customer's available balance:
 
-- `customer_id`: Either:
-  - Your system's customer ID
-  - Payman's customer ID
-- `currency`: Currency code (e.g., "USD")
+```python
+customer_balance = payman.balances.get_customer_balance(
+    customer_id='cust_123',  # Customer ID
+    currency='USD'          # Currency
+)
+print(f"Customer balance: ${customer_balance}")
+```
 
-For Agent Balance:
+### Parameters
 
-- `currency`: Currency code (e.g., "USD")
+| Parameter | Description |
+| --------- | ----------- |
+| `customer_id` | Your system's customer ID or Payman's customer ID |
+| `currency` | Currency code (e.g., 'USD', 'USDC') |
 
-### Using Type Hints
+## Response Format
+
+Both methods return a float representing the spendable balance in the currency's units:
+
+```python
+# Examples
+50.00    # $50.00 USD
+1.50     # $1.50 USD
+0.00     # No available balance
+```
+
+For cryptocurrencies, the appropriate decimal places are used:
+```python
+1.000000  # 1 USDC
+0.500000  # 0.5 USDC
+```
+
+## Type Hints
 
 ```python
 from decimal import Decimal
@@ -61,42 +68,50 @@ from typing import Union
 
 def get_customer_funds(
     customer_id: str,
-    currency: str = "USD"
+    currency: str = 'USD'
 ) -> Union[float, Decimal]:
-    return client.balances.get_customer_balance(
-        customer_id,
-        currency
+    return payman.balances.get_customer_balance(
+        customer_id=customer_id,
+        currency=currency
     )
-
-# Example usage with error handling
-try:
-    balance = get_customer_funds("cust_123")
-    print(f"Available balance: ${balance:.2f}")
-except PaymanError as e:
-    print(f"Failed to get balance: {e.message}")
 ```
 
-### Handling Multiple Currencies
+## Error Handling
 
 ```python
-def check_all_balances(customer_id: str) -> dict:
-    currencies = ["USD", "USDC"]
-    balances = {}
-
-    for currency in currencies:
-        try:
-            balance = client.balances.get_customer_balance(
-                customer_id,
-                currency
-            )
-            balances[currency] = balance
-        except PaymanError:
-            balances[currency] = 0.0
-
-    return balances
-
-# Example usage
-balances = check_all_balances("cust_123")
-for currency, amount in balances.items():
-    print(f"{currency}: {amount}")
+try:
+    balance = payman.balances.get_customer_balance(
+        customer_id='cust_123',
+        currency='USD'
+    )
+except PaymanError as e:
+    if e.code == 'customer_not_found':
+        print('Customer not found')
+    elif e.code == 'invalid_currency':
+        print('Invalid currency specified')
+    else:
+        print('Failed to get balance:', e.message)
 ```
+
+## Using Both Together
+
+You can check both balances to compare available funds:
+
+```python
+async def check_all_balances(customer_id: str, currency: str) -> None:
+    try:
+        agent_balance = payman.balances.get_spendable_balance(currency)
+        customer_balance = payman.balances.get_customer_balance(
+            customer_id=customer_id,
+            currency=currency
+        )
+        
+        print(f"Agent balance: ${agent_balance}")
+        print(f"Customer balance: ${customer_balance}")
+    except PaymanError as e:
+        print(f"Error checking balances: {e.message}")
+```
+
+<Note>
+  Balances are always returned in the currency's natural units. For USD, this means dollars (e.g., 10.50 is $10.50). For USDC, this means whole tokens with 6 decimal places (e.g., 1.000000 is 1 USDC).
+</Note>

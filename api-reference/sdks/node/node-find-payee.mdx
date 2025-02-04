@@ -1,60 +1,120 @@
 ---
-title: "Search Available Payees"
-description: "Your AI Agents list of sending funds to pre-approved payees"
+title: "Search Payees"
+description: "Learn how to search for existing payment destinations"
 ---
 
-Search for existing payment destinations. This is a simple `GET` request that returns an array of matching destinations.
+## Overview
 
-You can search just by simply putting in the name and the search will return a list of potential payees. You may also just leave it empty and it will return all.
+Search through your AI Agent's existing payment destinations. You can search by name, contact details, or account information to find specific payees.
+
+## Search All Destinations
+
+Retrieve all payment destinations:
 
 ```typescript
-const client = new Paymanai({
-  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
-  environment: "sandbox",
-});
+const allDestinations = await payman.payments.searchDestinations();
+```
 
-// Get all destinations
-const allDestinations = await client.payments.searchDestinations();
+## Search with Filters
 
-// Or filter with optional parameters
-const filteredDestinations = await client.payments.searchDestinations({
-  name: "John", // Partial match works
-  contactEmail: "john@example.com",
-  type: "US_ACH",
+Search for specific destinations using various filters:
+
+```typescript
+const filteredDestinations = await payman.payments.searchDestinations({
+  name: 'John',                    // Partial name match
+  contactEmail: 'john@example.com',
+  type: 'US_ACH'
 });
 ```
 
-## Response returned
+### Available Filters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `name` | Search by destination name (partial match) |
+| `contactEmail` | Search by contact email address |
+| `contactPhoneNumber` | Search by contact phone number |
+| `contactTaxId` | Search by tax ID |
+| `accountNumber` | Search by bank account number |
+| `routingNumber` | Search by routing number |
+| `type` | Filter by destination type |
+| `customerId` | Filter by customer ID |
+
+## Response
+
+The search returns an array of payment destinations:
 
 ```typescript
 [
   {
-    id: "dest_123abc",
-    name: "John Doe",
-    type: "US_ACH",
-    organizationId: "org_xyz",
-    status: "ACTIVE",
+    id: 'dest_123abc',
+    name: 'John Doe',
+    type: 'US_ACH',
+    organizationId: 'org_xyz',
+    status: 'ACTIVE',
     contactDetails: {
-      contactType: "individual",
-      email: "john@example.com",
-      phoneNumber: "+1234567890",
-      address: "123 Main St",
-      taxId: "123-45-6789",
+      contactType: 'individual',
+      email: 'john@example.com',
+      phoneNumber: '+1234567890',
+      address: '123 Main St',
+      taxId: '123-45-6789'
     },
-    tags: ["primary"],
+    tags: ['primary'],
+    createdAt: '2024-01-22T10:00:00Z',
+    updatedAt: '2024-01-22T10:00:00Z'
   },
   // ... more destinations
-];
+]
 ```
 
-### Search Filters
+## Search by Type
 
-Filter results by including any of these parameters:
+Find destinations of a specific type:
 
-- `name`: Partial match for destination name
-- `accountNumber`: Bank account number
-- `routingNumber`: Bank routing number
-- `contactEmail`: Email address
-- `contactPhoneNumber`: Phone number
-- `contactTaxId`: Tax ID
-- `type`: "US_ACH" or "CRYPTO_ADDRESS"
+```typescript
+// Find ACH destinations
+const achDestinations = await payman.payments.searchDestinations({
+  type: 'US_ACH'
+});
+
+// Find crypto destinations
+const cryptoDestinations = await payman.payments.searchDestinations({
+  type: 'CRYPTO_ADDRESS'
+});
+
+// Find agent destinations
+const agentDestinations = await payman.payments.searchDestinations({
+  type: 'PAYMAN_AGENT'
+});
+```
+
+## Search by Contact Details
+
+Search using contact information:
+
+```typescript
+const destinations = await payman.payments.searchDestinations({
+  contactEmail: 'support@company.com',
+  contactPhoneNumber: '+1234567890'
+});
+```
+
+## Error Handling
+
+```typescript
+try {
+  const destinations = await payman.payments.searchDestinations({
+    name: 'John'
+  });
+} catch (error) {
+  if (error.code === 'invalid_parameter') {
+    console.error('Invalid search parameter');
+  } else {
+    console.error('Search failed:', error.message);
+  }
+}
+```
+
+<Note>
+  For security reasons, sensitive information like full account numbers are partially masked in search results.
+</Note>

@@ -1,43 +1,68 @@
 ---
 title: "Funding Sources"
-description: "Securely fund your AI Agent while maintaining full control"
+description: "Add funds to your AI Agent's wallet securely"
 ---
 
-## Human-Controlled AI Funding
+## Overview
 
-Payman provides a secure way to fund your AI Agent's activities while keeping your financial information completely separate from the AI. Your funding sources are never accessible to the AI - only you can initiate transfers.
+Payman provides secure funding options while keeping your financial information completely separate from your AI Agent. Your agent only sees its available balance, never the underlying funding sources.
 
-### Link Your Funding Source
+## Available Methods
 
-Add funds to your AI Agent's wallet through the Payman dashboard using:
+### ACH Bank Transfer (US)
+- Link your bank account securely
+- Same-day availability
+- No additional fees
 
-- **Same Day ACH Bank Transfer** (US only)
-  - Link your bank account securely
-  - Same day for transfers
-- **Credit/Debit Card** (US Only)
-  - Instant funding availability
-  - Major cards accepted (Visa, Mastercard, Amex)
-  - Standard processing fees apply
+### Credit/Debit Card (US)
+- Instant funding
+- Major cards accepted
+- Standard processing fees apply
+
+## Dashboard Setup
+
+1. Navigate to [Funding Sources](https://app.paymanai.com/dashboard/funding)
+2. Click "Add Funding Source"
+3. Choose your preferred method
+4. Complete secure verification
+
+<Frame caption="Add a funding source in the dashboard">
+  <img src="/images/add-funds.png" />
+</Frame>
+
+## Security
+
+- Bank-level encryption for all financial data
+- PCI-compliant card processing
+- Automated fraud monitoring
+- Separate agent and funding systems
 
 <Note>
-  Your financial details stay private. The AI Agent only sees its available
-  balance, never your funding sources.
+  Your financial details stay private. AI Agents can only access their available balance, never your funding sources.
 </Note>
 
-## How It Works
+## Next Steps
 
-1. **Link Your Source**
-
-   - Connect your bank or card in the Payman dashboard
-   - Your details are encrypted and secured
-
-2. **Add Funds When Needed**
-
-   - Manually approve each funding transfer
-   - Set up auto-funding rules with approvals
-   - Get notifications for low balance
-
-3. **AI Spends Safely**
-   - AI can only access its allocated balance
-   - Cannot exceed spending limits
-   - No direct access to funding sources
+<CardGroup>
+  <Card 
+    title="Send Payments" 
+    icon="money-bill-transfer" 
+    href="/capabilities/send-payment"
+  >
+    Start using your funded wallet
+  </Card>
+  <Card 
+    title="Spending Controls" 
+    icon="shield-check" 
+    href="/capabilities/spend-limits"
+  >
+    Configure spending limits
+  </Card>
+  <Card 
+    title="Customer Deposits" 
+    icon="wallet" 
+    href="/capabilities/customer-deposit"
+  >
+    Enable user funding
+  </Card>
+</CardGroup>

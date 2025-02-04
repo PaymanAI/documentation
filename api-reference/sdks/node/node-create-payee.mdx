@@ -1,130 +1,149 @@
 ---
-title: "Create a Payee"
-description: "Add new payment destinations for your AI Agent to send funds"
+title: "Create Payees"
+description: "Learn how to create payment destinations for your AI Agent"
 ---
 
-Create new payment destinations that your AI Agent can send funds to. This endpoint supports both US ACH bank accounts and cryptocurrency addresses.
+## Overview
 
-## Creating an ACH Payment Destination
+A payee (or payment destination) represents a recipient that your AI Agent can send funds to. Payman supports three types of payees:
+- US ACH bank accounts
+- Cryptocurrency addresses
+- Other Payman AI Agents
+
+## Create an ACH Payee
+
+Create a payment destination for US bank accounts using ACH:
 
 ```typescript
-const client = new Paymanai({
-  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
-  environment: "sandbox",
-});
-
-const achPayee = await client.payments.createPayee({
-  type: "US_ACH",
-  name: "John Doe",
-  accountHolderName: "John Doe",
-  accountNumber: "1234567890",
-  routingNumber: "011000138",
-  accountType: "checking",
+const achPayee = await payman.payments.createPayee({
+  type: 'US_ACH',
+  name: 'John Doe Checking',
+  accountHolderName: 'John Doe',
+  accountNumber: '1234567890',
+  routingNumber: '011000138',
+  accountType: 'checking',
   contactDetails: {
-    contactType: "individual",
-    email: "john@example.com",
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    taxId: "123-45-6789",
+    contactType: 'individual',
+    email: 'john@example.com',
+    phoneNumber: '+1234567890',
+    address: '123 Main St',
+    taxId: '123-45-6789'
   },
-  tags: ["employee"],
+  tags: ['employee', 'primary']
 });
 ```
 
-## Creating a Crypto Payment Destination
+### Required Parameters for ACH
+
+| Parameter | Description |
+| --------- | ----------- |
+| `type` | Must be `'US_ACH'` |
+| `accountHolderName` | Legal name on the bank account |
+| `accountNumber` | Bank account number |
+| `routingNumber` | 9-digit ABA routing number |
+| `accountType` | Either `'checking'` or `'savings'` |
+
+## Create a Crypto Payee
+
+Create a payment destination for cryptocurrency addresses:
 
 ```typescript
-const cryptoPayee = await client.payments.createPayee({
-  type: "CRYPTO_ADDRESS",
-  name: "Crypto Wallet",
-  address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
-  currency: "ETH",
+const cryptoPayee = await payman.payments.createPayee({
+  type: 'CRYPTO_ADDRESS',
+  name: 'ETH Wallet',
+  address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+  currency: 'ETH',
   contactDetails: {
-    contactType: "individual",
-    email: "crypto@example.com",
+    email: 'wallet@example.com'
   },
-  tags: ["crypto-wallet"],
+  tags: ['crypto']
 });
 ```
 
-## Response Structure
+### Required Parameters for Crypto
+
+| Parameter | Description |
+| --------- | ----------- |
+| `type` | Must be `'CRYPTO_ADDRESS'` |
+| `address` | Valid cryptocurrency wallet address |
+| `currency` | Blockchain identifier (e.g., 'ETH', 'BTC') |
+
+## Create an Agent Payee
+
+Create a payment destination for another Payman AI Agent. You can find agent IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard/agents).
+
+```typescript
+const agentPayee = await payman.payments.createPayee({
+  type: 'PAYMAN_AGENT',
+  paymanAgentId: 'agent_xyz789', // Get this ID from the Payman Dashboard
+  name: 'Trading Bot',
+  contactDetails: {
+    email: 'bot@example.com'
+  },
+  tags: ['agent', 'trading']
+});
+```
+
+### Required Parameters for Agent
+
+| Parameter | Description |
+| --------- | ----------- |
+| `type` | Must be `'PAYMAN_AGENT'` |
+| `paymanAgentId` | Unique identifier of the receiving agent (found in Dashboard) |
+
+<Note>
+  Agent IDs can be found in the [Payman Dashboard](https://app.paymanai.com/dashboard/agents) under the Agents section. Each agent has a unique identifier that starts with `agt-`.
+</Note>
+
+## Common Optional Parameters
+
+| Parameter | Description |
+| --------- | ----------- |
+| `name` | Friendly name for the payee |
+| `tags` | Array of strings for categorization |
+| `contactDetails` | Contact information object |
+| `customerId` | Your system's customer ID |
+
+## Response
 
 ```typescript
 {
-  id: "dest_123abc",
-  name: "John Doe",
-  type: "US_ACH", // or "CRYPTO_ADDRESS"
-  organizationId: "org_xyz",
-  status: "ACTIVE",
-  contactDetails: {
-    contactType: "individual",
-    email: "john@example.com",
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    taxId: "123-45-6789"
+  id: string,           // Unique payee identifier
+  name: string,         // Friendly name
+  type: string,         // Payment destination type
+  organizationId: string,
+  status: 'ACTIVE' | 'ARCHIVED' | 'DELETED',
+  contactDetails?: {
+    email?: string,
+    phoneNumber?: string,
+    address?: string,
+    taxId?: string
   },
-  tags: ["primary"],
-  createdAt: "2024-01-22T10:00:00Z",
-  updatedAt: "2024-01-22T10:00:00Z"
+  tags?: string[],
+  createdAt: string,    // ISO timestamp
+  updatedAt: string     // ISO timestamp
 }
 ```
 
-### Required Fields
-
-For ACH destinations:
-
-- `type`: Must be "US_ACH"
-- `accountHolderName`: Name on the bank account
-- `accountNumber`: Bank account number
-- `routingNumber`: Bank routing number
-- `accountType`: "checking" or "savings"
-
-For Crypto destinations:
-
-- `type`: Must be "CRYPTO_ADDRESS"
-- `address`: Cryptocurrency wallet address
-- `currency`: Blockchain identifier (e.g., "ETH", "BTC")
-
-### Optional Fields
-
-- `name`: A friendly name for the destination
-- `contactDetails`: Contact information object
-- `tags`: Array of string labels
-
-## AI Agent to Agent Payments (Coming Soon)
-
-Enable direct payments between AI Agents. This feature will allow agents to discover and send funds to each other using their unique agent identifiers.
-
-### Get Your Agent's ID
+## Error Handling
 
 ```typescript
-const myAgentInfo = await client.me.get();
-// Returns: { paygentId: "agent_abc123", ... }
-```
-
-### Add Another Agent as Payee
-
-```typescript
-const agentPayee = await client.payments.createPayee({
-  type: "AGENT",
-  paygentId: "agent_xyz789",
-  name: "Trading Bot Agent",
-  tags: ["agent", "trading"],
-});
-```
-
-### Response Structure
-
-```typescript
-{
-  id: "dest_123abc",
-  name: "Trading Bot Agent",
-  type: "AGENT",
-  paygentId: "agent_xyz789",
-  organizationId: "org_xyz",
-  status: "ACTIVE",
-  tags: ["agent", "trading"],
-  createdAt: "2024-01-22T10:00:00Z",
-  updatedAt: "2024-01-22T10:00:00Z"
+try {
+  const payee = await payman.payments.createPayee({
+    type: 'US_ACH',
+    // ... other parameters
+  });
+} catch (error) {
+  if (error.code === 'invalid_routing_number') {
+    console.error('Invalid routing number provided');
+  } else if (error.code === 'invalid_account_number') {
+    console.error('Invalid account number provided');
+  } else {
+    console.error('Failed to create payee:', error.message);
+  }
 }
 ```
+
+<Note>
+  For security reasons, bank account numbers are never returned in full in API responses.
+</Note>
