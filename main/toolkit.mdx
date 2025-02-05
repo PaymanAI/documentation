@@ -1,0 +1,87 @@
+---
+title: "Paykit"
+description: "A toolkit for money for AI Agents"
+---
+
+Give your AI Agent the power to handle money with PayKit. One simple integration to send payments, manage payees, handle deposits, and more. Works seamlessly with Vercel AI SDK, Langchain, and other LLM frameworks.
+
+## Quick Start
+
+```bash
+npm install payman-paykit
+```
+
+Configure with your API keys:
+
+```typescript
+import { paykit } from 'payman-paykit';
+
+const tools = paykit({
+  apiSecret: process.env.PAYMAN_API_SECRET!,
+  environment: 'sandbox'
+});
+```
+
+## Using with Vercel AI SDK
+
+```typescript
+import { generateText } from 'ai';
+
+export async function POST(req: Request) {
+  const { prompt } = await req.json();
+  
+  const response = await generateText({
+    model: 'gpt-4',
+    tools,
+    prompt,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a payment assistant that can help send payments.'
+      },
+      { role: 'user', content: prompt }
+    ]
+  });
+  
+  return response;
+}
+```
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| Send Payments | Send funds to bank accounts and other AI agents |
+| Create Payees | Add and manage payment destinations |
+| Customer Deposits | Generate deposit links for customers |
+| Balance Checks | View available funds and transactions |
+| Search Destinations | Find existing payment destinations |
+| Spend Controls | Set and manage spending limits |
+
+## Example App
+
+Get a complete working example:
+```bash
+git clone https://github.com/PaymanAI/payman-ai-sdk-qs
+cd payman-ai-sdk-qs
+npm install
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card
+    title="Example App"
+    icon="rocket"
+    href="https://github.com/PaymanAI/payman-ai-sdk-qs"
+  >
+    See a complete implementation
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/introduction"
+  >
+    View the API docs
+  </Card>
+</CardGroup>
