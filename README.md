@@ -64,3 +64,9 @@ This documentation is licensed under the MIT License - see the [LICENSE](LICENSE
 - [Open an issue](https://github.com/PaymanAI/documentation/issues)
 - [Contact support](mailto:support@paymanai.com)
 - [Follow us on Twitter](https://twitter.com/PaymanAI)
+
+### Payment Types
+
+- ACH bank transfers
+- Agent-to-agent instant transfers
+- Crypto payments (Coming Soon)

@@ -78,12 +78,11 @@ payment = payman.payments.send_payment(
 }
 ```
 
-#### Cryptocurrency Address
+#### Payman Agent
 ```python
 {
-    'type': 'CRYPTO_ADDRESS',
-    'address': str,
-    'currency': str,  # e.g., 'ETH', 'BTC'
+    'type': 'PAYMAN_AGENT',
+    'payman_agent_id': str,  # Get this ID from the Payman Dashboard
     'name': str,
     'contact_details': {
         'email': str
@@ -91,11 +90,12 @@ payment = payman.payments.send_payment(
 }
 ```
 
-#### Payman Agent
+#### Cryptocurrency Address (Coming Soon)
 ```python
 {
-    'type': 'PAYMAN_AGENT',
-    'payman_agent_id': str,  # Get this ID from the Payman Dashboard
+    'type': 'CRYPTO_ADDRESS',
+    'address': str,
+    'currency': str,  # e.g., 'ETH', 'BTC'
     'name': str,
     'contact_details': {
         'email': str
@@ -147,3 +147,11 @@ except PaymanError as e:
 <Note>
   All amounts should be specified in decimal format (e.g., 10.50 for $10.50). For cryptocurrency payments, use the appropriate decimal places (e.g., 1.000000 for 1 USDC).
 </Note>
+
+## Supported Currencies
+- USD (Bank transfers)
+- Crypto deposits (Coming Soon)
+
+## Available Currencies
+- USD (US Dollar)
+- Crypto currencies (Coming Soon)
