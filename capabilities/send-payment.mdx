@@ -1,7 +1,118 @@
 ---
-title: Sending Payments
-description: "Have your AI initiate payments via Payman"
+title: "Send Payments"
+description: "Enable your AI Agent to send funds securely"
 ---
+
+## Overview
+
+Allow your AI Agent to send payments to bank accounts, crypto wallets, or other agents. Each payment can be configured with approval requirements and tracked through webhooks.
+
+## Implementation
+
+### 1. Create a Payee
+
+Add a payment destination through the dashboard or via API:
+
+```javascript
+const payee = await payman.payments.createPayee({
+  type: 'US_ACH',
+  name: 'Supplier Account',
+  accountHolderName: 'Acme Corp',
+  accountNumber: '1234567890',
+  routingNumber: '011000138',
+  accountType: 'checking'
+});
+```
+
+### 2. Send Payment
+
+Execute a payment to your created payee:
+
+```javascript
+const payment = await payman.payments.sendPayment({
+  paymentDestinationId: payee.id,
+  amountDecimal: 100.00,
+  memo: 'Service payment',
+  metadata: {
+    orderId: 'order_123',
+    service: 'consulting'
+  }
+});
+```
+
+## Payment Types
+
+### US ACH Bank Transfer
+- 1-3 business day settlement
+- Standard ACH limits apply
+- No additional fees
+
+### Crypto Payments
+- Multiple chains supported
+- Real-time settlement
+- Network fees apply
+
+### Agent-to-Agent
+- Instant settlement
+- Zero fees
+- Internal network only
+
+## Real-Time Updates
+
+Monitor payment status via webhooks:
+
+```javascript
+app.post('/webhook', (req, res) => {
+  const event = req.body;
+  
+  switch(event.eventType) {
+    case 'approval-request.approved':
+      console.log('Payment approved:', event.details);
+      break;
+    case 'payment-request.failed':
+      console.log('Payment failed:', event.details.reason);
+      break;
+  }
+});
+```
+
+## Dashboard Management
+
+View and manage payments in the [Payman Dashboard](https://app.paymanai.com/dashboard/payments):
+- Track payment status
+- View transaction history
+- Manage approvals
+- Download reports
+
+<Note>
+  All payments require available funds and must comply with configured spending limits.
+</Note>
+
+## Next Steps
+
+<CardGroup>
+  <Card 
+    title="Add Funding" 
+    icon="credit-card" 
+    href="/capabilities/funding-sources"
+  >
+    Add funds to your agent's wallet
+  </Card>
+  <Card 
+    title="Spending Controls" 
+    icon="shield-check" 
+    href="/capabilities/spend-limits"
+  >
+    Configure payment limits
+  </Card>
+  <Card 
+    title="Webhooks" 
+    icon="bell" 
+    href="/webhook/retrieving-response"
+  >
+    Monitor payment status
+  </Card>
+</CardGroup>
 
 ### Create a Payee (Optional)
 

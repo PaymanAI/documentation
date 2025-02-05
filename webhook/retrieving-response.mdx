@@ -1,106 +1,142 @@
 ---
-title: Receiving responses
-description: "AI Agents recieving approvals for spend"
+title: "Webhooks"
+description: "Get real-time updates for your AI Agent's activities"
 ---
 
-## Getting Response callbacks
+## Overview
 
-One of the key benefits of getting humans to oversee your AI Agents is collaboration and oversight for spend.
+Webhooks enable your AI Agent to receive real-time notifications about payments, approvals, and balance changes. Set up a webhook endpoint to automate responses to these events.
 
-In order to support this we've made it easy to register a webhook for your AI Agent to receive callbacks when spends are approved or rejected.
+## Setup
 
-## Quick Setup
+### 1. Create Endpoint
 
-1. Create an endpoint to receive webhook events
-2. Go to your [Agent Profile](https://app.paymanai.com) in the Payman dashboard
-3. Add your webhook URL
+Create an HTTPS endpoint on your server to receive webhook events:
 
-   <Frame caption="Add webhook URL to the webhook field">
-     <img src="/images/agent-details.png" />
-   </Frame>
-
-<Note>
-  Now anytime a noteworthy event takes place, a payload will be sent and your AI
-  Agent will be able to action off of it.
-</Note>
-
-## Callback Payload
-
-The webhook endpoint you specify must support POST requests. The body recieve will be this format:
-
+```javascript
+app.post('/webhook', express.json(), (req, res) => {
+  const event = req.body;
+  
+  // Handle the event
+  handleWebhookEvent(event);
+  
+  // Return 200 to acknowledge receipt
+  res.status(200).send();
+});
 ```
-{
-    "eventType": "customer-deposit.successful",
-    "details": {
-        "customerId": "user_123",
-        "amount": 100,  // 1 USD (returned in cents)
-        "currency": "USD",
-        "metadata": {       // Your custom data from the original request
-            "sessionId": "abc123",
-            "userId": "user_456"
-        }
-    }
-}
-```
+
+### 2. Register Webhook URL
+
+1. Go to your [Agent Settings](https://app.paymanai.com/dashboard/agents)
+2. Add your webhook URL
+3. Save changes
+
+<Frame caption="Configure webhook URL in Agent Settings">
+  <img src="/images/agent-details.png" />
+</Frame>
 
 ## Event Types
 
 ```typescript
-type WebhookEvent = {
-  eventType: EventType;
-  details: EventDetails;
-};
-
 enum EventType {
   // Customer Deposits
-  WALLET_CUSTOMER_DEPOSIT_PENDING = "customer-deposit.pending",
-  WALLET_CUSTOMER_DEPOSIT_SUCCESS = "customer-deposit.successful",
-  WALLET_CUSTOMER_DEPOSIT_FAILURE = "customer-deposit.failed",
+  CUSTOMER_DEPOSIT_PENDING = "customer-deposit.pending",
+  CUSTOMER_DEPOSIT_SUCCESS = "customer-deposit.successful",
+  CUSTOMER_DEPOSIT_FAILURE = "customer-deposit.failed",
 
   // Balance Alerts
-  BALANCE_LOW_WARNING = "balance.low", // sent at 50% of your highest balance
+  BALANCE_LOW = "balance.low",  // Triggered at 50% of peak balance
 
-  // Payment Requests
-  PAYMENT_REQUEST_APPROVED = "approval-request.approved",
-  PAYMENT_REQUEST_REJECTED = "approval-request.rejected",
-  PAYMENT_REQUEST_FAILED = "approval-request.failed",
+  // Payment Approvals
+  PAYMENT_APPROVED = "approval-request.approved",
+  PAYMENT_REJECTED = "approval-request.rejected",
+  PAYMENT_FAILED = "approval-request.failed"
 }
 ```
 
-## Details Structure
+## Event Format
 
-The contents of the "details" object will depend somewhat on the type of event being received, but will contain one or more of the following:
+All webhook events follow this structure:
 
-```javascript
-"eventType": <eventType>
-"details": {
-  "customerId": "user_123", (applies only to customer-deposit.* events)
-  "amount": 100,  // 1 USD (in cents) (applies only to customer-deposit.* events)
-  "currency": "USD",
-  "reason": "xxxx", // (only returned in customer-deposit.failed events)
-  "balance": "100", // (applies only to balance.low events)
-  "metadata": {       // Your custom data from the original request
+```json
+{
+  "eventType": "customer-deposit.successful",
+  "details": {
+    "customerId": "user_123",
+    "amount": 10000,  // $100.00 (in cents)
+    "currency": "USD",
+    "metadata": {
       "sessionId": "abc123",
-      "userId": "user_456"
+      "orderId": "order_789"
+    }
   }
 }
 ```
 
-## Metadata [Pro Tip]
+## Using Metadata
 
-When an agent takes an action (e.g. send payment or generate a customer link), it is possible to send along a `metadata` data property, which can be any JSON object.
-This metadata will be returned with any corresponding webhook callbacks as a `metadata` property of the `details` payload.
-
-This can be very useful for correlating webhook callbacks with the customer or action in your system. For example you might send the user ID
-of the user who triggered the deposit on your system, or the session ID (or thread ID) associate with the run of your agent system.
+Track context across events by including metadata in your requests:
 
 ```javascript
-const depositLink = await payman.payments.initiateCustomerDeposit({
-  customerId: "user_123",
-  amount: "1.0",
+// When creating a deposit link
+const checkout = await payman.payments.initiateCustomerDeposit({
+  customerId: 'user_123',
+  amountDecimal: 100.00,
   metadata: {
-    sessionId: "abc123",
-    orderId: "order_789",
-  },
+    sessionId: 'abc123',
+    orderId: 'order_789'
+  }
+});
+
+// Later, in your webhook handler
+app.post('/webhook', (req, res) => {
+  const event = req.body;
+  if (event.eventType === 'customer-deposit.successful') {
+    const { sessionId, orderId } = event.details.metadata;
+    // Resume processing with original context
+  }
 });
 ```
+
+## Best Practices
+
+1. **Acknowledge Quickly**
+   - Return a 200 status immediately
+   - Process events asynchronously
+   - Avoid long-running operations in the handler
+
+2. **Handle Retries**
+   - Events may be sent multiple times
+   - Implement idempotency checks
+   - Store processed event IDs
+
+3. **Verify Events**
+   - Validate event format
+   - Check required fields
+   - Process events in order
+
+## Next Steps
+
+<CardGroup>
+  <Card 
+    title="Send Payments" 
+    icon="money-bill-transfer" 
+    href="/capabilities/send-payment"
+  >
+    Start sending trackable payments
+  </Card>
+  <Card 
+    title="Customer Deposits" 
+    icon="wallet" 
+    href="/capabilities/customer-deposit"
+  >
+    Accept customer payments
+  </Card>
+  <Card 
+    title="Agent-to-Agent" 
+    icon="robot" 
+    href="/capabilities/agent-to-agent"
+  >
+    Enable inter-agent transfers
+  </Card>
+</CardGroup>

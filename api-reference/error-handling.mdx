@@ -1,31 +1,122 @@
 ---
 title: "Error Handling"
-description: "Information about handling API Errors"
+description: "Handle API errors consistently"
 ---
 
-When an error occurs on the Payman API, the response status code will be set in the 4xx or 5xx range.  Additionally, the response body will contain
-a JSON object with further information about the error.  The json will have the format:
+## Overview
 
-```js
+The Payman API uses standard HTTP response codes and returns detailed error information in a consistent format.
+
+## Error Response Format
+
+```json
 {
-  status: number, // The HTTP response status code
-  timestamp: string, // The timestamp at which the erro occurred
-  errorCode: string, // A more detailed reason for the error (see below for some common codes)
-  errorMessage: string, // Any additional descriptive text around the error and its cause
-  context: Map<string, any>, // A list of contextual information - this will contain things like IDs to which the error relates, etc
-  traceId: string // an internal ID for tracing the error
+  "status": 400,
+  "timestamp": "2024-01-22T10:00:00Z",
+  "errorCode": "invalid_payload",
+  "message": "Amount must be greater than 0",
+  "context": {
+    "field": "amountDecimal",
+    "value": "-50.00"
+  },
+  "traceId": "trace_abc123"
 }
 ```
 
+## HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 400 | Bad Request - Invalid request payload |
+| 401 | Unauthorized - Invalid API key |
+| 403 | Forbidden - Insufficient permissions |
+| 404 | Not Found - Resource doesn't exist |
+| 500 | Server Error - Please contact support |
+
 ## Common Error Codes
 
-The Payman system will attempt to provide context around why an error code was received.  Some common codes include:
+| Code | Description |
+|------|-------------|
+| `invalid_payload` | Request payload is invalid |
+| `insufficient_funds` | Not enough funds available |
+| `validation_error` | Field validation failed |
+| `entity_not_found` | Requested resource not found |
+| `not_authorized` | Invalid or missing credentials |
+| `not_allowed` | Insufficient permissions |
 
+## Error Examples
 
-- `invalid_payload` - something about the request payload is invalid, or the system is in the wrong state to accept this payload.  The `errorMessage` and `context` will provide more details.
-- `insufficient_funds` - there weren't enough funds in the wallet to perform the requested action
-- `validation_error` - a field in your payload has an invalid value
-- `entity_already_exists` - a conflicting entity already exists in the system
-- `entity_not_found` - the entity you're looking for couldn't be found
-- `not_authorized` - the authentication credentials provided are not valid or are missing
-- `not_allowed` - you are attempting to perform an action to which you do not have the requisite permissions on the system
+### Invalid Amount
+```json
+{
+  "status": 400,
+  "errorCode": "validation_error",
+  "message": "Amount must be greater than 0",
+  "context": {
+    "field": "amountDecimal"
+  }
+}
+```
+
+### Insufficient Funds
+```json
+{
+  "status": 400,
+  "errorCode": "insufficient_funds",
+  "message": "Available balance: $45.00, Required: $50.00",
+  "context": {
+    "available": 45.00,
+    "required": 50.00
+  }
+}
+```
+
+### Invalid API Key
+```json
+{
+  "status": 401,
+  "errorCode": "not_authorized",
+  "message": "Invalid API key provided"
+}
+```
+
+## Handling Errors
+
+```javascript
+try {
+  const payment = await payman.payments.sendPayment({
+    paymentDestinationId: 'dest_123',
+    amountDecimal: 50.00
+  });
+} catch (error) {
+  switch (error.errorCode) {
+    case 'insufficient_funds':
+      console.log('Not enough funds available');
+      break;
+    case 'validation_error':
+      console.log('Invalid payment details:', error.message);
+      break;
+    default:
+      console.log('Payment failed:', error.message);
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card
+    title="Send Payment"
+    icon="money-bill-transfer"
+    href="/api-reference/endpoint/send-payment"
+  >
+    Try sending a payment
+  </Card>
+  <Card
+    title="Webhooks"
+    icon="bell"
+    href="/webhook/retrieving-response"
+  >
+    Monitor payment status
+  </Card>
+</CardGroup>

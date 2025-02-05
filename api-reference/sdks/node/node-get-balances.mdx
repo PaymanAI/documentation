@@ -1,54 +1,97 @@
 ---
-title: "Get Balances"
-description: "Get how much your AI Agent can spend (per agent or per customer)"
+title: "Check Balances"
+description: "Learn how to check available balances for your AI Agent and customers"
 ---
 
-## Check Balances
+## Overview
 
-Two simple endpoints to check available balances - one for your customers and one for your AI Agent.
+The Balances API allows you to check available funds for both your AI Agent and your customers. A balance is considered "spendable" when:
+- Funds have been fully verified and received
+- Funds aren't reserved for pending tasks
 
-```typescript
-const client = new Paymanai({
-  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
-  environment: "sandbox",
-});
+## Check Agent Balance
 
-// Get a customer's balance
-const customerBalance = await client.balances.getCustomerBalance(
-  "cust_123", // customer ID
-  "USD" // currency
-);
-
-// Get your AI Agent's balance
-const agentBalance = await client.balances.getSpendableBalance(
-  "USD" // currency
-);
-```
-
-## What gets returned
-
-Both endpoints return a number representing the spendable balance in the currency's units:
+Check your AI Agent's available balance in a specific currency:
 
 ```typescript
-1.01; // means 1.01 USD
+const agentBalance = await payman.balances.getSpendableBalance('USD');
+console.log(`Available balance: $${agentBalance}`); // e.g., "Available balance: $150.00"
 ```
 
-The balance only includes funds that:
+### Parameters
 
-- Have been verified as received
-- Aren't reserved for other tasks
+| Parameter | Description |
+| --------- | ----------- |
+| `currency` | Currency code (e.g., 'USD', 'USDC') |
 
-## Parameters
+## Check Customer Balance
 
-For Customer Balance:
+Check a specific customer's available balance:
 
-- `customerId`: Either:
+```typescript
+const customerBalance = await payman.balances.getCustomerBalance(
+  'cust_123',  // Customer ID
+  'USD'        // Currency
+);
+console.log(`Customer balance: $${customerBalance}`);
+```
 
-  - Your system's customer ID
-  - Payman's customer ID
+### Parameters
 
-- currency: Currency code (e.g., "USD")
+| Parameter | Description |
+| --------- | ----------- |
+| `customerId` | Your system's customer ID or Payman's customer ID |
+| `currency` | Currency code (e.g., 'USD', 'USDC') |
 
-For Agent Balance:
+## Response Format
 
-- currency: Currency code (e.g. "USD")
+Both methods return a number representing the spendable balance in the currency's units:
+
+```typescript
+// Examples
+50.00    // $50.00 USD
+1.50     // $1.50 USD
+0.00     // No available balance
+```
+
+For cryptocurrencies, the appropriate decimal places are used:
+```typescript
+1.000000  // 1 USDC
+0.500000  // 0.5 USDC
+```
+
+## Error Handling
+
+```typescript
+try {
+  const balance = await payman.balances.getCustomerBalance('cust_123', 'USD');
+} catch (error) {
+  if (error.code === 'customer_not_found') {
+    console.error('Customer not found');
+  } else if (error.code === 'invalid_currency') {
+    console.error('Invalid currency specified');
+  } else {
+    console.error('Failed to get balance:', error.message);
+  }
+}
+```
+
+## Using Both Together
+
+You can check both balances to compare available funds:
+
+```typescript
+async function checkAllBalances(customerId: string, currency: string) {
+  const [agentBalance, customerBalance] = await Promise.all([
+    payman.balances.getSpendableBalance(currency),
+    payman.balances.getCustomerBalance(customerId, currency)
+  ]);
+
+  console.log(`Agent balance: $${agentBalance}`);
+  console.log(`Customer balance: $${customerBalance}`);
+}
+```
+
+<Note>
+  Balances are always returned in the currency's natural units. For USD, this means dollars (e.g., 10.50 is $10.50). For USDC, this means whole tokens with 6 decimal places (e.g., 1.000000 is 1 USDC).
+</Note>

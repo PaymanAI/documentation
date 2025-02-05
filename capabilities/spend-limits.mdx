@@ -1,37 +1,102 @@
 ---
-title: Agent Spending Controls
-description: "Powerful spending controls through an easy-to-use dashboard"
+title: "Spending Controls"
+description: "Configure powerful safety controls for your AI Agent's spending"
 ---
 
-### Set Spend Limits
+## Overview
 
-Managing AI spending shouldn't be complicated. The Payman dashboard gives you powerful controls without writing a single line of code.
+Payman's spending controls provide a robust safety layer for AI Agent transactions. Configure granular limits and approval workflows through an intuitive dashboard interface - no code required.
 
-Simply log into your Payman dashboard and set:
+## Control Types
 
+### Transaction Limits
+- Set maximum amount per transaction
+- Configure currency-specific limits
+- Apply different limits by payment type
+
+### Time-Based Controls
 - Daily spending caps
-- Monthly budgets (fresh start on the 1st of each month)
-- Per-transaction limits
+- Monthly budgets (resets first of each month)
+- Custom time window limits
 
-## Streamlined Payment Approvals
+### Approval Workflows
+- Require approval above threshold
+- Multi-level approval rules
+- Automatic approvals for trusted flows
 
-Keep control while maintaining efficiency. Approve AI Agent transactions on the Payman Dashboard.
+## Dashboard Configuration
 
-- All payments start with human approval required (safety first!)
-- Set custom approval thresholds as you gain confidence
-- Smaller transactions can flow automatically while keeping oversight on larger ones
+### 1. Set Basic Limits
 
-For instance, set a $50 approval threshold and let smaller transactions process automatically while maintaining control over larger expenses.
+Navigate to your [Agent Settings](https://app.paymanai.com/dashboard/agents):
+1. Select your agent
+2. Click "Spending Controls"
+3. Configure basic limits
+
+<Frame caption="Configure spending limits in the dashboard">
+  <img src="/images/agent-details.png" />
+</Frame>
+
+### 2. Configure Approvals
+
+Define when transactions need manual approval:
+
+- **All Transactions**: Maximum safety
+- **Above Threshold**: Balance convenience with control
+- **Custom Rules**: Based on payment type or destination
+
+## Real-Time Notifications
+
+Monitor spending activity via webhooks:
+
+```javascript
+app.post('/webhook', (req, res) => {
+  const event = req.body;
+  
+  switch(event.eventType) {
+    case 'approval-request.approved':
+      console.log('Payment approved:', event.details);
+      break;
+    case 'balance.low':
+      console.log('Balance warning:', event.details.balance);
+      break;
+  }
+});
+```
+
+## Customer Balance Management
+
+When using customer deposits, spending controls automatically:
+- Track per-customer balances
+- Enforce customer-specific limits
+- Prevent overspending customer funds
 
 <Note>
-  Your spending limits are always enforced, regardless of approval settings.
-  Safety and control, guaranteed.
+  Spending limits are always enforced, regardless of approval settings. This ensures maximum safety while maintaining flexibility.
 </Note>
 
-## Intelligent Customer Balance Management
+## Next Steps
 
-Payman automatically handles the complexity of customer deposits with your spending rules:
-
-- Customer deposits are tracked automatically
-- Spending limits apply intelligently to customer transactions
-- The system always enforces the stricter limit for safety
+<CardGroup>
+  <Card 
+    title="Send Payments" 
+    icon="money-bill-transfer" 
+    href="/capabilities/send-payment"
+  >
+    Start sending controlled payments
+  </Card>
+  <Card 
+    title="Customer Deposits" 
+    icon="wallet" 
+    href="/capabilities/customer-deposit"
+  >
+    Accept and manage customer funds
+  </Card>
+  <Card 
+    title="Webhooks" 
+    icon="bell" 
+    href="/webhook/retrieving-response"
+  >
+    Monitor spending activity
+  </Card>
+</CardGroup>

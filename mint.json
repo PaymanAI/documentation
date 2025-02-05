@@ -95,8 +95,7 @@
       "pages": [
         "api-reference/introduction",
         "api-reference/authentication",
-        "api-reference/error-handling",
-        "api-reference/pagination"
+        "api-reference/error-handling"
       ]
     },
     {

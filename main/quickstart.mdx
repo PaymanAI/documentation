@@ -1,154 +1,231 @@
 ---
 title: "Quickstart"
-description: "Start integrating Payman in less than 5 minutes"
+description: "Start sending AI Agent payments in minutes"
 ---
 
-## Your AI Agents First Payment
+## Overview
 
-Here we'll walk you through how to
+This guide will help you start sending payments with your AI Agent. You'll learn how to:
+1. Get your API credentials
+2. Create a payment destination
+3. Send your first payment
 
-- Get your AI Agent API Key
-- Have your AI Agent make a payment
+## Get API Key
 
-### Sign Up To Payman Platform
+1. Sign up at [Payman Dashboard](https://app.paymanai.com)
+2. Switch to "Developer Mode" for testing with $1,000 in test funds
+3. Navigate to AI Agents → Default Agent
+4. Click "Regenerate Credentials" to get your API key
 
-Go to the <a href="https://app.paymanai.com">Payman web app</a> and sign up for an account. Sign up as a developer and get onboarded.
-
-### Link an Account
-
-In "Developer Mode" we automatically set up a first Agent, and prefund your account with $1,000 USD of test funds. In "Developer Mode" no real money
-is ever spent so you can test the system freely. To get access to "Live Mode" and connect your real account, please request access on the Dashboard.
-
-<Frame caption="Enter Developer Mode to experiment with test funds">
-  <img src="/images/developer-mode-switch.png" />
-</Frame>
-
-### Get API Key
-
-In order for your AI Agent to access the Payman API it will need an API Key. You can get this by navigating to the AI Agents
-tab in the sidebar menu and selecting the "Default Agent".
-
-<Frame caption="View your agent details">
-  <img src="/images/agent-details.png" />
-</Frame>
-
-Clicking the "Regenerate Credentials" button will generate a new API key which you can save for future use.
-
-<Frame caption="Save your API Key">
+<Frame caption="Get your API key from the dashboard">
   <img src="/images/api-key-secret.png" />
 </Frame>
 
-<Warning>
-  This API key is only shown once and if regenerated will invalidate previous
-  API keys, so keep it safe.
-</Warning>
+<Note>
+  Save your API key securely - it's shown only once and can't be retrieved later.
+</Note>
 
-### Setting up a Payee
-
-In order for the AI Agent to have somewhere to send the funds, you will need a payee set up on the Payman system. There are two options:
-
-1. You can create the Payee via the Dashboard UI manually; or
-2. The AI Agent can create it as part of its payment request
-
-In either event you will need the bank details to which you wish to send the funds. This needs to be a US Bank Account's ACH details. It should include:
-
-1. Account Type (checking or savings)
-2. Account Holder Name
-3. Account Number
-4. Routing Number
-
-For now we will create it manually by navigating to the Payees page on the Dashboard and selecting "Add New Payee"
-
-<Frame caption="Add a New Payee">
-  <img src="/images/add-payee.png" />
-</Frame>
-
-### Integrate API into AI Agent
-
-Add Payman's API to your AI Agent Tool capabilities. We've provided what an example AI agent using Payman looks like. This example uses
-Langchain, but any other agentic framework can be used as well.
+## Install SDK
 
 <CodeGroup>
 
-```python Langchain.py
-import requests
-import os
-from dotenv import load_dotenv
-from langchain import hub
-from langchain.tools import tool
-from langchain.agents import AgentExecutor, create_openai_functions_agent
-from langchain_openai import ChatOpenAI
+```bash npm
+npm install paymanai
+```
 
-# Load the .env file
-load_dotenv()
-
-@tool
-def make_payment() -> str:
-    """Make a payment to a payee using the Payman platform""" #Instructions for the AI Agent on when to use Payman API
-    headers = {
-        "x-payman-api-secret": os.getenv("PAYMAN_API_SECRET")
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.payman.v1+json"
-    }
-    payload = {
-        "paymentDestinationId": <the ID of the payee you created above>,
-        "amountDecimal": "50.00", # This will result in the AI paying 50 USD to the destination
-    }
-
-    try:
-        # Replace the URL with "https://api.paymanai.com/api/payments/send-payment" if you want to send real money on the live system once you've been onboarded there
-        response = requests.post("https://api-sandbox.paymanai.com/api/payments/send-payment", headers=headers, json=payload)
-        return response.content
-    except requests.exceptions.HTTPError as e:
-        raise SystemExit(e)
-
-tools = [create_task]
-llm = ChatOpenAI(model="gpt-4o")
-prompt = hub.pull("hwchase17/openai-functions-agent:a1655024")
-agent = create_openai_functions_agent(llm, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-agent_executor.invoke({"input": """
-    "input": "Ask the user to confirm the payment and if they say it's okay, then make the payment using Payman."
-"""}) # Example Prompt Description For AI Agent
+```bash pip
+pip install paymanai
 ```
 
 </CodeGroup>
 
-### Run The Code Above To Make a Payment
+## Create a Payment Destination
 
-You can actually run the code above as python script to make your first payment via Payman.
+Create a payee to send funds to:
 
-To run this agent, create a `.env` file in this directory and put the following environment variables:
+```javascript
+const payee = await payman.payments.createPayee({
+  type: 'US_ACH',
+  name: 'Test Account',
+  accountHolderName: 'John Doe',
+  accountNumber: '000123456789',
+  routingNumber: '011000138',
+  accountType: 'checking'
+});
 
-```
-OPENAI_API_KEY=<your openAI API key - the agent will use the gpt-4o model by default>
-PAYMAN_API_SECRET=<your Payman API Secret for that agent>
-```
-
-Create a `agent.py` file where your example agent code above will be pasted. Replace the Payman variables in there with the environment variables you created.
-
-Now install the dependencies and run the agent.
-
-```
-pip install -U langchain-openai langchain-community langchainhub langchain openai python-dotenv
-python agent.py
+console.log('Created payee:', payee.id);
 ```
 
-Once you have done this you can communicate with the agent and have it make the payment!
+## Send a Payment
 
-<Note>
-  If you have not funded your AI Agent with the right amount of funds to spend
-  based on the payment above, then you need to adjust accordingly!
-</Note>
+Make your first payment:
 
-### Approving Payments
+```javascript
+const payment = await payman.payments.sendPayment({
+  paymentDestinationId: payee.id,
+  amountDecimal: 10.00,
+  memo: 'Test payment'
+});
 
-By default Payman AI will require all payments by an Agent to be approved by a human before the funds are transferred.
-You can change this behavior on the Agent's details page, where you can set a different limit for the "Approvals Required" field.
-When doing so, any payments above the specified amount will require human approvals, any payments below will be automatically processed.
-This means you can adjust your limit as you gain trust in the Agent's behavior over time without worrying about it misspending funds.
+console.log('Payment initiated:', payment.reference);
+```
 
-Let's approve the payment now by going to the "Requests" page on the side bar and approving the Pending request. Once done, the funds will be deducted from your
-balance and the payment will be on its way. In "Developer Mode" this will resolve instantly. In the case of a live payment the ACH transfer can take 1-3 business days
-to complete, during which time the funds will show as Pending.
+## Example Integration
+
+Choose your preferred AI framework:
+
+<CodeGroup>
+
+```python Langchain
+from langchain.tools import tool
+from langchain.agents import AgentExecutor, create_openai_functions_agent
+from langchain_openai import ChatOpenAI
+from paymanai import Paymanai
+
+# Initialize Payman client
+payman = Paymanai(
+    x_payman_api_secret='your_api_key',
+    environment='sandbox'
+)
+
+@tool
+def make_payment(amount: float, destination_id: str) -> str:
+    """Send a payment using Payman"""
+    try:
+        payment = payman.payments.sendPayment({
+            'paymentDestinationId': destination_id,
+            'amountDecimal': amount
+        })
+        return f"Payment initiated: {payment.reference}"
+    except Exception as e:
+        return f"Payment failed: {str(e)}"
+
+# Set up agent
+tools = [make_payment]
+llm = ChatOpenAI(model="gpt-4")
+agent = create_openai_functions_agent(llm, tools)
+executor = AgentExecutor(agent=agent, tools=tools)
+
+# Use the agent
+response = executor.invoke({
+    "input": "Send $50 to destination dest_123"
+})
+```
+
+```typescript Vercel AI SDK
+import { z } from 'zod';
+import { generateText, tool } from 'ai';
+import { Paymanai } from 'paymanai';
+
+// Initialize Payman client
+const payman = new Paymanai({
+  xPaymanAPISecret: 'your_api_key',
+  environment: 'sandbox'
+});
+
+// Define payment tool
+const paymentTool = tool({
+  name: 'make_payment',
+  description: 'Send a payment to a specified destination',
+  parameters: z.object({
+    destinationId: z.string().describe('The payment destination ID'),
+    amount: z.number().describe('The amount to send in decimal format'),
+    memo: z.string().optional().describe('Optional payment memo')
+  }),
+  execute: async ({ destinationId, amount, memo }) => {
+    try {
+      const payment = await payman.payments.sendPayment({
+        paymentDestinationId: destinationId,
+        amountDecimal: amount,
+        memo
+      });
+      return { success: true, reference: payment.reference };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+});
+
+// Use the tool
+const result = await generateText({
+  model: 'gpt-4',
+  tools: {
+    make_payment: paymentTool
+  },
+  prompt: 'Send $50 to destination dest_123 with memo "Test payment"'
+});
+```
+
+```python CrewAI
+from crewai import Agent, Task, Crew, Process
+from paymanai import Paymanai
+
+# Initialize Payman client
+payman = Paymanai(
+    x_payman_api_secret='your_api_key',
+    environment='sandbox'
+)
+
+# Create payment tool
+def make_payment(amount: float, destination_id: str) -> str:
+    try:
+        payment = payman.payments.sendPayment({
+            'paymentDestinationId': destination_id,
+            'amountDecimal': amount
+        })
+        return f"Payment initiated: {payment.reference}"
+    except Exception as e:
+        return f"Payment failed: {str(e)}"
+
+# Create payment agent
+payment_agent = Agent(
+    role='Payment Processor',
+    goal='Process payments accurately and securely',
+    backstory='I am an AI agent responsible for handling financial transactions',
+    tools=[make_payment],
+    verbose=True
+)
+
+# Create payment task
+payment_task = Task(
+    description='Send a payment of $50 to destination dest_123',
+    agent=payment_agent
+)
+
+# Create and run crew
+crew = Crew(
+    agents=[payment_agent],
+    tasks=[payment_task],
+    process=Process.sequential
+)
+
+result = crew.kickoff()
+```
+
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup>
+  <Card 
+    title="Payment Types" 
+    icon="credit-card" 
+    href="/capabilities/send-payment"
+  >
+    Learn about different payment methods
+  </Card>
+  <Card 
+    title="Spending Controls" 
+    icon="shield-check" 
+    href="/capabilities/spend-limits"
+  >
+    Configure payment limits and approvals
+  </Card>
+  <Card 
+    title="Webhooks" 
+    icon="bell" 
+    href="/webhook/retrieving-response"
+  >
+    Get real-time payment updates
+  </Card>
+</CardGroup>

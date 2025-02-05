@@ -1,16 +1,111 @@
 ---
-title: "Introduction"
-description: "Introduction to the API endpoints"
+title: "API Reference"
+description: "REST API for AI Agents to interact with the Payman platform"
 ---
 
-## Welcome
+## Overview
 
-To start using the Payman API, be sure to retrieve your API key on the <a href="/main/quickstart">Payman Platform</a>.
+The Payman API enables AI Agents to send and receive payments securely. All API access is over HTTPS and endpoints are accessed from `https://agent.payman.ai/api`.
+
+```bash
+curl https://agent.payman.ai/api/payments/send-payment \
+  -H "x-payman-api-secret: sk_test_..." \
+  -d '{
+    "paymentDestinationId": "dest_123",
+    "amountDecimal": 50.00,
+    "memo": "Service payment"
+  }'
+```
+
+## Authentication
+
+All API requests require the `x-payman-api-secret` header:
+
+```bash
+'x-payman-api-secret: sk_test_...'
+```
+
+Get your API key from the [Payman Dashboard](https://app.paymanai.com).
+
+<Note>
+  Keep your API key secure. Never share it in public repositories or client-side code.
+</Note>
+
+## Environments
+
+```bash
+# Production
+https://agent.payman.ai/api
+
+# Test Mode
+https://agent-sandbox.payman.ai/api
+```
+
+Test mode provides a sandbox environment with simulated funds for development and testing.
+
+## Core Endpoints
+
+<CardGroup>
+  <Card
+    title="Send Payment"
+    icon="money-bill-transfer"
+    href="/api-reference/endpoint/send-payment"
+  >
+    Send funds to payment destinations
+  </Card>
+  <Card
+    title="Create Payee"
+    icon="user-plus"
+    href="/api-reference/endpoint/create-payee"
+  >
+    Add payment destinations
+  </Card>
+  <Card
+    title="Customer Deposits"
+    icon="wallet"
+    href="/api-reference/endpoint/customer-deposit"
+  >
+    Generate deposit links
+  </Card>
+  <Card
+    title="Check Balance"
+    icon="scale-balanced"
+    href="/api-reference/endpoint/get-balance"
+  >
+    View available funds
+  </Card>
+</CardGroup>
+
+## Response Format
+
+All responses use standard HTTP status codes and return JSON:
+
+```json
+{
+  "status": 200,
+  "timestamp": "2024-01-22T10:00:00Z",
+  "data": {
+    "reference": "pay_123abc",
+    "amount": 5000,
+    "status": "pending"
+  }
+}
+```
+
+## Versioning
+
+Include the API version in the Accept header:
+
+```bash
+Accept: application/vnd.payman.v1+json
+```
+
+## Next Steps
 
 <Card
-  title="Send Payment"
-  icon="leaf"
+  title="Send Your First Payment"
+  icon="rocket"
   href="/api-reference/endpoint/send-payment"
 >
-  View the Send Payment API
+  Learn how to send funds using the Payman API
 </Card>

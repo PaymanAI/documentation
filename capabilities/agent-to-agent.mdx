@@ -1,41 +1,180 @@
 ---
-title: "Agent to Agent Payments"
-description: "Enable direct payments between AI Agents"
+title: "Agent-to-Agent Payments"
+description: "Enable instant, zero-fee transfers between AI Agents"
 ---
 
-Coming soon! AI Agent to Agent Payments will allow direct fund transfers between AI Agents. Each agent will have a unique identifier (`paygentId`) that can be used to send and receive payments.
+## Overview
 
-```typescript
-const client = new Paymanai({
-  xPaymanAPISecret: process.env["PAYMAN_API_SECRET"],
-  environment: "sandbox",
-});
+Transform how AI Agents interact with instant, fee-free payments on the Payman network. Agent-to-Agent transfers enable seamless value exchange between AIs with zero transaction costs and immediate settlement.
 
-// Get your agent's unique ID
-const myAgentInfo = await client.me.get();
-// Returns: { paygentId: "agent_abc123", ... }
+<Note>
+  **Zero fees, instant transfers** - All Agent-to-Agent payments are completely free and settle immediately, enabling real-time AI collaboration at scale.
+</Note>
 
-// Add another agent as a payment destination
-const agentPayee = await client.payments.createPayee({
-  type: "AGENT",
-  paygentId: "agent_xyz789", // The other agent's ID
-  name: "Trading Bot Agent",
-  tags: ["agent", "trading"],
-});
+## Key Benefits
 
-// Send payment to the agent
-const payment = await client.payments.sendPayment({
-  paymentDestinationId: agentPayee.id,
-  amountDecimal: 100.0,
-  memo: "Algorithm training fee",
+### Zero Transaction Fees
+- **100% fee-free transfers** between any agents on the network
+- No hidden costs or transaction charges
+- Scale AI interactions without increasing costs
+
+### Instant Settlement
+- **Real-time fund availability**
+- No waiting periods or holds
+- Enable rapid AI service exchanges
+- Immediate balance updates
+
+### Maximum Security
+- Cryptographically secure agent identities
+- Built-in fraud prevention
+- Automatic transaction verification
+- Complete audit trail
+
+## Implementation
+
+### 1. Get Agent IDs
+
+Find agent IDs in your [Payman Dashboard](https://app.paymanai.com/dashboard/agents):
+- Each agent has a unique identifier starting with `agt-`
+- Use these IDs to establish payment connections
+- Verify IDs carefully before sending payments
+
+### 2. Add Recipient Agent
+
+Create a payment link to another agent:
+
+```javascript
+const agentPayee = await payman.payments.createPayee({
+  type: 'PAYMAN_AGENT',
+  payman_agent_id: 'agt-xyz789',  // Recipient agent's ID from dashboard
+  name: 'Trading Bot Agent',
+  tags: ['agent', 'trading'],
+  metadata: {
+    service_type: 'ml_training',
+    integration_id: 'int_123'
+  }
 });
 ```
 
-This feature will enable:
+### 3. Execute Instant Transfer
 
-- Direct agent-to-agent transactions
-- Zero-fee transactions between AI agents
-- Instant fund settlement
-- Automated payments between AI systems
-- Simplified settlement for agent services
-- Secure fund transfers with agent identity verification
+Send funds with immediate settlement:
+
+```javascript
+const payment = await payman.payments.sendPayment({
+  paymentDestinationId: agentPayee.id,
+  amountDecimal: 100.00,
+  memo: 'ML model training fee',
+  metadata: {
+    model_id: 'mod_456',
+    training_session: 'sess_789'
+  }
+});
+
+// Funds are available instantly to the recipient agent
+```
+
+## Real-Time Notifications
+
+### Set Up Webhooks
+
+1. Create an endpoint to receive payment events
+2. Add your webhook URL in the [Agent Details](https://app.paymanai.com/dashboard/agents) page
+3. Start receiving real-time payment notifications
+
+```javascript
+app.post('/webhook', (req, res) => {
+  const event = req.body;
+  
+  switch(event.eventType) {
+    case 'approval-request.approved':
+      console.log('Payment approved:', event.details);
+      break;
+    case 'payment-request.failed':
+      console.log('Payment failed:', event.details.reason);
+      break;
+  }
+});
+```
+
+### Track Payments with Metadata
+
+Add context to your transfers for easier tracking:
+
+```javascript
+const payment = await payman.payments.sendPayment({
+  paymentDestinationId: agentPayee.id,
+  amountDecimal: 100.00,
+  metadata: {
+    session_id: 'sess_123',
+    service_type: 'training',
+    model_version: 'v2.1'
+  }
+});
+```
+
+This metadata will be included in webhook notifications, making it easy to correlate events with your system's operations.
+
+## Use Cases
+
+### AI Service Marketplace
+- AI agents can instantly pay for services from other agents
+- Real-time bidding and service execution
+- Automated service discovery and payment
+
+### Collaborative AI Systems
+- Split payments between cooperating agents
+- Reward successful AI collaborations
+- Pool resources for complex tasks
+
+### Automated Trading
+- Instant settlement for AI trading systems
+- Zero-fee transfers between trading agents
+- Real-time profit sharing and redistribution
+
+## Security Best Practices
+
+1. **Verify Agent Identity**
+   - Always confirm agent IDs through the dashboard
+   - Use metadata to track agent relationships
+   - Implement approval flows for new agent connections
+
+2. **Set Transfer Limits**
+   - Configure maximum transfer amounts
+   - Set daily/monthly transfer caps
+   - Enable approval requirements for large transfers
+
+3. **Monitor Activity**
+   - Track all inter-agent transfers
+   - Set up alerts for unusual activity
+   - Regular audit of agent relationships
+
+## Next Steps
+
+<CardGroup>
+  <Card 
+    title="Register Agent" 
+    icon="user-plus" 
+    href="/capabilities/register-agent"
+  >
+    Join the zero-fee agent network
+  </Card>
+  <Card 
+    title="Check Balances" 
+    icon="wallet" 
+    href="/api-reference/sdks/node/node-get-balances"
+  >
+    Track your agent's funds in real-time
+  </Card>
+  <Card 
+    title="Spending Controls" 
+    icon="shield-check" 
+    href="/capabilities/spend-limits"
+  >
+    Set up secure transfer rules
+  </Card>
+</CardGroup>
+
+<Note>
+  Ready to scale your AI interactions? Agent-to-Agent payments enable unlimited, free transfers between AIs. No fees, no delays, no limits.
+</Note>
