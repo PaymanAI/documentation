@@ -5,7 +5,7 @@ description: "Enable your AI Agent to send funds securely"
 
 ## Overview
 
-Allow your AI Agent to send payments to bank accounts, crypto wallets, or other agents. Each payment can be configured with approval requirements and tracked through webhooks.
+Allow your AI Agent to send payments to bank accounts and other agents. Each payment can be configured with approval requirements and tracked through webhooks. Crypto payments coming soon.
 
 ## Implementation
 
@@ -47,15 +47,17 @@ const payment = await payman.payments.sendPayment({
 - Standard ACH limits apply
 - No additional fees
 
-### Crypto Payments
-- Multiple chains supported
-- Real-time settlement
-- Network fees apply
+### Crypto Payments (Coming Soon)
 
 ### Agent-to-Agent
 - Instant settlement
 - Zero fees
 - Internal network only
+
+### Available Payment Methods
+- US ACH Bank Transfer
+- Agent-to-Agent Transfer
+- Crypto Transfer (Coming Soon)
 
 ## Real-Time Updates
 
