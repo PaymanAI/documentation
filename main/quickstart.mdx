@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-description: "Start sending AI Agent payments in minutes"
+description: "Add AI payments in minutes"
 ---
 
 ## Overview
@@ -9,6 +9,7 @@ This guide will help you start sending payments with your AI Agent. You'll learn
 1. Get your API credentials
 2. Create a payment destination
 3. Send your first payment
+4. Add AI capabilities
 
 ## Get API Key
 
@@ -21,216 +22,129 @@ This guide will help you start sending payments with your AI Agent. You'll learn
   <img src="/images/api-key-secret.png" />
 </Frame>
 
-<Note>
-  Save your API key securely - it's shown only once and can't be retrieved later.
-</Note>
+## Installation
 
-## Install SDK
+Install Paykit and your preferred AI SDK:
 
-<CodeGroup>
+```bash
+# Install core packages
+npm install payman-paykit ai
 
-```bash npm
-npm install paymanai
+# Choose your AI provider
+npm install @ai-sdk/openai   # For OpenAI
+# or
+npm install @ai-sdk/anthropic  # For Anthropic
 ```
 
-```bash pip
-pip install paymanai
-```
+## Basic Setup
 
-</CodeGroup>
+Create a new API route (`app/api/chat/route.ts`):
 
-## Create a Payment Destination
+```typescript
+import { paykit } from 'payman-paykit';
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
 
-Create a payee to send funds to:
-
-```javascript
-const payee = await payman.payments.createPayee({
-  type: 'US_ACH',
-  name: 'Test Account',
-  accountHolderName: 'John Doe',
-  accountNumber: '000123456789',
-  routingNumber: '011000138',
-  accountType: 'checking'
-});
-
-console.log('Created payee:', payee.id);
-```
-
-## Send a Payment
-
-Make your first payment:
-
-```javascript
-const payment = await payman.payments.sendPayment({
-  paymentDestinationId: payee.id,
-  amountDecimal: 10.00,
-  memo: 'Test payment'
-});
-
-console.log('Payment initiated:', payment.reference);
-```
-
-## Example Integration
-
-Choose your preferred AI framework:
-
-<CodeGroup>
-
-```python Langchain
-from langchain.tools import tool
-from langchain.agents import AgentExecutor, create_openai_functions_agent
-from langchain_openai import ChatOpenAI
-from paymanai import Paymanai
-
-# Initialize Payman client
-payman = Paymanai(
-    x_payman_api_secret='your_api_key',
-    environment='sandbox'
-)
-
-@tool
-def make_payment(amount: float, destination_id: str) -> str:
-    """Send a payment using Payman"""
-    try:
-        payment = payman.payments.sendPayment({
-            'paymentDestinationId': destination_id,
-            'amountDecimal': amount
-        })
-        return f"Payment initiated: {payment.reference}"
-    except Exception as e:
-        return f"Payment failed: {str(e)}"
-
-# Set up agent
-tools = [make_payment]
-llm = ChatOpenAI(model="gpt-4")
-agent = create_openai_functions_agent(llm, tools)
-executor = AgentExecutor(agent=agent, tools=tools)
-
-# Use the agent
-response = executor.invoke({
-    "input": "Send $50 to destination dest_123"
-})
-```
-
-```typescript Vercel AI SDK
-import { z } from 'zod';
-import { generateText, tool } from 'ai';
-import { Paymanai } from 'paymanai';
-
-// Initialize Payman client
-const payman = new Paymanai({
-  xPaymanAPISecret: 'your_api_key',
+// Initialize Paykit
+const tools = paykit({
+  apiSecret: process.env.PAYMAN_API_SECRET!,
   environment: 'sandbox'
 });
 
-// Define payment tool
-const paymentTool = tool({
-  name: 'make_payment',
-  description: 'Send a payment to a specified destination',
-  parameters: z.object({
-    destinationId: z.string().describe('The payment destination ID'),
-    amount: z.number().describe('The amount to send in decimal format'),
-    memo: z.string().optional().describe('Optional payment memo')
-  }),
-  execute: async ({ destinationId, amount, memo }) => {
-    try {
-      const payment = await payman.payments.sendPayment({
-        paymentDestinationId: destinationId,
-        amountDecimal: amount,
-        memo
-      });
-      return { success: true, reference: payment.reference };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-});
+// Create chat endpoint
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const model = openai('gpt-4');
+  
+  const result = streamText({
+    model,
+    messages,
+    tools,
+    system: "You are a payment assistant that can send money and manage transactions."
+  });
 
-// Use the tool
-const result = await generateText({
-  model: 'gpt-4',
-  tools: {
-    make_payment: paymentTool
-  },
-  prompt: 'Send $50 to destination dest_123 with memo "Test payment"'
-});
+  return result.toDataStreamResponse();
+}
 ```
 
-```python CrewAI
-from crewai import Agent, Task, Crew, Process
-from paymanai import Paymanai
+## Environment Setup
 
-# Initialize Payman client
-payman = Paymanai(
-    x_payman_api_secret='your_api_key',
-    environment='sandbox'
-)
+Add to your `.env.local`:
 
-# Create payment tool
-def make_payment(amount: float, destination_id: str) -> str:
-    try:
-        payment = payman.payments.sendPayment({
-            'paymentDestinationId': destination_id,
-            'amountDecimal': amount
-        })
-        return f"Payment initiated: {payment.reference}"
-    except Exception as e:
-        return f"Payment failed: {str(e)}"
-
-# Create payment agent
-payment_agent = Agent(
-    role='Payment Processor',
-    goal='Process payments accurately and securely',
-    backstory='I am an AI agent responsible for handling financial transactions',
-    tools=[make_payment],
-    verbose=True
-)
-
-# Create payment task
-payment_task = Task(
-    description='Send a payment of $50 to destination dest_123',
-    agent=payment_agent
-)
-
-# Create and run crew
-crew = Crew(
-    agents=[payment_agent],
-    tasks=[payment_task],
-    process=Process.sequential
-)
-
-result = crew.kickoff()
+```bash
+PAYMAN_API_SECRET=your_api_secret
+PAYMAN_ENVIRONMENT=sandbox
+OPENAI_API_KEY=your_openai_key  # If using OpenAI
 ```
 
-</CodeGroup>
+## Client Implementation
+
+Create a new page component (`app/page.tsx`):
+
+```typescript
+'use client';
+
+import { useChat } from 'ai/react';
+
+export default function Chat() {
+  const { messages, input, handleInputChange, handleSubmit } = useChat();
+
+  return (
+    <div>
+      {messages.map(m => (
+        <div key={m.id}>
+          {m.role}: {m.content}
+        </div>
+      ))}
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Send a message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
+}
+```
+
+The `useChat` hook automatically handles:
+- WebSocket connection
+- Message streaming
+- Tool call responses
+- Chat history
 
 ## Next Steps
 
 <CardGroup>
-  <Card 
+  <Card
+    title="PayKit + AI SDK Quickstart"
+    icon="github"
+    href="https://github.com/PaymanAI/payman-ai-sdk-qs"
+  >
+    Complete end to end example
+  </Card>
+  <Card
     title="Payment Types" 
     icon="credit-card" 
     href="/capabilities/send-payment"
   >
     Learn about different payment methods
   </Card>
-  <Card 
-    title="Spending Controls" 
-    icon="shield-check" 
-    href="/capabilities/spend-limits"
+  <Card
+    title="Paykit"
+    icon="toolbox"
+    href="/main/toolkit"
   >
-    Configure payment limits and approvals
+    Explore payment tools
   </Card>
-  <Card 
-    title="Webhooks" 
-    icon="bell" 
-    href="/webhook/retrieving-response"
+  <Card
+    title="Frameworks"
+    icon="brackets-curly"
+    href="/frameworks/vercel-ai"
   >
-    Get real-time payment updates
+    View framework guides
   </Card>
 </CardGroup>
-
-## Payment Types
-- ACH Bank Transfer (US)
-- Agent-to-Agent Transfer
-- Crypto Transfer (Coming Soon)

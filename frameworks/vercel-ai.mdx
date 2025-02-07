@@ -1,0 +1,133 @@
+---
+title: "Vercel AI SDK"
+description: "Add payment capabilities to your Vercel AI SDK application"
+---
+
+## Overview
+
+The Vercel AI SDK integration allows you to add payment capabilities to your AI apps with Paykit.
+
+## Installation
+
+```bash
+npm install ai payman-paykit @ai-sdk/openai
+```
+
+## Basic Setup
+
+Create an API route in your Next.js application (`app/api/chat/route.ts`):
+
+```typescript
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+import { paykit } from 'payman-paykit';
+
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
+
+const tools = paykit({
+  apiSecret: process.env.PAYMAN_API_SECRET!,
+  environment: process.env.PAYMAN_ENVIRONMENT as 'sandbox' | 'production'
+});
+
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+    
+    const model = openai('gpt-4');
+
+    try {
+      const result = streamText({
+        model,
+        toolCallStreaming: true,
+        system: 'You are a payment assistant that can help send money and manage financial transactions.',
+        messages,
+        tools,
+      });
+
+      return result.toDataStreamResponse();
+    } catch (streamError) {
+      throw new Error(`Stream error: ${streamError.message}`);
+    }
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
+```
+
+## Environment Setup
+
+Add your API keys to `.env.local`:
+
+```bash
+OPENAI_API_KEY=sk-...
+PAYMAN_API_SECRET=your_api_secret
+PAYMAN_ENVIRONMENT=sandbox
+```
+
+## Client Implementation
+
+Create a chat interface in your app:
+
+```typescript
+'use client';
+
+import { useChat } from 'ai/react';
+
+export default function Chat() {
+  const { messages, input, handleInputChange, handleSubmit } = useChat();
+
+  return (
+    <div>
+      {messages.map(m => (
+        <div key={m.id}>
+          {m.role}: {m.content}
+        </div>
+      ))}
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Send a message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
+}
+```
+
+## Example Usage
+
+Your AI can now handle payment-related requests:
+
+```typescript
+// User: "Send $50 to John"
+// AI will use paykit.sendPayment()
+
+// User: "Create a deposit link for $100"
+// AI will use paykit.initiateCustomerDeposit()
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card
+    title="Example App"
+    icon="rocket"
+    href="https://github.com/PaymanAI/payman-ai-sdk-qs"
+  >
+    See a complete implementation
+  </Card>
+  <Card
+    title="Available Tools"
+    icon="wrench"
+    href="/main/toolkit"
+  >
+    View all payment capabilities
+  </Card>
+</CardGroup> 
