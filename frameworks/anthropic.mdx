@@ -1,0 +1,79 @@
+---
+title: "Anthropic"
+description: "Use Claude with Paykit"
+---
+
+## Overview
+
+Add payment capabilities to your Anthropic Claude applications using Paykit.
+
+## Installation
+
+```bash
+npm install @anthropic-ai/sdk payman-paykit
+```
+
+## Basic Setup
+
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+import { paykit } from 'payman-paykit';
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
+});
+
+const tools = paykit({
+  apiSecret: process.env.PAYMAN_API_SECRET!,
+  environment: process.env.PAYMAN_ENVIRONMENT as 'sandbox' | 'production'
+});
+
+async function callModel(userMessage: string) {
+  const message = await anthropic.messages.create({
+    model: "claude-3-sonnet-20240229",
+    max_tokens: 1024,
+    tools: tools,
+    messages: [
+      {
+        role: "user", 
+        content: userMessage
+      }
+    ]
+  });
+
+  return message.content;
+}
+```
+
+## Environment Setup
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+PAYMAN_API_SECRET=your_api_secret
+PAYMAN_ENVIRONMENT=sandbox
+```
+
+## Example Usage
+
+```typescript
+const response = await callModel('Send $50 to John for consulting');
+```
+
+## Next Steps
+
+<CardGroup>
+  <Card
+    title="Example App"
+    icon="rocket"
+    href="https://github.com/PaymanAI/payman-ai-sdk-qs"
+  >
+    See a complete implementation
+  </Card>
+  <Card
+    title="Available Tools"
+    icon="wrench"
+    href="/main/toolkit"
+  >
+    View all payment capabilities
+  </Card>
+</CardGroup> 

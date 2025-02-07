@@ -64,6 +64,16 @@
       ]
     },
     {
+      "group": "Frameworks",
+      "pages": [
+        "frameworks/vercel-ai",
+        "frameworks/openai",
+        "frameworks/anthropic",
+        "frameworks/langchain",
+        "frameworks/crew-ai"
+      ]
+    },
+    {
       "group": "Webhook",
       "pages": ["webhook/retrieving-response"]
     },
