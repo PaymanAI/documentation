@@ -69,8 +69,7 @@
         "frameworks/vercel-ai",
         "frameworks/openai",
         "frameworks/anthropic",
-        "frameworks/langchain",
-        "frameworks/crew-ai"
+        "frameworks/langchain"
       ]
     },
     {
