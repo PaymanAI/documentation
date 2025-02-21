@@ -1,129 +1,123 @@
 ---
 title: "Introduction"
-description: "The payment infrastructure for AI Agents"
+description: "**Payman AI: The Payment Infrastructure for AI Agents**"
 ---
 
-## Overview
+---
 
-Payman enables AI Agents to send and receive payments securely. Build AI applications that can handle real money with built-in safety controls and compliance.
+## **Overview**
+
+Payman AI enables AI agents to securely send and receive payments while ensuring compliance and safety at every step. With built-in security controls, developers can confidently build AI applications that handle real-money transactions seamlessly.
+
+### 🔧 Quick Example
 
 ```javascript
 const payment = await payman.payments.sendPayment({
-  paymentDestinationId: 'dest_123',
-  amountDecimal: 50.00,
-  memo: 'Service payment'
+	paymentDestinationId: "dest_123",
+	amountDecimal: 50.0,
+	memo: "Service payment",
 });
 ```
 
-## Features
+---
 
-### Secure Payments
-- ACH bank transfers
-- Agent-to-agent instant transfers
-- Crypto payments (Coming Soon)
-- Customer deposits
+## **Features**
 
-### Built for AI
-- AI-first API design
-- Framework integrations (Langchain, CrewAI, Vercel AI + More)
-- Automatic spend controls
-- Real-time webhooks
+Payman AI comes equipped with a suite of powerful features that allow developers to easily integrate AI Agents with enterprise-grade financial security.
 
-### Enterprise Ready
-- SOC 2 compliance
-- Bank-grade security
-- Complete audit trails
-- Detailed reporting
+### Effortless and Secure Payments
 
-## Get Started
+-   **ACH Bank Transfers** – Move money securely with automated clearing house transactions.
+-   **Instant Agent-to-Agent Transfers** – Enable real-time, frictionless payments between AI agents.
+-   **Crypto Payments (Coming Soon)** – Expand financial capabilities with digital assets.
+-   **Customer Deposits** – Allow users to fund AI Agents with secure checkout link.
 
-Start sending payments in minutes:
+### AI-First Infrastructure
 
-<CodeGroup>
+-   **AI-First API** – Designed for intelligent payment workflows, ensuring smooth AI Agent transactions.
+-   **Seamless Framework Integrations** – Plug and play with **LangChain, CrewAI, Vercel AI**, and more.
+-   **Automated Spend Controls** – Enforce dynamic spending rules and prevent unauthorized transactions.
+-   **Real-Time Webhooks** – Receive instant payment updates and event-driven notifications.
 
-```bash npm
-npm install paymanai
-```
+### Enterprise-Grade Security & Compliance
 
-```bash pip
-pip install paymanai
-```
+-   **SOC 2 Compliance** – Ensure data protection with industry-leading security standards.
+-   **Bank-Grade Security** – End-to-end encryption and fraud detection for complete financial safety.
+-   **Comprehensive Audit Trails** – Track every transaction with detailed logs for transparency.
+-   **Detailed Reporting** – Gain actionable financial insights with customizable reports.
 
-</CodeGroup>
+---
 
-## Popular Guides
+## Payman AI SDKs
+
+Payman AI offers two SDKs, enabling developers to quickly deploy and integrate AI agents with payment capabilities.
 
 <CardGroup cols={2}>
-  <Card
-    title="Quickstart"
-    icon="rocket"
-    href="/main/quickstart"
-  >
-    Send your first payment in 5 minutes
-  </Card>
-  <Card
-    title="AI Integration"
-    icon="robot"
-    href="/capabilities/send-payment"
-  >
-    Add payments to your AI Agent
-  </Card>
-  <Card
-    title="Safety Controls"
-    icon="shield-check"
-    href="/capabilities/spend-limits"
-  >
-    Configure spending limits
-  </Card>
-  <Card
-    title="Webhooks"
-    icon="bell"
-    href="/webhook/retrieving-response"
-  >
-    Get real-time updates
-  </Card>
+	<Card title='Node.js' icon='js' href='/api-reference/sdks/node'>
+		```bash npm install paymanai ```
+	</Card>
+	<Card title='Python' icon='python' href='/api-reference/sdks/python'>
+		```bash pip install paymanai ```
+	</Card>
 </CardGroup>
 
-## SDKs
-
-Official SDKs to help you integrate quickly:
-
-<CardGroup cols={2}>
-  <Card
-    title="Node.js"
-    icon="js"
-    href="/api-reference/sdks/node"
-  >
-    ```bash
-    npm install paymanai
-    ```
-  </Card>
-  <Card
-    title="Python"
-    icon="python"
-    href="/api-reference/sdks/python"
-  >
-    ```bash
-    pip install paymanai
-    ```
-  </Card>
-</CardGroup>
+---
 
 ## Use Cases
 
 ### AI Service Marketplace
-Enable AI Agents to pay for services from other agents with instant, zero-fee transfers.
+
+Enable AI agents to autonomously pay for services from other AI agents, creating a seamless and efficient ecosystem.
+
+-   AI agents can request and pay for tasks, services, or data from other agents.
+-   Transactions are instant and processed with zero fees.
+-   Ideal for AI-driven platforms where automation and inter-agent collaboration are key.
 
 ### Customer-Funded AI
-Let customers fund AI Agents to make purchases or payments on their behalf.
+
+Allow users to fund AI agents to handle purchases, subscriptions, or payments on their behalf.
+
+-   Customers deposit funds into an AI agent’s account.
+-   The agent can then autonomously make payments for services, products, or automated workflows.
+-   Ensures secure, controlled spending with customizable rules and limits.
 
 ### Automated Trading
-Build AI trading systems with secure fund management and instant settlements.
+
+Build AI-powered trading systems with real-time fund management and secure transactions.
+
+-   AI agents can autonomously execute trades based on predefined strategies.
+-   Instant fund settlements ensure fast and efficient trading.
+-   Secure transaction handling prevents unauthorized access and ensures compliance.
+
+---
+
+## Popular Guides
+
+<CardGroup cols={2}>
+	<Card title='Quickstart' icon='rocket' href='/main/quickstart'>
+		Send your first payment in 5 minutes
+	</Card>
+	<Card title='AI Integration' icon='robot' href='/capabilities/send-payment'>
+		Add payments to your AI Agent
+	</Card>
+	<Card
+		title='Safety Controls'
+		icon='shield-check'
+		href='/capabilities/spend-limits'>
+		Configure spending limits
+	</Card>
+	<Card title='Webhooks' icon='bell' href='/webhook/retrieving-response'>
+		Get real-time updates
+	</Card>
+</CardGroup>{" "}
+
+---
 
 ## Support
 
 Need help? We're here:
-- [API Reference](/api-reference)
-- [GitHub Issues](https://github.com/PaymanAI/documentation/issues)
-- [Twitter](https://twitter.com/PaymanAI)
-- [support@paymanai.com](mailto:support@paymanai.com)
+
+-   [API Reference](/api-reference)
+-   [GitHub Issues](https://github.com/PaymanAI/documentation/issues)
+-   [Twitter](https://twitter.com/PaymanAI)
+-   [support@paymanai.com](mailto:support@paymanai.com)
