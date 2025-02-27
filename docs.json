@@ -1,0 +1,149 @@
+{
+	"$schema": "https://mintlify.com/docs.json",
+	"theme": "maple",
+	"name": "Payman AI Documentation",
+	"colors": {
+		"primary": "#FF7D61",
+		"light": "#FF7D61",
+		"dark": "#FF7D61"
+	},
+	"favicon": "/logo/payman.png",
+	"navigation": {
+		"groups": [
+			{
+				"group": "Get Started",
+				"pages": [
+					"getting-started/quickstart",
+					{
+						"group": "Introduction",
+						"pages": [
+							"getting-started/introduction/ai-agent",
+							"getting-started/introduction/payman-ai",
+							"getting-started/introduction/tools-and-integrations"
+						]
+					},
+					{
+						"group": "Initial Setup",
+						"pages": [
+							"getting-started/initial-setup/get-api-key",
+							"getting-started/initial-setup/first-agent"
+						]
+					}
+				]
+			},
+			{
+				"group": "SDKs",
+				"pages": [
+					{
+						"group": "Node.js SDK",
+						"pages": [
+							"api-reference/sdks/node/node",
+							"api-reference/sdks/node/node-payments",
+							"api-reference/sdks/node/node-find-payee",
+							"api-reference/sdks/node/node-create-payee",
+							"api-reference/sdks/node/node-customer-deposits",
+							"api-reference/sdks/node/node-get-balances"
+						]
+					},
+					{
+						"group": "Python SDK",
+						"pages": [
+							"api-reference/sdks/python/python",
+							"api-reference/sdks/python/python-payments",
+							"api-reference/sdks/python/python-find-payee",
+							"api-reference/sdks/python/python-create-payee",
+							"api-reference/sdks/python/python-customer-deposits",
+							"api-reference/sdks/python/python-get-balances"
+						]
+					}
+				]
+			},
+			{
+				"group": "Tools",
+				"pages": [
+					"getting-started/toolkit",
+					"webhook/retrieving-response"
+				]
+			},
+			{
+				"group": "Features",
+				"pages": [
+					"capabilities/register-agent",
+					"capabilities/send-payment",
+					"capabilities/agent-to-agent",
+					"capabilities/customer-deposit",
+					"capabilities/spend-limits",
+					"capabilities/funding-sources"
+				]
+			},
+			{
+				"group": "Frameworks",
+				"pages": [
+					"frameworks/vercel-ai",
+					"frameworks/openai",
+					"frameworks/anthropic",
+					"frameworks/langchain"
+				]
+			},
+
+			{
+				"group": "APIs",
+				"pages": [
+					"api-reference/introduction",
+					"api-reference/authentication",
+					"api-reference/error-handling"
+				]
+			},
+			{
+				"group": "API Endpoints",
+				"pages": [
+					"api-reference/endpoint/send-payment",
+					"api-reference/endpoint/create-payment-destination",
+					"api-reference/endpoint/initiate-customer-deposit",
+					"api-reference/endpoint/search-destinations",
+					"api-reference/endpoint/get-currency-balance",
+					"api-reference/endpoint/get-customer-balance"
+				]
+			}
+		],
+
+		"global": {
+			"anchors": [
+				{
+					"anchor": "Discord",
+					"href": "https://discord.gg/uheBscdKas",
+					"icon": "discord"
+				},
+				{
+					"anchor": "Twitter",
+					"href": "https://www.x.com/paymanai",
+					"icon": "X"
+				}
+			]
+		}
+	},
+	"logo": {
+		"light": "/logo/light.png",
+		"dark": "/logo/dark.png"
+	},
+	"navbar": {
+		"links": [
+			{
+				"label": "Support",
+				"href": "mailto:support@paymanai.com"
+			}
+		],
+		"primary": {
+			"type": "button",
+			"label": "Dashboard",
+			"href": "https://app.paymanai.com"
+		}
+	},
+	"footer": {
+		"socials": {
+			"x": "https://x.com/paymanai",
+			"github": "https://github.com/paymanai",
+			"linkedin": "https://www.linkedin.com/company/paymanai"
+		}
+	}
+}
