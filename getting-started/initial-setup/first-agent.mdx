@@ -1,0 +1,434 @@
+---
+title: "Build Your First Agent"
+description: "Guide to creating an AI agent with payment capabilities"
+icon: "robot"
+---
+
+---
+
+## Overview
+
+This comprehensive guide will walk you through creating a fully functional AI agent with payment capabilities using Payman AI. By following these steps, you'll build a robust application that can send payments, manage payees, and handle financial transactions—all through natural language conversation.
+
+---
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+-   A Payman AI account with an [API key](/getting-started/initial-setup/get-api-key)
+-   Node.js installed (version 18 or later)
+-   a package manager (npm, pnpm, or yarn)
+-   Basic knowledge of JavaScript/TypeScript
+-   An OpenAI or Anthropic API key (for the AI model)
+
+---
+
+## Project Setup
+
+Let's start by setting up a new Next.js project, which provides an excellent foundation for AI applications with its API routes and React components.
+
+### Creating a New Project
+
+Open your terminal and run:
+
+```bash
+# Create a new Next.js project with TypeScript
+npx create-next-app@latest payman-agent --typescript
+
+# Navigate to your project directory
+cd payman-agent
+
+# Follow the prompts:
+# ✔ Would you like to use ESLint? … Yes
+# ✔ Would you like to use Tailwind CSS? … Yes
+# ✔ Would you like to use `src/` directory? … No
+# ✔ Would you like to use App Router? … Yes
+# ✔ Would you like to customize the default import alias? … No
+```
+
+### Installing Dependencies
+
+Next, install the required packages:
+
+```bash
+# Install Payman PayKit and Vercel AI SDK core
+npm install payman-paykit ai
+
+# Install your preferred AI provider SDK
+# For OpenAI:
+npm install @ai-sdk/openai
+# OR for Anthropic:
+npm install @ai-sdk/anthropic
+```
+
+---
+
+## Project Configuration
+
+### Setting Up Environment Variables
+
+Create a `.env.local` file in your project root directory with your API credentials:
+
+```bash
+# Payman AI credentials
+PAYMAN_API_SECRET=your_payman_api_key_here
+PAYMAN_ENVIRONMENT=sandbox
+
+# AI provider credentials (use one of these)
+OPENAI_API_KEY=your_openai_api_key_here
+# OR
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+```
+
+<Warning>
+	Never commit your `.env.local` file to version control. Add it to your
+	`.gitignore` file to prevent accidental exposure of sensitive credentials.
+</Warning>
+
+### Next.js Configuration
+
+Update your `next.config.js` file to increase the timeout for API routes, as AI responses can take longer than the default timeout:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+	experimental: {
+		serverActions: {
+			// Allow more time for API responses
+			bodySizeLimit: "4mb",
+		},
+	},
+	// Increase API timeout
+	api: {
+		responseLimit: "8mb",
+		bodyParser: {
+			sizeLimit: "4mb",
+		},
+	},
+};
+
+module.exports = nextConfig;
+```
+
+---
+
+## Creating the Backend
+
+Now, let's build the API route that will handle chat requests and payment functionality.
+
+### Chat API Route with PayKit Integration
+
+Create a new file at `app/api/chat/route.ts` with the following code:
+
+```typescript
+import { paykit } from "payman-paykit";
+import { openai } from "@ai-sdk/openai"; // Or use "@ai-sdk/anthropic" and anthropic()
+import { streamText } from "ai";
+
+// Allow reasonable timeout for AI operations
+export const maxDuration = 30; // 30 seconds
+
+// Initialize Payman PayKit with your API key
+const tools = paykit({
+	apiSecret: process.env.PAYMAN_API_SECRET!,
+	environment: process.env.PAYMAN_ENVIRONMENT as "sandbox" | "production",
+});
+
+// Create the API route handler
+export async function POST(req: Request) {
+	try {
+		// Parse the incoming request
+		const { messages } = await req.json();
+
+		// Initialize the AI model
+		const model = openai("gpt-4"); // Or use anthropic("claude-3-sonnet-20240229")
+
+		// Generate streaming response with payment capabilities
+		const result = streamText({
+			model,
+			toolCallStreaming: true, // Enable real-time tool call responses
+			messages,
+			tools, // Provide Payman tools to the AI
+			system: `You are a helpful payment assistant that can:
+        - Send payments
+        - Create payment destinations (payees)
+        - Generate deposit links
+        - Check account balances
+        - Search for existing payees
+        
+        When asked about payments, you'll use Payman tools to help the user.
+        Always confirm details before executing financial transactions.`,
+		});
+
+		// Return the streaming response
+		return result.toDataStreamResponse();
+	} catch (error) {
+		// Handle errors gracefully
+		console.error("Chat API error:", error);
+		return new Response(
+			JSON.stringify({
+				error: "Failed to process request",
+				details:
+					error instanceof Error ? error.message : "Unknown error",
+			}),
+			{
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			}
+		);
+	}
+}
+```
+
+<Note>
+	The `toolCallStreaming: true` option ensures that tool call responses from
+	the AI are streamed in real-time, providing a more responsive user
+	experience.
+</Note>
+
+---
+
+## Building the Frontend
+
+Next, let's create a user interface for interacting with our payment-enabled AI agent.
+
+### Creating a Chat Interface
+
+Replace the content of `app/page.tsx` with the following code:
+
+```tsx
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useChat } from "ai/react";
+
+export default function Chat() {
+	// Use the Vercel AI SDK chat hook
+	const {
+		messages,
+		input,
+		handleInputChange,
+		handleSubmit,
+		isLoading,
+		error,
+	} = useChat();
+
+	// Auto-scroll to bottom of chat
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		// Scroll to bottom whenever messages change
+		if (messagesEndRef.current) {
+			messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+		}
+	}, [messages]);
+
+	return (
+		<main className='flex min-h-screen flex-col items-center justify-between p-4 sm:p-6 md:p-8'>
+			<div className='w-full max-w-3xl mx-auto flex flex-col h-screen'>
+				{/* Header */}
+				<header className='border-b pb-4 mb-4'>
+					<h1 className='text-2xl font-bold'>
+						Payman AI Payment Assistant
+					</h1>
+					<p className='text-sm text-gray-500'>
+						Ask about sending payments, creating payees, or checking
+						your balance
+					</p>
+				</header>
+
+				{/* Messages Container */}
+				<div className='flex-1 overflow-y-auto mb-4 space-y-4 p-4 border rounded-lg'>
+					{messages.length === 0 ? (
+						<div className='flex items-center justify-center h-full text-center text-gray-500'>
+							<div>
+								<p className='mb-4'>
+									Welcome to your payment assistant!
+								</p>
+								<p>Try asking:</p>
+								<ul className='text-sm mt-2 space-y-1'>
+									<li>"Send $50 to Jane Smith"</li>
+									<li>
+										"Create a new payee named Acme Corp"
+									</li>
+									<li>"Check my balance"</li>
+									<li>"Generate a deposit link for $100"</li>
+								</ul>
+							</div>
+						</div>
+					) : (
+						messages.map((message) => (
+							<div
+								key={message.id}
+								className={`p-3 rounded-lg ${
+									message.role === "user"
+										? "bg-blue-100 ml-12"
+										: "bg-gray-100 mr-12"
+								}`}>
+								<div className='font-semibold mb-1'>
+									{message.role === "user"
+										? "You"
+										: "AI Assistant"}
+								</div>
+								<div className='whitespace-pre-wrap'>
+									{message.content}
+								</div>
+							</div>
+						))
+					)}
+					<div ref={messagesEndRef} />
+				</div>
+
+				{/* Input Form */}
+				<form onSubmit={handleSubmit} className='flex gap-2'>
+					<input
+						value={input}
+						onChange={handleInputChange}
+						placeholder='Type your message...'
+						className='flex-1 p-2 border rounded-lg'
+						disabled={isLoading}
+					/>
+					<button
+						type='submit'
+						disabled={isLoading || !input.trim()}
+						className='bg-blue-600 text-white px-4 py-2 rounded-lg disabled:bg-blue-300'>
+						{isLoading ? "Processing..." : "Send"}
+					</button>
+				</form>
+
+				{/* Error Display */}
+				{error && (
+					<div className='mt-4 p-3 bg-red-100 text-red-700 rounded-lg'>
+						Error: {error.message || "Something went wrong"}
+					</div>
+				)}
+
+				{/* Footer */}
+				<footer className='mt-4 pt-2 border-t text-center text-xs text-gray-500'>
+					Powered by Payman AI | Using sandbox environment
+				</footer>
+			</div>
+		</main>
+	);
+}
+```
+
+### Starting the Development Server
+
+Run the following command to start your application:
+
+```bash
+npm run dev
+```
+
+Your application should now be running at [http://localhost:3000](http://localhost:3000).
+
+### Testing Payment Functionality
+
+Open your browser and navigate to your application. Try these test prompts to verify your agent's payment capabilities:
+
+1. **Creating a Payee:**
+
+    ```
+    Create a new payee named John Doe with account number 1234567890 and routing number 011000138
+    ```
+
+2. **Sending a Payment:**
+
+    ```
+    Send $25 to John Doe for consulting services
+    ```
+
+3. **Checking Your Balance:**
+
+    ```
+    What's my current balance?
+    ```
+
+4. **Generating a Deposit Link:**
+    ```
+    Create a deposit link for $100
+    ```
+
+### Verifying Transactions in the Dashboard
+
+To confirm that your transactions are being properly recorded:
+
+1. Log in to the [Payman AI Dashboard](https://app.paymanai.com)
+2. Navigate to the **Agent Account** section
+3. You should see your transactions listed under **Recent Transactions**
+
+---
+
+## Deploying Your Agent
+
+When you're ready to deploy your agent, you have several options.
+
+### Deploying to Vercel
+
+Vercel is the simplest option for Next.js applications:
+
+1. Push your code to a GitHub, GitLab, or Bitbucket repository
+
+2. Visit [vercel.com](https://vercel.com) and sign up or log in
+
+3. Click "New Project" and select your repository
+
+4. Configure your environment variables:
+
+    - `PAYMAN_API_SECRET`
+    - `PAYMAN_ENVIRONMENT`
+    - `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`
+
+5. Click "Deploy"
+
+### Other Hosting Options
+
+You can also deploy to other platforms:
+
+-   **Netlify**: Similar process to Vercel
+-   **AWS Amplify**: Supports Next.js applications
+-   **Docker**: Create a Docker container and deploy to any container platform
+-   **Self-hosted**: Deploy on your own servers
+
+---
+
+## Going to Production
+
+<Warning>
+	In production mode, real funds will be transferred. Always implement proper
+	validation, confirmation steps, and security measures before going live.
+</Warning>
+When you're ready to move from sandbox to production:
+
+1. Thoroughly test your application in the sandbox environment
+
+2. Update your environment configuration:
+
+    ```
+    PAYMAN_ENVIRONMENT=production
+    ```
+
+3. Update the Payman API key to your production key
+
+4. Start with small transaction limits and gradually increase them
+
+---
+
+**Congratulations🎉 ! You've successfully built an AI agent with payment capabilities.**
+
+---
+
+## Support and Resources
+
+If you need help with your implementation:
+
+-   **Documentation**: [docs.paymanai.com](https://docs.paymanai.com)
+-   **GitHub**: Check out our [example repositories](https://github.com/PaymanAI)
+-   **Support**: Contact [support@paymanai.com](mailto:support@paymanai.com)
+-   **Discord Community**: Join our [developer community](https://discord.gg/paymanai)
+
+We're excited to see what you build with Payman AI!
+
+---
