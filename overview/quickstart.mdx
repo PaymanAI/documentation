@@ -1,0 +1,302 @@
+---
+title: "Quickstart"
+description: "Welcome to Payman AI ✨"
+mode: "wide"
+icon: "sparkles"
+---
+
+Payman gives AI agents real spending power without the complexity. With just a few lines of code, you can give your AI the ability to send money securely. We handle the hard stuff so you can focus on building awesome things.
+
+Below, you'll find two implementations: **Node.js** and **Python**. Pick your favorite and let's dive in.
+
+<Note>
+     We highly recommend running the examples below. Hands-on experience is the best way to see just how effortlessly your AI can manage real transactions. Give it a spin! ✨
+
+</Note>
+
+## Installation
+
+Get started by installing the **Payman AI** SDK:
+
+### Node.js
+
+<CodeGroup>
+
+```bash npm
+npm install paymanai
+```
+
+```bash pnpm
+pnpm install paymanai
+```
+
+```bash yarn
+yarn add paymanai
+```
+
+</CodeGroup>
+
+### Python
+
+<CodeGroup>
+
+```bash pip
+pip install paymanai
+```
+
+```bash poetry
+poetry add paymanai
+```
+
+```bash pipenv
+pipenv install paymanai
+```
+
+</CodeGroup>
+## Build Your First AI-Powered Payment Agent
+
+Let’s build an AI-powered agent that can send money to our friend _Tom_ with just a simple prompt.
+
+### Node JS
+
+```javascript [expandable]
+// NODE JS: AI Powered Payment Agent
+import Payman from "paymanai";
+import {OpenAI} from "openai"; // Install OpenAI
+import readline from "readline"; // Install readline
+
+const openai = new OpenAI({
+    apiKey: "OPENAI_API_KEY",
+});
+
+// PAYMAN INITIALIZATION
+const payman = new Payman({
+    xPaymanAPISecret: "PAYMAN_API_KEY",
+    environment: "sandbox",
+});
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const ask = (question) =>
+new Promise((resolve) => rl.question(question, resolve));
+
+// SEARCH PAYEE : To search for payment destination (TOM), if it already exists
+async function searchPayee(name) {
+try {
+const response = await payman.payments.searchPayees({ name });
+const payees =
+typeof response === "string" ? JSON.parse(response) : response;
+
+    	return payees && Array.isArray(payees) && payees.length > 0
+    		? payees[0]
+    		: null;
+    } catch (error) {
+    	console.error(`Search error: ${error.message}`);
+    	return null;
+    }
+
+}
+
+
+// CREATE PAYEE: To create payment destination (TOM)
+async function createPayee() {
+
+    const accountNumber = "12345678";
+    const routingNumber = "021000021";
+    const email = tom@example.com;
+
+    const response = await payman.payments.createPayee({
+    	type: "US_ACH",
+    	name: "Tom,
+    	accountHolderName: name,
+    	accountHolderType: "individual",
+    	accountNumber,
+    	routingNumber,
+    	accountType: "checking",
+    	contactDetails: { email },
+    });
+
+    const payee =
+    	typeof response === "string" ? JSON.parse(response) : response;
+    return payee?.id || payee?.data?.id;
+
+}
+
+// SEND PAYMENT: Send the amount to payment destination (TOM)
+async function sendPayment(payeeId, amount, payeeName) {
+    return payman.payments.sendPayment({
+        amountDecimal: parseFloat(amount),
+        paymentDestinationId: payeeId,
+        memo: `Payment to ${payeeName}`,
+    });
+}
+
+async function extractPaymentDetails(input) {
+    const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+            {
+                role: "system",
+                content: "Extract payment details as JSON with payeeName and amount fields.",
+            },
+            { role: "user", content: input },
+        ],
+        response_format: { type: "json_object" },
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+
+}
+
+async function processPayment(input) {
+    try {
+        // 1. Extract payment details
+        const details = await extractPaymentDetails(input);
+        console.log(`AI: Processing payment of $${details.amount} to ${details.payeeName}`);
+
+        // 2. Find or create payee
+        let payeeId;
+        const existingPayee = await searchPayee(details.payeeName);
+
+        if (existingPayee) {
+            payeeId = existingPayee.id;
+        } else {
+            payeeId = await createPayee();
+        }
+
+        // 3. Send payment
+        await sendPayment(payeeId, details.amount, details.payeeName);
+        console.log(`✅ Payment sent: $${details.amount} to ${details.payeeName}`);
+        } catch (error) {
+            console.error(`Payment failed: ${error.message}`);
+        }
+}
+
+// Run the application
+async function main() {
+console.log("Smart Agent ('x' to quit)");
+
+    while (true) {
+    	const input = await ask("\n> ");
+    	if (input.toLowerCase() === "x") break;
+    	await processPayment(input);
+    }
+
+    rl.close();
+
+}
+
+main();
+```
+
+## Python
+
+```python [expandable]
+# PYTHON: AI Powered Payment Agent
+import json
+from paymanai import Paymanai
+from openai import OpenAI  # Install openai
+
+# Initialize OpenAI client
+client = OpenAI(api_key="OPENAI_API_KEY")
+
+# Initialize Payman
+payman = Paymanai(
+    x_payman_api_secret="PAYMAN_API_KEY",
+    environment="sandbox",
+)
+
+# SEARCH PAYEE : To search for payment destination (TOM), if it already exists
+def search_payee(payeeName):
+    response = payman.payments.search_payees(name=payeeName)
+    payees = json.loads(response) if isinstance(response, str) else response
+    return payees[0] if payees and isinstance(payees, list) else None
+
+# CREATE PAYEE: To create payment destination (TOM)
+def create_payee():
+    response = payman.payments.create_payee(
+        type="US_ACH",
+        name="Tom",
+        account_holder_name="Tom",
+        account_number="12345678",
+        routing_number="021000021",
+        account_type="checking",
+        contact_details={
+            "contact_type": "individual",
+            "email": "tom@example.com",
+            "phone_number": "+1234567890",
+            "address": "123 Main St",
+            "tax_id": "123-45-6789"
+        },
+        tags=["employee", "primary"]
+    )
+
+    payee = json.loads(response) if isinstance(response, str) else response
+    return payee.get("id") or payee.get("data", {}).get("id")
+
+# SEND PAYMENT: Send the amount to payment destination (TOM)
+def send_payment(payee_id, amount, payee_name):
+    payment = payman.payments.send_payment(
+        amount_decimal=float(amount),
+        payment_destination_id=payee_id,
+        memo=f"Payment to {payee_name}",
+    )
+    return payment.get("reference")
+
+# Extract payment details using OpenAI
+def extract_payment_details(user_input):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Extract payment details as JSON with payeeName and amount fields."},
+                {"role": "user", "content": user_input},
+            ]
+        )
+        return json.loads(response.choices[0].message.content)
+    except Exception as error:
+        print(f"Error extracting details: {error}")
+        return None
+
+# Process the payment request
+def process_payment(user_input):
+    try:
+        details = extract_payment_details(user_input)
+        if not details:
+            return
+
+        print(f"AI: Processing payment of ${details['amount']} to {details['payeeName']}")
+
+        payee = search_payee(details["payeeName"])
+        payee_id = payee["id"] if payee else create_payee()
+
+        if not payee_id:
+            print("Failed to find or create payee.")
+            return
+
+        payment_ref = send_payment(payee_id, details["amount"], details["payeeName"])
+        print(f"✅ Payment sent: ${details['amount']} to {details['payeeName']} (Reference: {payment_ref})")
+
+    except Exception as error:
+        print(f"Payment processing failed: {error}")
+
+# Run the application
+def main():
+    print("Smart Agent ('x' to quit)")
+    while True:
+        user_input = input("\n> ")
+        if user_input.lower() == "x":
+            break
+        process_payment(user_input)
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+**Boom! 🎉 You just built an AI agent that handles real money!**
+
+Dive deeper with the [Node.js SDK](/sdks/node/setup-and-installation) and [Python SDK](/sdks/python/setup-and-installation) documentation to level up your AI-powered payments!

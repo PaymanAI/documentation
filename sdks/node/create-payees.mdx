@@ -1,0 +1,185 @@
+---
+title: "Create Payees"
+description: "Learn how to create payment destinations for your AI Agent"
+icon: "user-plus"
+---
+
+A payment destination (or payee) is a recipient entity that your AI Agent can transfer funds to. This guide covers how to create and manage different types of payment destinations in Payman.
+
+## Supported Destination Types
+
+Payman supports three primary types of payment destinations:
+
+| Type             | Description              | Status      |
+| ---------------- | ------------------------ | ----------- |
+| `US_ACH`         | US Bank Accounts via ACH | Available   |
+| `PAYMAN_AGENT`   | Other Payman AI Agents   | Available   |
+| `CRYPTO_ADDRESS` | Cryptocurrency Wallets   | Coming Soon |
+
+## Creating a US Bank Account Destination (ACH)
+
+ACH destinations allow your agent to send funds directly to US-based bank accounts.
+
+```typescript
+const achPayee = await payman.payments.createPayee({
+	type: "US_ACH",
+	name: "John Doe Checking",
+	accountHolderName: "John Doe",
+	accountNumber: "1234567890",
+	routingNumber: "011000138",
+	accountType: "checking",
+	accountHolderType: "individual",
+	contactDetails: {
+		email: "john@example.com",
+		phoneNumber: "+1234567890",
+		address: "123 Main St",
+		taxId: "123-45-6789",
+	},
+	tags: ["employee", "primary"],
+});
+```
+
+### Required Parameters
+
+| Parameter           | Type   | Description                             |
+| ------------------- | ------ | --------------------------------------- |
+| `type`              | string | Must be `'US_ACH'`                      |
+| `name`              | string | A descriptive name for this destination |
+| `accountHolderName` | string | Legal name on the bank account          |
+| `accountNumber`     | string | Bank account number                     |
+| `routingNumber`     | string | 9-digit ABA routing number              |
+| `accountType`       | string | Either `'checking'` or `'savings'`      |
+| `accountHolderType` | string | Either `'individual'` or `'business'`   |
+
+## Creating a Crypto Wallet Destination
+
+<Note>Cryptocurrency destinations are coming soon to Payman.</Note>
+
+Crypto destinations allow your agent to send funds to blockchain wallet addresses.
+
+```typescript
+const cryptoPayee = await payman.payments.createPayee({
+	type: "CRYPTO_ADDRESS",
+	name: "ETH Wallet",
+	address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+	currency: "ETH",
+	contactDetails: {
+		email: "wallet@example.com",
+	},
+	tags: ["crypto"],
+});
+```
+
+### Required Parameters
+
+| Parameter  | Type   | Description                                |
+| ---------- | ------ | ------------------------------------------ |
+| `type`     | string | Must be `'CRYPTO_ADDRESS'`                 |
+| `name`     | string | A descriptive name for this destination    |
+| `address`  | string | Valid cryptocurrency wallet address        |
+| `currency` | string | Blockchain identifier (e.g., 'ETH', 'BTC') |
+
+## Creating an Agent-to-Agent Destination
+
+Agent destinations allow your agent to send funds to other Payman AI Agents.
+
+```typescript
+const agentPayee = await payman.payments.createPayee({
+	type: "PAYMAN_AGENT",
+	paymanAgentId: "agent_xyz789",
+	name: "Trading Bot",
+	contactDetails: {
+		email: "bot@example.com",
+	},
+	tags: ["agent", "trading"],
+});
+```
+
+### Required Parameters
+
+| Parameter       | Type   | Description                              |
+| --------------- | ------ | ---------------------------------------- |
+| `type`          | string | Must be `'PAYMAN_AGENT'`                 |
+| `name`          | string | A descriptive name for this destination  |
+| `paymanAgentId` | string | Unique identifier of the receiving agent |
+
+<Note>
+	You can find agent IDs in the [Payman
+	Dashboard](https://app.paymanai.com/dashboard/agents) under the Agents
+	section. Each agent has a unique identifier that starts with `agt-`.
+</Note>
+
+## Optional Parameters
+
+The following parameters are optional for all destination types:
+
+| Parameter        | Type     | Description                                       |
+| ---------------- | -------- | ------------------------------------------------- |
+| `tags`           | string[] | Array of strings for categorization and filtering |
+| `contactDetails` | object   | Contact information for the destination           |
+| `customerId`     | string   | Your system's customer ID for reference           |
+
+### Contact Details Structure
+
+```typescript
+contactDetails: {
+  email?: string,
+  phoneNumber?: string,
+  address?: string,
+  taxId?: string,
+  // For ACH destinations only:
+  contactType?: 'individual' | 'business'
+}
+```
+
+## Response Structure
+
+When you successfully create a payment destination, Payman returns the following response:
+
+```typescript
+{
+  id: string,           // Unique payee identifier (e.g., 'dest_abc123')
+  name: string,         // Friendly name you provided
+  type: string,         // Payment destination type
+  organizationId: string, // Your organization ID
+  status: 'ACTIVE' | 'ARCHIVED' | 'DELETED',
+  contactDetails?: {
+    email?: string,
+    phoneNumber?: string,
+    address?: string,
+    taxId?: string
+  },
+  tags?: string[],
+  createdAt: string,    // ISO timestamp
+  updatedAt: string     // ISO timestamp
+}
+```
+
+## Error Handling
+
+Implement proper error handling to manage issues that may arise when creating payment destinations:
+
+```typescript
+try {
+	const payee = await payman.payments.createPayee({
+		type: "US_ACH",
+		// ... other parameters
+	});
+	console.log("Payment destination created:", payee.id);
+} catch (error) {
+	if (error.code === "invalid_routing_number") {
+		console.error("Invalid routing number provided");
+	} else if (error.code === "invalid_account_number") {
+		console.error("Invalid account number provided");
+	} else if (error.code === "duplicate_destination") {
+		console.error("This payment destination already exists");
+	} else {
+		console.error("Failed to create payment destination:", error.message);
+	}
+}
+```
+
+<Note>
+	For security reasons, bank account numbers are never returned in full in API
+	responses. They will be masked (e.g., '******7890').
+</Note>

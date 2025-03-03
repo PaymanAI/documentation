@@ -1,0 +1,133 @@
+---
+title: "Send Payments"
+description: "Send payments using your AI Agent"
+icon: "paper-plane"
+---
+
+Payman simplifies money transfers for AI agents with minimal code, supporting payments to US ACH Banks, other Payman agents, and soon - crypto wallets.
+
+## Quick Start
+
+<Tabs>
+<Tab title="To Existing Payee">
+```typescript
+const payment = await payman.payments.sendPayment({
+  amountDecimal: 50.00,
+  paymentDestinationId: 'dest_123',
+  memo: 'Invoice #1234',
+  metadata: { orderId: 'ORD-5678' },
+});
+
+console.log('Payment successful:', payment.reference);
+
+````
+</Tab>
+<Tab title="To New Payee">
+```typescript
+const payment = await payman.payments.sendPayment({
+  amountDecimal: 100.00,
+  paymentDestination: {
+    type: 'US_ACH',
+    accountHolderName: 'Jane Smith',
+    accountNumber: '123456789',
+    accountType: 'checking',
+    accountHolderType: 'individual',
+    routingNumber: '987654321',
+    name: 'Jane Smith Checking',
+    contactDetails: {
+      email: 'jane@example.com',
+      phoneNumber: '+1234567890',
+    },
+  },
+});
+
+console.log('Payment successful:', payment.reference);
+````
+
+</Tab>
+</Tabs>
+
+## Parameters
+
+### Required Parameters
+
+| Parameter              | Type   | Description                                  |
+| ---------------------- | ------ | -------------------------------------------- |
+| `amountDecimal`        | number | Amount to send (e.g., `50.00` for $50)       |
+| `paymentDestinationId` | string | ID of an existing payee                      |
+| `paymentDestination`   | object | Details for a new payee (if not yet created) |
+
+**Note:** Either `paymentDestinationId` or `paymentDestination` must be provided, but not both.
+
+### Optional Parameters
+
+| Parameter  | Type   | Description                                        |
+| ---------- | ------ | -------------------------------------------------- |
+| `walletId` | string | Specify a wallet if multiple exist                 |
+| `memo`     | string | A note for the transaction (e.g., `Invoice #1234`) |
+| `metadata` | object | Custom data to track the payment                   |
+
+<Note>
+	**Before making a payment:** 1. Verify sufficient funds are available in
+	your wallet. 2. Format amounts in decimal notation (e.g., `10.50` for
+	$10.50). 3. For detailed information on payment destinations, refer to
+	[Create Payees](/sdks/node/create-payees).
+</Note>
+
+## Approval Requests
+
+For security, all AI Agent-initiated transactions require human approval before execution. When your agent sends a payment:
+
+1. The transaction appears in your Payman Dashboard under "Requests"
+2. You can review transaction details, then approve or reject the payment
+3. Only approved transactions will be processed
+
+<Frame caption='Transaction Approval Requests'>
+	<img src='/images/approval-requests.png' />
+</Frame>
+
+## Response Object
+
+After sending a payment, Payman returns a response object:
+
+```typescript
+{
+  reference: 'txn_abc123',      // Payman's unique transaction ID
+  externalReference: '0x123abc...',  // (if applicable, e.g., blockchain tx)
+  status: 'COMPLETED',          // Current payment status
+  createdAt: '2023-08-15T14:30:22Z'  // Timestamp of creation
+}
+```
+
+## Error Handling
+
+Handle transaction errors with proper error catching:
+
+```typescript
+try {
+	const payment = await payman.payments.sendPayment({
+		amountDecimal: 50.0,
+		paymentDestinationId: "dest_123",
+	});
+
+	console.log("Payment successful:", payment.reference);
+} catch (error) {
+	if (error.code === "insufficient_funds") {
+		console.error("Not enough funds in wallet");
+	} else if (error.code === "invalid_destination") {
+		console.error("Payment destination is invalid");
+	} else {
+		console.error("Something went wrong:", error.message);
+	}
+}
+```
+
+## Common Error Codes
+
+| Error Code                | Description                                                 |
+| ------------------------- | ----------------------------------------------------------- |
+| `insufficient_funds`      | Wallet does not have enough balance                         |
+| `invalid_destination`     | Payment destination does not exist or is invalid            |
+| `invalid_amount`          | Amount is invalid (negative, zero, or improperly formatted) |
+| `destination_unavailable` | Destination is temporarily unavailable                      |
+| `wallet_locked`           | Wallet is locked or suspended                               |

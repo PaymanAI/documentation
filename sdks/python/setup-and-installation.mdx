@@ -1,0 +1,123 @@
+---
+title: "Setup & Installation"
+description: "Quickly integrate PaymanAI's Python SDK into your app."
+icon: "wrench"
+---
+
+## Installation
+
+Install the SDK using your preferred package manager:
+
+<CodeGroup>
+
+```bash pip
+pip install paymanai
+```
+
+```bash poetry
+poetry add paymanai
+```
+
+```bash pipenv
+pipenv install paymanai
+```
+
+</CodeGroup>
+
+## Setup
+
+Before making requests, initialize the SDK with your **API key** from the [Payman Dashboard](https://app.paymanai.com/dashboard/api-keys).
+
+> For more details, check out [Get API Key](/api-reference/get-api-key) section.
+
+```python
+from paymanai import Paymanai
+
+payman = Paymanai(
+    x_payman_api_secret="your_api_key",
+    environment="sandbox"  # Switch to 'production' when live
+)
+```
+
+<Note>
+	Keep `environment='sandbox'` while testing. Use `'production'` only for real
+	transactions.
+</Note>
+
+## Testing the Setup
+
+To test if the SDK is setup correctly, run the following code in your Python environment:
+
+```python
+payee = payman.payments.create_payee(
+    type="US_ACH",
+    name="John Doe",
+    account_holder_name="John Doe",
+    account_number="1234567890",
+    routing_number="011000138",
+    account_holder_type="individual",  # 'individual' or 'business'
+    account_type="checking"
+)
+
+print(f"Payee {payee.name} created successfully!")
+```
+
+It should show the following output in your terminal:
+
+```bash
+Payee John Doe created successfully!
+```
+
+## Using Type Hints
+
+The SDK includes comprehensive type hints for better code safety and IDE support:
+
+```python
+from paymanai.types import PaymentDestination, PaymentResponse
+from typing import Optional, Dict, Any
+
+def process_customer_payment(
+    amount: float,
+    destination_id: str,
+    memo: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None
+) -> PaymentResponse:
+    """Process a payment with optional metadata."""
+    return payman.payments.send_payment(
+        amount_decimal=amount,
+        payment_destination_id=destination_id,
+        memo=memo,
+        metadata=metadata
+    )
+```
+
+## Handling Errors
+
+Because things **don't always go as planned**, the SDK uses standard Python exception handling:
+
+```python
+from paymanai.errors import PaymanError
+
+try:
+    payment = payman.payments.send_payment(
+        amount_decimal=100.0,
+        payment_destination_id="dest_123"
+    )
+    print(f"Payment successful: {payment.reference}")
+except PaymanError as error:
+    print(f"Payment failed: {error.message}")
+
+    if error.code == "insufficient_funds":
+        print("Not enough funds in wallet")
+    elif error.code == "invalid_destination":
+        print("Payment destination is invalid")
+```
+
+## Explore More
+
+<Card
+	title='Python SDK Repo'
+	icon='GitHub'
+	href='https://github.com/PaymanAI/payman-python-sdk'>
+	Dive into the source code and examples.
+</Card>

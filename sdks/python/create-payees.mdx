@@ -1,0 +1,213 @@
+---
+title: "Create Payees"
+description: "Learn how to create payment destinations for your AI Agent"
+icon: "user-plus"
+---
+
+A payment destination (or payee) is a recipient entity that your AI Agent can transfer funds to. This guide covers how to create and manage different types of payment destinations in Payman.
+
+## Supported Destination Types
+
+Payman supports three primary types of payment destinations:
+
+| Type             | Description              | Status      |
+| ---------------- | ------------------------ | ----------- |
+| `US_ACH`         | US Bank Accounts via ACH | Available   |
+| `PAYMAN_AGENT`   | Other Payman AI Agents   | Available   |
+| `CRYPTO_ADDRESS` | Cryptocurrency Wallets   | Coming Soon |
+
+## Creating a US Bank Account Destination (ACH)
+
+ACH destinations allow your agent to send funds directly to US-based bank accounts.
+
+```python
+ach_payee = payman.payments.create_payee(
+    type="US_ACH",
+    name="John Doe Checking",
+    account_holder_name="John Doe",
+    account_number="1234567890",
+    routing_number="011000138",
+    account_type="checking",
+    account_holder_type="individual",
+    contact_details={
+        "email": "john@example.com",
+        "phone_number": "+1234567890",
+        "address": "123 Main St",
+        "tax_id": "123-45-6789"
+    },
+    tags=["employee", "primary"]
+)
+```
+
+### Required Parameters
+
+| Parameter             | Type | Description                             |
+| --------------------- | ---- | --------------------------------------- |
+| `type`                | str  | Must be `'US_ACH'`                      |
+| `name`                | str  | A descriptive name for this destination |
+| `account_holder_name` | str  | Legal name on the bank account          |
+| `account_number`      | str  | Bank account number                     |
+| `routing_number`      | str  | 9-digit ABA routing number              |
+| `account_type`        | str  | Either `'checking'` or `'savings'`      |
+| `account_holder_type` | str  | Either `'individual'` or `'business'`   |
+
+## Creating a Crypto Wallet Destination
+
+<Note>Cryptocurrency destinations are coming soon to Payman.</Note>
+
+Crypto destinations allow your agent to send funds to blockchain wallet addresses.
+
+```python
+crypto_payee = payman.payments.create_payee(
+    type="CRYPTO_ADDRESS",
+    name="ETH Wallet",
+    address="0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+    currency="ETH",
+    contact_details={
+        "email": "wallet@example.com"
+    },
+    tags=["crypto"]
+)
+```
+
+### Required Parameters
+
+| Parameter  | Type | Description                                |
+| ---------- | ---- | ------------------------------------------ |
+| `type`     | str  | Must be `'CRYPTO_ADDRESS'`                 |
+| `name`     | str  | A descriptive name for this destination    |
+| `address`  | str  | Valid cryptocurrency wallet address        |
+| `currency` | str  | Blockchain identifier (e.g., 'ETH', 'BTC') |
+
+## Creating an Agent-to-Agent Destination
+
+Agent destinations allow your agent to send funds to other Payman AI Agents.
+
+```python
+agent_payee = payman.payments.create_payee(
+    type="PAYMAN_AGENT",
+    payman_agent_id="agent_xyz789",
+    name="Trading Bot",
+    contact_details={
+        "email": "bot@example.com"
+    },
+    tags=["agent", "trading"]
+)
+```
+
+### Required Parameters
+
+| Parameter         | Type | Description                              |
+| ----------------- | ---- | ---------------------------------------- |
+| `type`            | str  | Must be `'PAYMAN_AGENT'`                 |
+| `name`            | str  | A descriptive name for this destination  |
+| `payman_agent_id` | str  | Unique identifier of the receiving agent |
+
+<Note>
+	You can find agent IDs in the [Payman
+	Dashboard](https://app.paymanai.com/dashboard/agents) under the Agents
+	section. Each agent has a unique identifier that starts with `agt-`.
+</Note>
+
+## Optional Parameters
+
+The following parameters are optional for all destination types:
+
+| Parameter         | Type      | Description                                      |
+| ----------------- | --------- | ------------------------------------------------ |
+| `tags`            | list[str] | List of strings for categorization and filtering |
+| `contact_details` | dict      | Contact information for the destination          |
+| `customer_id`     | str       | Your system's customer ID for reference          |
+
+### Contact Details Structure
+
+```python
+contact_details = {
+    "email": str,  # Optional email address
+    "phone_number": str,  # Optional phone number
+    "address": str,  # Optional physical address
+    "tax_id": str,  # Optional tax identification number
+}
+```
+
+## Response Structure
+
+When you successfully create a payment destination, Payman returns the following response:
+
+```python
+{
+    "id": str,           # Unique payee identifier (e.g., 'dest_abc123')
+    "name": str,         # Friendly name you provided
+    "type": str,         # Payment destination type
+    "organization_id": str, # Your organization ID
+    "status": str,       # 'ACTIVE', 'ARCHIVED', or 'DELETED'
+    "contact_details": {
+        "email": str,
+        "phone_number": str,
+        "address": str,
+        "tax_id": str    # Partially masked for security
+    },
+    "tags": list[str],   # List of tag strings
+    "created_at": str,   # ISO timestamp
+    "updated_at": str    # ISO timestamp
+}
+```
+
+## Error Handling
+
+Implement proper error handling to manage issues that may arise when creating payment destinations:
+
+```python
+from paymanai.errors import PaymanError
+
+try:
+    payee = payman.payments.create_payee(
+        type="US_ACH",
+        # ... other parameters
+    )
+    print("Payment destination created:", payee["id"])
+except PaymanError as error:
+    if error.code == "invalid_routing_number":
+        print("Invalid routing number provided")
+    elif error.code == "invalid_account_number":
+        print("Invalid account number provided")
+    elif error.code == "duplicate_destination":
+        print("This payment destination already exists")
+    else:
+        print("Failed to create payment destination:", error.message)
+```
+
+<Note>
+	For security reasons, bank account numbers are never returned in full in API
+	responses. They will be masked (e.g., '******7890').
+</Note>
+
+## Using Type Hints
+
+For better code safety and IDE support:
+
+```python
+from paymanai.types import PaymentDestination, PaymentDestinationResponse
+from typing import List, Dict, Optional, Any
+
+def create_bank_account(
+    account_holder: str,
+    account_number: str,
+    routing_number: str,
+    account_type: str = "checking",
+    is_business: bool = False
+) -> PaymentDestinationResponse:
+    """Create a new bank account payment destination."""
+
+    holder_type = "business" if is_business else "individual"
+
+    return payman.payments.create_payee(
+        type="US_ACH",
+        name=f"{account_holder}'s {account_type.title()} Account",
+        account_holder_name=account_holder,
+        account_number=account_number,
+        routing_number=routing_number,
+        account_type=account_type,
+        account_holder_type=holder_type
+    )
+```

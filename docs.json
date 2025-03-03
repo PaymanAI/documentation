@@ -1,6 +1,6 @@
 {
 	"$schema": "https://mintlify.com/docs.json",
-	"theme": "maple",
+	"theme": "mint",
 	"name": "Payman AI Documentation",
 	"colors": {
 		"primary": "#FF7D61",
@@ -11,84 +11,51 @@
 	"navigation": {
 		"groups": [
 			{
-				"group": "Get Started",
+				"group": "Overview",
 				"pages": [
-					"getting-started/quickstart",
-					{
-						"group": "Introduction",
-						"pages": [
-							"getting-started/introduction/ai-agent",
-							"getting-started/introduction/payman-ai",
-							"getting-started/introduction/tools-and-integrations"
-						]
-					},
-					{
-						"group": "Initial Setup",
-						"pages": [
-							"getting-started/initial-setup/get-api-key",
-							"getting-started/initial-setup/first-agent"
-						]
-					}
+					"overview/quickstart",
+					"overview/playground"
 				]
 			},
 			{
-				"group": "SDKs",
+				"group": "For Developers",
 				"pages": [
 					{
-						"group": "Node.js SDK",
+						"group": "Node JS SDK",
 						"pages": [
-							"api-reference/sdks/node/node",
-							"api-reference/sdks/node/node-payments",
-							"api-reference/sdks/node/node-find-payee",
-							"api-reference/sdks/node/node-create-payee",
-							"api-reference/sdks/node/node-customer-deposits",
-							"api-reference/sdks/node/node-get-balances"
+							"sdks/node/setup-and-installation",
+							"sdks/node/send-payments",
+							"sdks/node/create-payees",
+							"sdks/node/search-payees",
+							"sdks/node/customer-deposits",
+							"sdks/node/check-balances"
 						]
 					},
 					{
 						"group": "Python SDK",
 						"pages": [
-							"api-reference/sdks/python/python",
-							"api-reference/sdks/python/python-payments",
-							"api-reference/sdks/python/python-find-payee",
-							"api-reference/sdks/python/python-create-payee",
-							"api-reference/sdks/python/python-customer-deposits",
-							"api-reference/sdks/python/python-get-balances"
+							"sdks/python/setup-and-installation",
+							"sdks/python/send-payments",
+							"sdks/python/create-payees",
+							"sdks/python/search-payees",
+							"sdks/python/customer-deposits",
+							"sdks/python/check-balances"
 						]
 					}
 				]
 			},
 			{
-				"group": "Tools",
+				"group": "Guides ",
 				"pages": [
-					"getting-started/toolkit",
-					"webhook/retrieving-response"
+					"examples/bill-payment-agent"
 				]
 			},
-			{
-				"group": "Features",
-				"pages": [
-					"capabilities/register-agent",
-					"capabilities/send-payment",
-					"capabilities/agent-to-agent",
-					"capabilities/customer-deposit",
-					"capabilities/spend-limits",
-					"capabilities/funding-sources"
-				]
-			},
-			{
-				"group": "Frameworks",
-				"pages": [
-					"frameworks/vercel-ai",
-					"frameworks/openai",
-					"frameworks/anthropic",
-					"frameworks/langchain"
-				]
-			},
+			
 
 			{
 				"group": "APIs",
 				"pages": [
+          "api-reference/get-api-key",
 					"api-reference/introduction",
 					"api-reference/authentication",
 					"api-reference/error-handling"
@@ -99,9 +66,7 @@
 				"pages": [
 					"api-reference/endpoint/send-payment",
 					"api-reference/endpoint/create-payment-destination",
-					"api-reference/endpoint/initiate-customer-deposit",
 					"api-reference/endpoint/search-destinations",
-					"api-reference/endpoint/get-currency-balance",
 					"api-reference/endpoint/get-customer-balance"
 				]
 			}

@@ -1,0 +1,107 @@
+---
+title: "Setup & Installation"
+description: "Quickly integrate PaymanAI's Node.js SDK into your app."
+icon: "wrench"
+---
+
+
+## Installation 
+
+Install the SDK using your preferred package manager:
+
+<CodeGroup>
+
+```bash npm
+npm install paymanai
+```
+
+```bash yarn
+yarn add paymanai
+```
+
+```bash pnpm
+pnpm install paymanai
+```
+
+</CodeGroup>
+
+## Setup 
+
+Before making requests, initialize the SDK with your **API key** from the [Payman Dashboard](https://app.paymanai.com/dashboard/api-keys).
+
+> For more details, check out [Get API Key](/api-reference/get-api-key) section.
+
+```typescript
+import Paymanai from "paymanai";
+
+const payman = new Paymanai({
+	xPaymanAPISecret: "your_api_key",
+	environment: "sandbox", // Switch to 'production' when live
+});
+```
+
+<Note>
+	Keep `environment: 'sandbox'` while testing. Use `'production'` only for
+	real transactions.
+</Note>
+
+## Testing the Setup
+
+To test if the SDK is setup correctly, run the following code in your node environment:
+
+```typescript
+async function testSetup() {
+  try {
+    const payee = await payman.payments.createPayee({
+      type: "US_ACH",
+      name: "John Doe",
+      accountHolderName: "John Doe",
+      accountNumber: "1234567890",
+      routingNumber: "011000138",
+      accountHolderType: "individual", // 'individual' or 'business'
+      accountType: "checking"
+    });
+    
+    console.log("✅ Payee John Doe created successfully!");
+  } catch (error) {
+    console.error("Setup test failed:", error.message);
+  }
+}
+
+testSetup();
+
+```
+
+It should show the following output in your terminal:
+
+```bash
+✅ Payee John Doe created successfully!
+```
+
+<Note>
+	The SDK is written in TypeScript and provides full type definitions for all
+	methods and parameters.
+</Note>
+## Handling Errors 
+
+Because things **don't always go as planned**, the SDK uses standard Promise-based error handling:
+
+```typescript
+try {
+	const payment = await payman.payments.sendPayment({
+		amountDecimal: 100.0,
+		paymentDestinationId: "dest_123",
+	});
+} catch (error) {
+	console.error("Payment failed:", error.message);
+}
+```
+
+## Explore More 
+
+<Card
+	title='Node.js SDK Repo'
+	icon='GitHub'
+	href='https://github.com/PaymanAI/payman-node-sdk'>
+	Dive into the source code and examples.
+</Card>
