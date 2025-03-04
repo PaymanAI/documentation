@@ -20,16 +20,11 @@
 			{
 				"group": "For Developers",
 				"pages": [
-					{
-						"group": "SDK Documentation",
-						"pages": [
-							"sdks/setup-and-installation",
-							"sdks/create-payees",
-							"sdks/send-payments",
-							"sdks/search-payees",
-							"sdks/check-balances"
-						]
-					}
+					"sdks/setup-and-installation",
+					"sdks/create-payees",
+					"sdks/send-payments",
+					"sdks/search-payees",
+					"sdks/check-balances"
 				]
 			},
 			{
