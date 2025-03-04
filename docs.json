@@ -1,0 +1,103 @@
+{
+	"$schema": "https://mintlify.com/docs.json",
+	"theme": "mint",
+	"name": "Payman AI Documentation",
+	"colors": {
+		"primary": "#FF7D61",
+		"light": "#FF7D61",
+		"dark": "#FF7D61"
+	},
+	"favicon": "/logo/payman.png",
+	"navigation": {
+		"groups": [
+			{
+				"group": "Overview",
+				"pages": [
+					"overview/quickstart",
+					"overview/playground"
+				]
+			},
+			{
+				"group": "For Developers",
+				"pages": [
+					{
+						"group": "SDK Documentation",
+						"pages": [
+							"sdks/setup-and-installation",
+							"sdks/create-payees",
+							"sdks/send-payments",
+							"sdks/search-payees",
+							"sdks/check-balances"
+						]
+					}
+				]
+			},
+			{
+				"group": "Guides ",
+				"pages": [
+					"guides/bill-payment-agent"
+				]
+			},
+			{
+				"group": "APIs",
+				"pages": [
+					"api-reference/get-api-key",
+					"api-reference/introduction",
+					"api-reference/error-handling"
+				]
+			},
+			{
+				"group": "API Endpoints",
+				"pages": [
+					"api-reference/endpoint/send-payment",
+					"api-reference/endpoint/create-payee",
+					"api-reference/endpoint/search-payees",
+					"api-reference/endpoint/get-balance"
+				]
+			}
+		],
+		"global": {
+			"anchors": [
+				{
+					"anchor": "GitHub",
+					"href": "https://github.com/PaymanAI",
+					"icon": "github"
+				},
+				{
+					"anchor": "Discord",
+					"href": "https://discord.gg/uheBscdKas",
+					"icon": "discord"
+				},
+				{
+					"anchor": "Twitter",
+					"href": "https://www.x.com/paymanai",
+					"icon": "X"
+				}
+			]
+		}
+	},
+	"logo": {
+		"light": "/logo/light.png",
+		"dark": "/logo/dark.png"
+	},
+	"navbar": {
+		"links": [
+			{
+				"label": "Support",
+				"href": "mailto:support@paymanai.com"
+			}
+		],
+		"primary": {
+			"type": "button",
+			"label": "Dashboard",
+			"href": "https://app.paymanai.com"
+		}
+	},
+	"footer": {
+		"socials": {
+			"x": "https://x.com/paymanai",
+			"github": "https://github.com/paymanai",
+			"linkedin": "https://www.linkedin.com/company/paymanai"
+		}
+	}
+}

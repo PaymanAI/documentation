@@ -1,0 +1,63 @@
+---
+title: "Check Balances"
+description: "The balances function allows your AI Agent to check how much money it can spend."
+icon: "wallet"
+---
+
+<Note>
+**Currency Support:** Currently only USD is supported. USDC support is coming soon.
+</Note>
+
+## Understanding Balances
+
+A balance is considered "spendable" when:
+
+- Funds have been fully settled and verified
+- Funds aren't reserved for pending operations
+- Funds aren't subject to any holds or restrictions
+
+<Tabs>
+<Tab title="Python">
+```python
+# Check how much money your AI Agent can spend
+balance = payman.balances.get_spendable_balance("USD")
+print(f"Available balance: ${balance:.2f}")  # e.g., "Available balance: $150.00"
+```
+
+### Parameters
+
+| Parameter  | Type | Description                         |
+| ---------- | ---- | ----------------------------------- |
+| `currency` | str  | Currency code (currently only 'USD' supported) |
+
+### Response
+
+Returns a float representing the spendable balance in USD:
+
+```python
+42.50  # $42.50 USD
+```
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+// Check how much money your AI Agent can spend
+const balance = await payman.balances.getSpendableBalance("USD");
+console.log(`Available balance: $${balance.toFixed(2)}`); // e.g., "Available balance: $150.00"
+```
+
+### Parameters
+
+| Parameter  | Type   | Description                         |
+| ---------- | ------ | ----------------------------------- |
+| `currency` | string | Currency code (currently only 'USD' supported) |
+
+### Response
+
+Returns a number representing the spendable balance in USD:
+
+```typescript
+42.5; // $42.50 USD
+```
+</Tab>
+</Tabs>

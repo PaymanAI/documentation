@@ -1,0 +1,49 @@
+---
+title: "Search Payees"
+description: "The search function allows your AI Agent to find who it is approved to pay."
+icon: "magnifying-glass"
+---
+
+<Tabs>
+<Tab title="Python">
+```python
+# Get all payees
+payees = payman.payments.search_payees()
+
+# Search with filters
+payees = payman.payments.search_payees(
+    name="John",
+    type="US_ACH"
+)
+```
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | str | Search by name |
+| `type` | str | `'US_ACH'` or `'PAYMAN_AGENT'` |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+// Get all payees
+const payees = await payman.payments.searchPayees();
+
+// Search with filters
+const payees = await payman.payments.searchPayees({
+    name: "John",
+    type: "US_ACH"
+});
+```
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | string | Search by name |
+| `type` | string | `'US_ACH'` or `'PAYMAN_AGENT'` |
+</Tab>
+</Tabs>
+
+<Note>
+    Sensitive data like account numbers are masked in results.
+</Note> 

@@ -1,0 +1,76 @@
+---
+title: "Setup & Installation"
+description: "Quickly integrate PaymanAI's SDK into your AI Agent"
+icon: "wrench"
+---
+
+<Tabs>
+<Tab title="Python">
+### Installation
+<CodeGroup>
+```bash pip
+pip install paymanai
+```
+
+```bash poetry
+poetry add paymanai
+```
+
+```bash pipenv
+pipenv install paymanai
+```
+</CodeGroup>
+
+### Initialize Client
+```python
+from paymanai import Paymanai
+
+payman = Paymanai(
+    x_payman_api_secret="your_api_key",
+    environment="sandbox"  # Use 'production' for live
+)
+```
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `x_payman_api_secret` | str | Your API key from the [Payman Dashboard](https://app.paymanai.com/dashboard) |
+| `environment` | str | `'sandbox'` or `'production'` |
+
+
+</Tab>
+
+<Tab title="Node.js">
+### Installation
+<CodeGroup>
+```bash npm
+npm install paymanai
+```
+
+```bash yarn
+yarn add paymanai
+```
+
+```bash pnpm
+pnpm install paymanai
+```
+</CodeGroup>
+
+### Initialize Client
+```typescript
+import Paymanai from "paymanai";
+
+const payman = new Paymanai({
+    xPaymanAPISecret: "your_api_key",
+    environment: "sandbox"  // Use 'production' for live
+});
+```
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `xPaymanAPISecret` | string | Your API key from the [Payman Dashboard](https://app.paymanai.com/dashboard) |
+| `environment` | string | `'sandbox'` or `'production'` |
+
+</Tab>
+</Tabs>

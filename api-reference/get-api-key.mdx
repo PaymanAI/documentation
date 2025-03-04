@@ -1,0 +1,46 @@
+---
+title: "Get API Key"
+description: "Get your API key to connect your AI Agent to Payman"
+icon: "key"
+---
+
+<Note>
+	Creating a Payman AI account is free. You only pay for transactions in production.
+</Note>
+
+## Quick Start
+
+1. Visit [Payman Dashboard](https://app.paymanai.com)
+2. Sign up or sign in
+3. Go to **AI Agents → Default Agent**
+4. Click **Regenerate API Key**
+5. Copy your key immediately - it's only shown once
+
+<Warning>
+	Store your API key securely in environment variables. Never commit it to code.
+</Warning>
+
+## Environment Setup
+
+```bash
+# .env file
+PAYMAN_API_SECRET=your_api_key_here
+PAYMAN_ENVIRONMENT=sandbox  # Use 'production' for live
+```
+
+## Production
+
+1. Create a new AI Agent in the dashboard for production
+2. Get the new API key from your production Agent
+3. Update environment to `production`
+4. Test with a small transaction
+
+<Warning>
+	Production transactions involve real money. Test thoroughly in sandbox first.
+</Warning>
+
+## Support
+
+Need help? Contact us at [support@paymanai.com](mailto:support@paymanai.com)
+
+---
