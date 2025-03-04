@@ -1,0 +1,181 @@
+---
+title: "Create Payees"
+description: "Your AI Agent can add approved payees it can send money to - humans, AI agents, or crypto wallets"
+icon: "user-plus"
+---
+
+<Note>
+    Payees can also be added manually in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+<Tabs>
+<Tab title="ACH Payee">
+<Tabs>
+<Tab title="Python">
+```python
+payee = payman.payments.create_payee(
+    type="US_ACH",
+    name="John Doe",
+    account_holder_name="John Doe",
+    account_holder_type="individual",
+    account_number="1234567890",
+    routing_number="011000138",
+    account_type="checking",
+    contact_details={
+        "email": "john@example.com"
+    }
+)
+
+print(f"Payee created: {payee.id}")
+```
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | str | Must be `'US_ACH'` |
+| `name` | str | Descriptive name |
+| `account_holder_name` | str | Legal name on account |
+| `account_holder_type` | str | `'individual'` or `'business'` |
+| `account_number` | str | Bank account number |
+| `routing_number` | str | 9-digit ABA number |
+| `account_type` | str | `'checking'` or `'savings'` |
+| `contact_details` | dict | Optional contact information |
+| `tags` | list[str] | Optional labels |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payee = await payman.payments.createPayee({
+    type: "US_ACH",
+    name: "John Doe",
+    accountHolderName: "John Doe",
+    accountHolderType: "individual",
+    accountNumber: "1234567890",
+    routingNumber: "011000138",
+    accountType: "checking",
+    contactDetails: {
+        email: "john@example.com"
+    }
+});
+
+console.log(`Payee created: ${payee.id}`);
+```
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | string | Must be `'US_ACH'` |
+| `name` | string | Descriptive name |
+| `accountHolderName` | string | Legal name on account |
+| `accountHolderType` | string | `'individual'` or `'business'` |
+| `accountNumber` | string | Bank account number |
+| `routingNumber` | string | 9-digit ABA number |
+| `accountType` | string | `'checking'` or `'savings'` |
+| `contactDetails` | object | Optional contact information |
+| `tags` | string[] | Optional labels |
+</Tab>
+</Tabs>
+</Tab>
+
+<Tab title="Agent Payee">
+<Tabs>
+<Tab title="Python">
+```python
+payee = payman.payments.create_payee(
+    type="PAYMAN_AGENT",
+    name="Trading Bot",
+    payman_agent="agent_xyz789"
+)
+
+print(f"Payee created: {payee.id}")
+```
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+<Note type="warning">
+    You can find your Agent IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | str | Must be `'PAYMAN_AGENT'` |
+| `name` | str | Descriptive name |
+| `payman_agent` | str | Agent ID (starts with `agt-`) |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payee = await payman.payments.createPayee({
+    type: "PAYMAN_AGENT",
+    name: "Trading Bot",
+    paymanAgent: "agent_xyz789"
+});
+
+console.log(`Payee created: ${payee.id}`);
+```
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+<Note type="warning">
+    You can find your Agent IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | string | Must be `'PAYMAN_AGENT'` |
+| `name` | string | Descriptive name |
+| `paymanAgent` | string | Agent ID (starts with `agt-`) |
+</Tab>
+</Tabs>
+</Tab>
+
+<Tab title="Crypto Payee">
+<div className="flex items-center gap-2 mb-4">
+    <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Coming Soon</span>
+</div>
+<p>Support for crypto wallet payees is coming soon.</p>
+</Tab>
+</Tabs>
+
+## Response
+
+Both SDKs return a similar response object:
+
+```typescript
+{
+  id?: string,                    // Unique payee identifier (e.g., 'dest_abc123')
+  name: string,                   // User-assigned name of the payee
+  type: 'US_ACH' | 'PAYMAN_AGENT', // Type of payee
+  organizationId: string,         // Your organization ID
+  status?: 'ACTIVE' | 'ARCHIVED' | 'DELETED',  // Current status
+  contactDetails?: {              // Optional contact information
+    email?: string,
+    phoneNumber?: string,
+    address?: string,
+    taxId?: string
+  },
+  tags?: string[],               // Optional categorization tags
+  createdAt?: string,            // ISO timestamp of creation
+  updatedAt?: string,            // ISO timestamp of last update
+  createdBy?: string,            // ID of the creator
+  updatedBy?: string,            // ID of the last updater
+  destinationDetails?: Record<string, unknown>,  // Additional payee-specific details
+  providerInfo?: Record<string, unknown>,        // Provider-specific information
+  replacesId?: string,           // ID of replaced payee if any
+  searchHashes?: Record<string, unknown>         // Search optimization data
+}
+```

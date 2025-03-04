@@ -21,25 +21,13 @@
 				"group": "For Developers",
 				"pages": [
 					{
-						"group": "Node JS SDK",
+						"group": "SDK Documentation",
 						"pages": [
-							"sdks/node/setup-and-installation",
-							"sdks/node/send-payments",
-							"sdks/node/create-payees",
-							"sdks/node/search-payees",
-							"sdks/node/customer-deposits",
-							"sdks/node/check-balances"
-						]
-					},
-					{
-						"group": "Python SDK",
-						"pages": [
-							"sdks/python/setup-and-installation",
-							"sdks/python/send-payments",
-							"sdks/python/create-payees",
-							"sdks/python/search-payees",
-							"sdks/python/customer-deposits",
-							"sdks/python/check-balances"
+							"sdks/setup-and-installation",
+							"sdks/create-payees",
+							"sdks/send-payments",
+							"sdks/search-payees",
+							"sdks/check-balances"
 						]
 					}
 				]
@@ -50,14 +38,11 @@
 					"examples/bill-payment-agent"
 				]
 			},
-			
-
 			{
 				"group": "APIs",
 				"pages": [
-          "api-reference/get-api-key",
+					"api-reference/get-api-key",
 					"api-reference/introduction",
-					"api-reference/authentication",
 					"api-reference/error-handling"
 				]
 			},
@@ -65,15 +50,19 @@
 				"group": "API Endpoints",
 				"pages": [
 					"api-reference/endpoint/send-payment",
-					"api-reference/endpoint/create-payment-destination",
-					"api-reference/endpoint/search-destinations",
-					"api-reference/endpoint/get-customer-balance"
+					"api-reference/endpoint/create-payee",
+					"api-reference/endpoint/search-payees",
+					"api-reference/endpoint/get-balance"
 				]
 			}
 		],
-
 		"global": {
 			"anchors": [
+				{
+					"anchor": "GitHub",
+					"href": "https://github.com/PaymanAI",
+					"icon": "github"
+				},
 				{
 					"anchor": "Discord",
 					"href": "https://discord.gg/uheBscdKas",

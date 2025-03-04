@@ -1,0 +1,71 @@
+---
+title: "Send Payments"
+description: "Send money to approved payees with your AI Agent"
+icon: "paper-plane"
+---
+
+<Note>
+    1. AI Agent transactions can be configured to require human approval in the Payman Dashboard
+    2. Payees can be created via API or Dashboard
+</Note>
+
+<Tabs>
+<Tab title="Python">
+```python
+payment = payman.payments.send_payment(
+    amount_decimal=50.00,
+    payment_destination_id='dest_123',
+    memo='Invoice #1234'
+)
+```
+
+### Required Parameters
+
+| Parameter              | Type  | Description                                  |
+| ---------------------- | ----- | -------------------------------------------- |
+| `amount_decimal`       | float | Amount to send (e.g., `50.00` for $50)       |
+| `payment_destination_id` | str  | ID of an existing payee                      |
+
+### Optional Parameters
+
+| Parameter  | Type | Description                                        |
+| ---------- | ---- | -------------------------------------------------- |
+| `memo`     | str  | A note for the transaction (e.g., `Invoice #1234`) |
+| `metadata` | dict | Custom data to track the payment                   |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payment = await payman.payments.sendPayment({
+  amountDecimal: 50.00,
+  paymentDestinationId: 'dest_123',
+  memo: 'Invoice #1234'
+});
+```
+
+### Required Parameters
+
+| Parameter              | Type  | Description                                  |
+| ---------------------- | ----- | -------------------------------------------- |
+| `amountDecimal`        | number | Amount to send (e.g., `50.00` for $50)       |
+| `paymentDestinationId` | string | ID of an existing payee                      |
+
+### Optional Parameters
+
+| Parameter  | Type | Description                                        |
+| ---------- | ---- | -------------------------------------------------- |
+| `memo`     | string | A note for the transaction (e.g., `Invoice #1234`) |
+| `metadata` | object | Custom data to track the payment                   |
+</Tab>
+</Tabs>
+
+## Response
+
+Both SDKs return a similar response object:
+
+```typescript
+{
+  reference: 'txn_abc123',      // Unique transaction ID
+  status: 'INITIATED'           // One of: 'INITIATED', 'AWAITING_APPROVAL', or 'REJECTED'
+}
+``` 
