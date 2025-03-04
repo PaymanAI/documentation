@@ -4,120 +4,15 @@ description: "Handle API errors consistently"
 icon: "bug"
 ---
 
-## Overview
-
-The Payman API uses standard HTTP response codes and returns detailed error information in a consistent format.
-
-## Error Response Format
-
-```json
-{
-  "status": 400,
-  "timestamp": "2024-01-22T10:00:00Z",
-  "errorCode": "invalid_payload",
-  "message": "Amount must be greater than 0",
-  "context": {
-    "field": "amountDecimal",
-    "value": "-50.00"
-  },
-  "traceId": "trace_abc123"
-}
-```
-
 ## HTTP Status Codes
 
-| Code | Description |
-|------|-------------|
+| Status Code | Description |
+|:------------|:------------|
 | 400 | Bad Request - Invalid request payload |
 | 401 | Unauthorized - Invalid API key |
 | 403 | Forbidden - Insufficient permissions |
 | 404 | Not Found - Resource doesn't exist |
 | 500 | Server Error - Please contact support |
 
-## Common Error Codes
+Need help? Contact us at support@paymanai.com
 
-| Code | Description |
-|------|-------------|
-| `invalid_payload` | Request payload is invalid |
-| `insufficient_funds` | Not enough funds available |
-| `validation_error` | Field validation failed |
-| `entity_not_found` | Requested resource not found |
-| `not_authorized` | Invalid or missing credentials |
-| `not_allowed` | Insufficient permissions |
-
-## Error Examples
-
-### Invalid Amount
-```json
-{
-  "status": 400,
-  "errorCode": "validation_error",
-  "message": "Amount must be greater than 0",
-  "context": {
-    "field": "amountDecimal"
-  }
-}
-```
-
-### Insufficient Funds
-```json
-{
-  "status": 400,
-  "errorCode": "insufficient_funds",
-  "message": "Available balance: $45.00, Required: $50.00",
-  "context": {
-    "available": 45.00,
-    "required": 50.00
-  }
-}
-```
-
-### Invalid API Key
-```json
-{
-  "status": 401,
-  "errorCode": "not_authorized",
-  "message": "Invalid API key provided"
-}
-```
-
-## Handling Errors
-
-```javascript
-try {
-  const payment = await payman.payments.sendPayment({
-    paymentDestinationId: 'dest_123',
-    amountDecimal: 50.00
-  });
-} catch (error) {
-  switch (error.errorCode) {
-    case 'insufficient_funds':
-      console.log('Not enough funds available');
-      break;
-    case 'validation_error':
-      console.log('Invalid payment details:', error.message);
-      break;
-    default:
-      console.log('Payment failed:', error.message);
-  }
-}
-```
-
-## Next Steps
-
-<CardGroup>
-  <Card
-    title="Send Payment"
-    icon="money-bill-transfer"
-    href="/api-reference/endpoint/send-payment"
-  >
-    Try sending a payment
-  </Card>
-  <Card
-    title="Webhooks"
-    icon="bell"
-    href="/webhook/retrieving-response"
-  >
-    Monitor payment status
-  </Card>
-</CardGroup>
