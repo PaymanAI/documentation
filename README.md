@@ -4,10 +4,11 @@ Welcome to the official documentation for Payman - the payment infrastructure fo
 
 ## 🏗 Documentation Structure
 
-- `/main` - Core concepts and getting started guides
+- `/quickstart` - Quick start guides and tutorials
+- `/guides` - Getting started guides and examples
 - `/api-reference` - Complete API documentation and endpoints
-- `/webhook` - Webhook integration and event handling
-- `/capabilities` - Detailed feature documentation
+- `/sdks` - SDK documentation and examples
+- `/playground` - Interactive examples and sandbox
 
 ## 🚀 Local Development
 
