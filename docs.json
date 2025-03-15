@@ -12,10 +12,7 @@
 		"groups": [
 			{
 				"group": "Overview",
-				"pages": [
-					"overview/quickstart",
-					"overview/playground"
-				]
+				"pages": ["overview/quickstart"]
 			},
 			{
 				"group": "For Developers",
@@ -29,14 +26,12 @@
 			},
 			{
 				"group": "Guides ",
-				"pages": [
-					"guides/bill-payment-agent"
-				]
+				"pages": ["guides/bill-payment-agent"]
 			},
 			{
 				"group": "APIs",
 				"pages": [
-					"api-reference/get-api-key",
+					"api-reference/get-access-key",
 					"api-reference/introduction",
 					"api-reference/error-handling"
 				]

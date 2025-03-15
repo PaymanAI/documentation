@@ -26,16 +26,14 @@ pipenv install paymanai
 from paymanai import Paymanai
 
 payman = Paymanai(
-    x_payman_api_secret="your_api_key",
-    environment="sandbox"  # Use 'production' for live
+    x_payman_api_secret="PAYMAN_ACCESS_KEY"
 )
 ```
 
 ### Parameters
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `x_payman_api_secret` | str | Your API key from the [Payman Dashboard](https://app.paymanai.com/dashboard) |
-| `environment` | str | `'sandbox'` or `'production'` |
+| `x_payman_api_secret` | str | Your **Access Key** from the [Payman Dashboard](https://app.paymanai.com/dashboard) |
 
 
 </Tab>
@@ -61,16 +59,14 @@ pnpm install paymanai
 import Paymanai from "paymanai";
 
 const payman = new Paymanai({
-    xPaymanAPISecret: "your_api_key",
-    environment: "sandbox"  // Use 'production' for live
+    xPaymanAPISecret: "PAYMAN_ACCESS_KEY"
 });
 ```
 
 ### Parameters
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `xPaymanAPISecret` | string | Your API key from the [Payman Dashboard](https://app.paymanai.com/dashboard) |
-| `environment` | string | `'sandbox'` or `'production'` |
+| `xPaymanAPISecret` | string | Your **Access Key** from the [Payman Dashboard](https://app.paymanai.com/dashboard) |
 
 </Tab>
 </Tabs>

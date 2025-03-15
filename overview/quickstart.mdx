@@ -43,40 +43,38 @@ pipenv install paymanai
 import Payman from "paymanai";
 
 const payman = new Payman({
-    xPaymanAPISecret: "<PAYMAN_API_KEY>",
-    environment: "sandbox"
+	xPaymanAPISecret: "<PAYMAN_ACCESS_KEY>",
 });
 
 // Create a payee
 const payee = await payman.payments.createPayee({
-    type: "US_ACH",
-    name: "John Doe",
-    accountHolderName: "John Doe",
-    accountHolderType: "individual",
-    accountNumber: "12345678",
-    routingNumber: "021000021",
-    accountType: "checking",
-    contactDetails: { 
-        email: "john@example.com" 
-    }
+	type: "US_ACH",
+	name: "John Doe",
+	accountHolderName: "John Doe",
+	accountHolderType: "individual",
+	accountNumber: "12345678",
+	routingNumber: "021000021",
+	accountType: "checking",
+	contactDetails: {
+		email: "john@example.com",
+	},
 });
 
 // Send payment
 const payment = await payman.payments.sendPayment({
-    amountDecimal: 100.00,
-    paymentDestinationId: payee.id,
-    memo: "Test payment"
+	amountDecimal: 100.0,
+	payeeId: payee.id,
+	memo: "Test payment",
 });
-
-console.log('Payment created:', payment);
+console.log("Payee created:", payee);
+console.log("Payment created:", payment);
 ```
 
 ```python Python
 from paymanai import Paymanai
 
 payman = Paymanai(
-    x_payman_api_secret="<PAYMAN_API_KEY>",
-    environment="sandbox"
+    x_payman_api_secret="<PAYMAN_API_KEY>"
 )
 
 // Create a payee
@@ -94,10 +92,11 @@ payee = payman.payments.create_payee(
 // Send payment
 payment = payman.payments.send_payment(
     amount_decimal=100.00,
-    payment_destination_id=payee["id"],
+    payee_id=payee["id"],
     memo="Test payment"
 )
 
+print("Payee created:", payee)
 print('Payment created:', payment)
 ```
 

@@ -4,9 +4,6 @@ description: "The balances function allows your AI Agent to check how much money
 icon: "wallet"
 ---
 
-<Note>
-**Currency Support:** Currently only USD is supported. USDC support is coming soon.
-</Note>
 
 ## Understanding Balances
 
@@ -28,7 +25,7 @@ print(f"Available balance: ${balance:.2f}")  # e.g., "Available balance: $150.00
 
 | Parameter  | Type | Description                         |
 | ---------- | ---- | ----------------------------------- |
-| `currency` | str  | Currency code (currently only 'USD' supported) |
+| `currency` | str  | `'USD'`, `'USDC'`, `'TSD'` (For Test Wallets)  |
 
 ### Response
 
@@ -50,7 +47,7 @@ console.log(`Available balance: $${balance.toFixed(2)}`); // e.g., "Available ba
 
 | Parameter  | Type   | Description                         |
 | ---------- | ------ | ----------------------------------- |
-| `currency` | string | Currency code (currently only 'USD' supported) |
+| `currency` | string | `'USD'`, `'USDC'`, `'TSD'` (For Test Wallets)) |
 
 ### Response
 

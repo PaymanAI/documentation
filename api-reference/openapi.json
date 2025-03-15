@@ -12,10 +12,6 @@
     {
       "url": "https://agent.payman.ai/api",
       "description": "Production server"
-    },
-    {
-      "url": "https://agent-sandbox.payman.ai/api",
-      "description": "Sandbox (Test Mode) server"
     }
   ],
   "security": [
