@@ -43,7 +43,7 @@ pipenv install paymanai
 import Payman from "paymanai";
 
 const payman = new Payman({
-	xPaymanAPISecret: "<PAYMAN_ACCESS_KEY>",
+	xPaymanAPISecret: "<PAYMAN_API_SECRET>",
 });
 
 // Create a payee
@@ -74,7 +74,7 @@ console.log("Payment created:", payment);
 from paymanai import Paymanai
 
 payman = Paymanai(
-    x_payman_api_secret="<PAYMAN_API_KEY>"
+    x_payman_api_secret="<PAYMAN_API_SECRET>"
 )
 
 // Create a payee
