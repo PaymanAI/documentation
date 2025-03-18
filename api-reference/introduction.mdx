@@ -5,22 +5,20 @@ icon: "book"
 ---
 
 <Note>
-  Keep your API key secure. Never share it in public repositories or client-side code.
+	Keep your API key secure. Never share it in public repositories or
+	client-side code.
 </Note>
 
-## Environments
-
-| Environment | Base URL |
-|------------|----------|
-| Sandbox | `https://agent-sandbox.payman.ai/api` |
-| Production | `https://agent.payman.ai/api` |
+| Environment | Base URL                      |
+| ----------- | ----------------------------- |
+| Production  | `https://agent.payman.ai/api` |
 
 ## Authentication
 
-All API requests require authentication using the `x-payman-api-secret` header. Get your API key from the [Payman Dashboard](https://app.paymanai.com).
+All API requests require authentication using the `x-payman-api-secret` header. Get your Access key from the [Payman Dashboard](https://app.paymanai.com).
 
 ```bash
-x-payman-api-secret: sk_test_...
+x-payman-api-secret: YWd0LTFm...
 ```
 
 ## Quick Start
@@ -28,52 +26,55 @@ x-payman-api-secret: sk_test_...
 <CodeGroup>
 
 ```bash curl
-curl https://agent-sandbox.payman.ai/api/payments/send-payment \
-  -H "x-payman-api-secret: sk_test_..." \
+curl https://agent.payman.ai/api/payments/send-payment \
+  -H "x-payman-api-secret: YWd0LTFm..." \
   -H "Accept: application/vnd.payman.v1+json" \
   -H "Content-Type: application/json" \
   -d '{
-    "paymentDestinationId": "dest_123",
+    "payeeId": "pd-1f001934-7abc",
     "amountDecimal": 50.00,
     "memo": "Service payment"
   }'
 ```
 
 ```typescript node-fetch
-const response = await fetch('https://agent-sandbox.payman.ai/api/payments/send-payment', {
-  method: 'POST',
-  headers: {
-    'x-payman-api-secret': 'sk_test_...',
-    'Accept': 'application/vnd.payman.v1+json',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    paymentDestinationId: 'dest_123',
-    amountDecimal: 50.00,
-    memo: 'Service payment'
-  })
-});
+const response = await fetch(
+	"https://agent.payman.ai/api/payments/send-payment",
+	{
+		method: "POST",
+		headers: {
+			"x-payman-api-secret": "YWd0LTFm...",
+			Accept: "application/vnd.payman.v1+json",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			payeeId: "pd-1f001934-7abc",
+			amountDecimal: 50.0,
+			memo: "Service payment",
+		}),
+	}
+);
 
 const data = await response.json();
 ```
 
 ```typescript node-axios
-import axios from 'axios';
+import axios from "axios";
 
 const response = await axios.post(
-  'https://agent-sandbox.payman.ai/api/payments/send-payment',
-  {
-    paymentDestinationId: 'dest_123',
-    amountDecimal: 50.00,
-    memo: 'Service payment'
-  },
-  {
-    headers: {
-      'x-payman-api-secret': 'sk_test_...',
-      'Accept': 'application/vnd.payman.v1+json',
-      'Content-Type': 'application/json'
-    }
-  }
+	"https://agent.payman.ai/api/payments/send-payment",
+	{
+		payeeId: "pd-1f001934-7abc",
+		amountDecimal: 50.0,
+		memo: "Service payment",
+	},
+	{
+		headers: {
+			"x-payman-api-secret": "YWd0LTFm...",
+			Accept: "application/vnd.payman.v1+json",
+			"Content-Type": "application/json",
+		},
+	}
 );
 
 const data = response.data;
@@ -83,14 +84,14 @@ const data = response.data;
 import requests
 
 response = requests.post(
-    'https://agent-sandbox.payman.ai/api/payments/send-payment',
+    'https://agent.payman.ai/api/payments/send-payment',
     headers={
-        'x-payman-api-secret': 'sk_test_...',
+        'x-payman-api-secret': 'YWd0LTFm...',
         'Accept': 'application/vnd.payman.v1+json',
         'Content-Type': 'application/json'
     },
     json={
-        'paymentDestinationId': 'dest_123',
+        'payeeId': 'pd-1f001934-7abc',
         'amountDecimal': 50.00,
         'memo': 'Service payment'
     }
@@ -107,43 +108,38 @@ All responses use standard HTTP status codes and return JSON in the following fo
 
 ```json
 {
-  "status": 200,
-  "data": {
-    // Response data specific to each endpoint
-  }
+	"status": 200,
+	"data": {
+		// Response data specific to each endpoint
+	}
 }
 ```
 
 ## Core Endpoints
 
 <CardGroup>
-  <Card
-    title="Send Payment"
-    icon="money-bill-transfer"
-    href="/api-reference/endpoint/send-payment"
-  >
-    Send funds to payees
-  </Card>
-  <Card
-    title="Create Payee"
-    icon="user-plus"
-    href="/api-reference/endpoint/create-payee"
-  >
-    Add payees
-  </Card>
-  <Card
-    title="Search Payees"
-    icon="magnifying-glass"
-    href="/api-reference/endpoint/search-payees"
-  >
-    Find existing payees
-  </Card>
-  <Card
-    title="Check Balance"
-    icon="scale-balanced"
-    href="/api-reference/endpoint/get-balance"
-  >
-    View available funds
-  </Card>
+	<Card
+		title='Send Payment'
+		icon='money-bill-transfer'
+		href='/api-reference/endpoint/send-payment'>
+		Send funds to payees
+	</Card>
+	<Card
+		title='Create Payee'
+		icon='user-plus'
+		href='/api-reference/endpoint/create-payee'>
+		Add payees
+	</Card>
+	<Card
+		title='Search Payees'
+		icon='magnifying-glass'
+		href='/api-reference/endpoint/search-payees'>
+		Find existing payees
+	</Card>
+	<Card
+		title='Check Balance'
+		icon='scale-balanced'
+		href='/api-reference/endpoint/get-balance'>
+		View available funds
+	</Card>
 </CardGroup>
-

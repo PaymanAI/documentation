@@ -22,7 +22,7 @@ Bill Buddy is a Streamlit application that:
 
 - Python 3.8+
 - OpenAI API key
-- Payman API key (check out [Get API Key](/api-reference/get-api-key))
+- Payman Access key (check out [Get Access Key](/api-reference/get-access-key))
 - Basic understanding of Python
 
 ## Environment Setup
@@ -43,7 +43,7 @@ pip install streamlit pytesseract pymupdf openai paymanai pillow python-dotenv
 3. Create a `.env` file with your API keys:
 ```bash
 OPENAI_API_KEY=your_openai_key
-PAYMAN_API_KEY=your_payman_key
+PAYMAN_API_SECRET=your_payman_access_key
 ```
 
 ## Application Structure
@@ -70,7 +70,7 @@ st.set_page_config(
 
 # Initialize API keys
 openai_api_key = os.environ.get("OPENAI_API_KEY", "")
-payman_api_key = os.environ.get("PAYMAN_API_KEY", "")
+payman_api_secret = os.environ.get("PAYMAN_API_SECRET", "")
 ```
 
 ## Core Functions
@@ -135,8 +135,7 @@ def extract_payment_info(text):
 def send_payment(payment_info):
     try:
         payman = Paymanai(
-            x_payman_api_secret=payman_api_key,
-            environment="sandbox"  # Change to "production" for real payments
+            x_payman_api_secret=payman_api_secret,
         )
         
         # Check for existing payee
@@ -159,7 +158,7 @@ def send_payment(payment_info):
         # Send payment
         payment = payman.payments.send_payment(
             amount_decimal=float(payment_info["amount"]),
-            payment_destination_id=payee_id,
+            payee_id=payee_id,
             memo=f"Payment for bill due on {payment_info.get('due_date', 'N/A')}"
         )
         

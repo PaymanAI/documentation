@@ -1,6 +1,6 @@
 ---
-title: "Get API Key"
-description: "Get your API key to connect your AI Agent to Payman"
+title: "Get Access Key"
+description: "Get your Access key to connect your AI Agent to Payman"
 icon: "key"
 ---
 
@@ -12,8 +12,8 @@ icon: "key"
 
 1. Visit [Payman Dashboard](https://app.paymanai.com)
 2. Sign up or sign in
-3. Go to **AI Agents → Default Agent**
-4. Click **Regenerate API Key**
+3. Navigate to **Access Keys** section
+4. Click `Create Access Key` Button
 5. Copy your key immediately - it's only shown once
 
 <Warning>
@@ -24,19 +24,12 @@ icon: "key"
 
 ```bash
 # .env file
-PAYMAN_API_SECRET=your_api_key_here
-PAYMAN_ENVIRONMENT=sandbox  # Use 'production' for live
+PAYMAN_API_SECRET=your_access_key_here
 ```
 
-## Production
-
-1. Create a new AI Agent in the dashboard for production
-2. Get the new API key from your production Agent
-3. Update environment to `production`
-4. Test with a small transaction
 
 <Warning>
-	Production transactions involve real money. Test thoroughly in sandbox first.
+	USD/USDC Wallet transactions involve real money. Test thoroughly with Test Wallets first.
 </Warning>
 
 ## Support

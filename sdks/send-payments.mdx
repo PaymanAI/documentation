@@ -5,8 +5,8 @@ icon: "paper-plane"
 ---
 
 <Note>
-    1. AI Agent transactions can be configured to require human approval in the Payman Dashboard
-    2. Payees can be created via API or Dashboard
+	1. AI Agent transactions can be configured to require human approval in the
+	Payman Dashboard 2. Payees can be created via API or Dashboard
 </Note>
 
 <Tabs>
@@ -14,48 +14,57 @@ icon: "paper-plane"
 ```python
 payment = payman.payments.send_payment(
     amount_decimal=50.00,
-    payment_destination_id='dest_123',
-    memo='Invoice #1234'
+    payee_id='pd-1f001934-7abc',
+    memo='Invoice #1234',
+    metadata={
+        "department": "marketing"
+    }
 )
 ```
 
 ### Required Parameters
 
-| Parameter              | Type  | Description                                  |
-| ---------------------- | ----- | -------------------------------------------- |
-| `amount_decimal`       | float | Amount to send (e.g., `50.00` for $50)       |
-| `payment_destination_id` | str  | ID of an existing payee                      |
+| Parameter        | Type  | Description                            |
+| ---------------- | ----- | -------------------------------------- |
+| `amount_decimal` | float | Amount to send (e.g., `50.00` for $50) |
+| `payee_id`       | str   | ID of an existing payee                |
 
 ### Optional Parameters
 
-| Parameter  | Type | Description                                        |
-| ---------- | ---- | -------------------------------------------------- |
-| `memo`     | str  | A note for the transaction (e.g., `Invoice #1234`) |
-| `metadata` | dict | Custom data to track the payment                   |
+| Parameter   | Type | Description                                                       |
+| ----------- | ---- | ----------------------------------------------------------------- |
+| `memo`      | str  | A note for the transaction (e.g., `Invoice #1234`)                |
+| `metadata`  | dict | Custom data to track the payment                                  |
+
 </Tab>
 
 <Tab title="Node.js">
 ```typescript
 const payment = await payman.payments.sendPayment({
   amountDecimal: 50.00,
-  paymentDestinationId: 'dest_123',
-  memo: 'Invoice #1234'
+  payeeId: 'pd-1f001934-7abc',
+  memo: 'Invoice #1234',
+  metadata: {
+    department: "marketing"
+  }
 });
 ```
 
 ### Required Parameters
 
-| Parameter              | Type  | Description                                  |
-| ---------------------- | ----- | -------------------------------------------- |
-| `amountDecimal`        | number | Amount to send (e.g., `50.00` for $50)       |
-| `paymentDestinationId` | string | ID of an existing payee                      |
+| Parameter       | Type   | Description                            |
+| --------------- | ------ | -------------------------------------- |
+| `amountDecimal` | number | Amount to send (e.g., `50.00` for $50) |
+| `payeeId`       | string | ID of an existing payee                |
 
 ### Optional Parameters
 
-| Parameter  | Type | Description                                        |
-| ---------- | ---- | -------------------------------------------------- |
-| `memo`     | string | A note for the transaction (e.g., `Invoice #1234`) |
-| `metadata` | object | Custom data to track the payment                   |
+| Parameter  | Type   | Description                                                       |
+| ---------- | ------ | ----------------------------------------------------------------- |
+| `walletId` | string | ID of specific wallet to use (only if agent has multiple wallets) |
+| `memo`     | string | A note for the transaction (e.g., `Invoice #1234`)                |
+| `metadata` | object | Custom data to track the payment                                  |
+
 </Tab>
 </Tabs>
 
@@ -65,7 +74,8 @@ Both SDKs return a similar response object:
 
 ```typescript
 {
-  reference: 'txn_abc123',      // Unique transaction ID
-  status: 'INITIATED'           // One of: 'INITIATED', 'AWAITING_APPROVAL', or 'REJECTED'
+  "reference": "txn_abc123",      // Unique transaction ID
+  "status": "INITIATED",          // One of: 'INITIATED', 'AWAITING_APPROVAL', or 'REJECTED'
+  "externalReference": "0x123..."  // External reference (e.g., blockchain transaction hash) if applicable
 }
-``` 
+```
