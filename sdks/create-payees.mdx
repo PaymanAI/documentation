@@ -162,6 +162,59 @@ console.log(`Payee created: ${payee.id}`);
 </Tab>
 </Tabs>
 </Tab>
+
+<Tab title="Test Payee">
+<Tabs>
+<Tab title="Python">
+```python
+payee = payman.payments.create_payee(
+    type="TEST_RAILS",
+    name="Test Account",
+    tags=["test", "sandbox"]
+)
+
+print(f"Payee created: {payee.id}")
+```
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | str | Must be `'TEST_RAILS'` |
+| `name` | str | Descriptive name |
+| `tags` | list[str] | Optional labels |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payee = await payman.payments.createPayee({
+    type: "TEST_RAILS",
+    name: "Test Account",
+    tags: ["test", "sandbox"]
+});
+
+console.log(`Payee created: ${payee.id}`);
+```
+
+<Note>
+	Use the returned `id` when sending payments to this payee. You can also find
+	payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+
+| Parameter | Type     | Description                    |
+|-----------|----------|--------------------------------|
+| `type`    | string   | Must be `'TEST_RAILS'`        |
+| `name`    | string   | Descriptive name              |
+| `tags`    | string[] | Optional labels               |
+
+</Tab>
+</Tabs>
+</Tab>
 </Tabs>
 
 ## Response
