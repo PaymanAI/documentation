@@ -1,0 +1,103 @@
+---
+title: "Paytag"
+description: "Transfer funds directly between Payman wallets using paytags"
+icon: "tag"
+---
+
+## Understanding Paytags
+
+Paytags are human-readable identifiers for Payman wallets that make transfers simpler and more secure. Each paytag follows the format `word.word.word/number` (e.g., `surge.produce.leg/26`).
+
+<Note>
+	Paytags can be found in the Payman Dashboard for each of your wallets or
+	through the API when getting wallet information.
+</Note>
+
+## Creating a Payman Wallet Payee
+
+Before you can transfer funds to another Payman wallet, you need to create a payee of type `PAYMAN_WALLET`:
+
+<Tabs>
+<Tab title="Python">
+```python
+payee = payman.payments.create_payee(
+    type="PAYMAN_WALLET",
+    name="My Other Wallet",
+    payman_wallet_paytag="surge.produce.leg/26",
+)
+```
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payee = await payman.payments.createPayee({
+    type: "PAYMAN_WALLET",
+    name: "My Other Wallet",
+    paymanWalletPaytag: "surge.produce.leg/26",
+});
+```
+</Tab>
+</Tabs>
+
+## Sending Funds to a Payman Wallet
+
+Once you've created a Payman Wallet payee, you can send funds to it just like any other payee:
+
+<Tabs>
+<Tab title="Python">
+```python
+payment = payman.payments.send_payment(
+    amount_decimal=100.00,
+    payee_id='pd-1f014a03-035d-61b5-b3a6-3b7603b9cbdf', # ID of the Payman Wallet payee
+    memo='Wallet to wallet transfer',
+)
+```
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payment = await payman.payments.sendPayment({
+    amountDecimal: 100.00,
+    payeeId: 'pd-1f014a03-035d-61b5-b3a6-3b7603b9cbdf', // ID of the Payman Wallet payee
+    memo: 'Wallet to wallet transfer',
+});
+```
+</Tab>
+</Tabs>
+
+## Example Response from Searching Payman Wallet Payees
+
+When you search payees using the search-payees endpoint, Payman wallet payees will include details about the paytag and wallet:
+
+```typescript
+[
+	{
+		id: "pd-1f014a03-035d-61b5-b3a6-3b7603b9cbdf",
+		createdAt: "2025-04-08T17:37:48.469626Z",
+		updatedAt: "2025-04-08T17:37:48.469626Z",
+		version: 0,
+		createdBy: "usr-1efd817d-8b4b-61d5-b624-3d5e74f0218c",
+		updatedBy: "usr-1efd817d-8b4b-61d5-b624-3d5e74f0218c",
+		name: "USD Handshake MX",
+		organizationId: "org-1f0149e6-9697-6153-b3a6-3b7603b9cbdf",
+		tags: [],
+		type: "PAYMAN_WALLET",
+		payeeDetails: {
+			"payman-wallet-paytag": "mean.shop.apron/15",
+			"payman-wallet-name": "USD Handshake MX",
+			"payman-wallet-provider": "STRIPE",
+			"payman-wallet-id": "wlt-1f014a01-844a-6b2c-b3a6-3b7603b9cbdf",
+			"payman-wallet-org-name":
+				"org-1f0149e6-9697-6153-b3a6-3b7603b9cbdf",
+		},
+		status: "ACTIVE",
+		searchHashes: {
+			"payman-wallet-id": "754dd24f37ca54de37e47528b15af413",
+			"payman-wallet-name": "cdd3c721669aa64061e3740bf9ad5f52",
+			"payman-wallet-paytag": "c126d78d6b06c90dddc6f397d4f1257f",
+			"payman-wallet-org-name": "98206de2eb7f683ca99db9befeb09130",
+			"payman-wallet-provider": "8a98c86b49d93794705dd64bcdbbe3ab",
+		},
+	},
+];
+```

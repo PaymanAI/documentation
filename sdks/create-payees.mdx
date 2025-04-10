@@ -1,6 +1,6 @@
 ---
 title: "Create Payees"
-description: "Your AI Agent can add approved payees it can send money to - humans, AI agents, or crypto wallets"
+description: "Your AI Agent can add approved payees it can send money to - humans, AI agents, crypto wallets, or other Payman wallets"
 icon: "user-plus"
 ---
 
@@ -28,7 +28,8 @@ payee = payman.payments.create_payee(
 )
 
 print(f"Payee created: {payee.id}")
-```
+
+````
 
 <Note>
     Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
@@ -64,7 +65,7 @@ const payee = await payman.payments.createPayee({
 });
 
 console.log(`Payee created: ${payee.id}`);
-```
+````
 
 <Note>
 	Use the returned `id` when sending payments to this payee. You can also find
@@ -87,8 +88,34 @@ console.log(`Payee created: ${payee.id}`);
 
 </Tab>
 </Tabs>
-</Tab>
 
+## Response
+
+Both SDKs return a similar response object:
+
+```typescript
+{
+  "id": "string",                 // Unique payee identifier (e.g., 'pd-1f001934-7...')
+  "name": "string",               // User-assigned name of the payee
+  "type": "US_ACH" | "CRYPTO_ADDRESS" | "PAYMAN_WALLET", // Type of payee
+  "organizationId": "string",      // Your organization ID
+  "status": "ACTIVE" | "DELETED", // Current status
+  "contactDetails": {              // Optional contact information
+    "email": "string",
+    "phoneNumber": "string",
+    "address": "string"
+  },
+  "tags": ["string"],               // Optional categorization tags
+  "createdAt": "string",            // ISO timestamp of creation
+  "updatedAt": "string",            // ISO timestamp of last update
+  "createdBy": "string",            // ID of the creator
+  "updatedBy": "string",            // ID of the last updater
+  "payeeDetails": {},                // Payee-specific details (varies by type)
+  "searchHashes": {},                // Search optimization data
+}
+```
+
+</Tab>
 
 <Tab title="Crypto Payee">
 <Tabs>
@@ -107,7 +134,8 @@ payee = payman.payments.create_payee(
 )
 
 print(f"Payee created: {payee.id}")
-```
+
+````
 
 <Note>
     Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
@@ -140,7 +168,7 @@ const payee = await payman.payments.createPayee({
 });
 
 console.log(`Payee created: ${payee.id}`);
-```
+````
 
 <Note>
 	Use the returned `id` when sending payments to this payee. You can also find
@@ -149,18 +177,16 @@ console.log(`Payee created: ${payee.id}`);
 
 ### Parameters
 
-| Parameter       | Type     | Description                                                          |
-| --------------- | -------- | -------------------------------------------------------------------- |
-| `type`          | string   | Must be `'CRYPTO_ADDRESS'`                                           |
-| `name`          | string   | Descriptive name                                                     |
-| `address`       | string   | The cryptocurrency address to send funds to                           |
-| `chain`         | string   | The blockchain to use for the transaction (e.g., `'ethereum'`, `'polygon'`) |
-| `currency`      | string   | The currency/token to use for the transaction (e.g., `'USDC'`, `'ETH'`) |
-| `contactDetails`| object   | Optional contact information                                         |
-| `tags`          | string[] | Optional labels                                                      |
+| Parameter        | Type     | Description                                                                 |
+| ---------------- | -------- | --------------------------------------------------------------------------- |
+| `type`           | string   | Must be `'CRYPTO_ADDRESS'`                                                  |
+| `name`           | string   | Descriptive name                                                            |
+| `address`        | string   | The cryptocurrency address to send funds to                                 |
+| `chain`          | string   | The blockchain to use for the transaction (e.g., `'ethereum'`, `'polygon'`) |
+| `currency`       | string   | The currency/token to use for the transaction (e.g., `'USDC'`, `'ETH'`)     |
+| `contactDetails` | object   | Optional contact information                                                |
+| `tags`           | string[] | Optional labels                                                             |
 
-</Tab>
-</Tabs>
 </Tab>
 </Tabs>
 
@@ -172,7 +198,7 @@ Both SDKs return a similar response object:
 {
   "id": "string",                 // Unique payee identifier (e.g., 'pd-1f001934-7...')
   "name": "string",               // User-assigned name of the payee
-  "type": "US_ACH" | "CRYPTO_ADDRESS", // Type of payee
+  "type": "US_ACH" | "CRYPTO_ADDRESS" | "PAYMAN_WALLET", // Type of payee
   "organizationId": "string",      // Your organization ID
   "status": "ACTIVE" | "DELETED", // Current status
   "contactDetails": {              // Optional contact information
@@ -189,3 +215,95 @@ Both SDKs return a similar response object:
   "searchHashes": {},                // Search optimization data
 }
 ```
+
+</Tab>
+
+<Tab title="Payman Wallet Payee">
+<Tabs>
+<Tab title="Python">
+```python
+payee = payman.payments.create_payee(
+    type="PAYMAN_WALLET",
+    name="My Other Wallet",
+    payman_wallet_paytag="surge.produce.leg/26",
+)
+
+print(f"Payee created: {payee.id}")
+
+````
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | str | Must be `'PAYMAN_WALLET'` |
+| `name` | str | Descriptive name for the payee |
+| `payman_wallet_paytag` | str | The paytag of the destination wallet |
+| `tags` | list[str] | Optional labels |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payee = await payman.payments.createPayee({
+    type: "PAYMAN_WALLET",
+    name: "My Other Wallet",
+    paymanWalletPaytag: "surge.produce.leg/26",
+});
+
+console.log(`Payee created: ${payee.id}`);
+````
+
+<Note>
+	Use the returned `id` when sending payments to this payee. You can also find
+	payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+
+| Parameter            | Type     | Description                          |
+| -------------------- | -------- | ------------------------------------ |
+| `type`               | string   | Must be `'PAYMAN_WALLET'`            |
+| `name`               | string   | Descriptive name for the payee       |
+| `paymanWalletPaytag` | string   | The paytag of the destination wallet |
+| `tags`               | string[] | Optional labels                      |
+
+</Tab>
+</Tabs>
+
+### Example PAYMAN_WALLET Payee Response
+
+```typescript
+{
+  "id": "pd-1f014a03-035d-61b5-b3a6-3b7603b9cbdf",
+  "name": "USD Handshake MX",
+  "type": "PAYMAN_WALLET",
+  "organizationId": "org-1f0149e6-9697-6153-b3a6-3b7603b9cbdf",
+  "status": "ACTIVE",
+  "tags": [],
+  "createdAt": "2025-04-08T17:37:48.469626Z",
+  "updatedAt": "2025-04-08T17:37:48.469626Z",
+  "createdBy": "usr-1efd817d-8b4b-61d5-b624-3d5e74f0218c",
+  "updatedBy": "usr-1efd817d-8b4b-61d5-b624-3d5e74f0218c",
+  "payeeDetails": {
+    "payman-wallet-paytag": "mean.shop.apron/15",
+    "payman-wallet-name": "USD Handshake MX",
+    "payman-wallet-provider": "STRIPE",
+    "payman-wallet-id": "wlt-1f014a01-844a-6b2c-b3a6-3b7603b9cbdf",
+    "payman-wallet-org-name": "org-1f0149e6-9697-6153-b3a6-3b7603b9cbdf"
+  },
+  "searchHashes": {
+    "payman-wallet-id": "754dd24f37ca54de37e47528b15af413",
+    "payman-wallet-name": "cdd3c721669aa64061e3740bf9ad5f52",
+    "payman-wallet-paytag": "c126d78d6b06c90dddc6f397d4f1257f",
+    "payman-wallet-org-name": "98206de2eb7f683ca99db9befeb09130",
+    "payman-wallet-provider": "8a98c86b49d93794705dd64bcdbbe3ab"
+  }
+}
+```
+
+</Tab>
+
+</Tabs>
