@@ -22,8 +22,8 @@ Before you can transfer funds to another Payman wallet, you need to create a pay
 ```python
 payee = payman.payments.create_payee(
     type="PAYMAN_WALLET",
-    name="My Other Wallet",
-    payman_wallet_paytag="surge.produce.leg/26",
+    name="Agent Wallet", // This can be anything, according to your requirements
+    payman_wallet_paytag="mean.shop.apron/15",
 )
 ```
 </Tab>
@@ -32,8 +32,8 @@ payee = payman.payments.create_payee(
 ```typescript
 const payee = await payman.payments.createPayee({
     type: "PAYMAN_WALLET",
-    name: "My Other Wallet",
-    paymanWalletPaytag: "surge.produce.leg/26",
+    name: "Agent Name", // This can be anything, according to your requirements
+    paymanWalletPaytag: "mean.shop.apron/15",
 });
 ```
 </Tab>
@@ -78,13 +78,13 @@ When you search payees using the search-payees endpoint, Payman wallet payees wi
 		version: 0,
 		createdBy: "usr-1efd817d-8b4b-61d5-b624-3d5e74f0218c",
 		updatedBy: "usr-1efd817d-8b4b-61d5-b624-3d5e74f0218c",
-		name: "USD Handshake MX",
+		name: "Agent Wallet",
 		organizationId: "org-1f0149e6-9697-6153-b3a6-3b7603b9cbdf",
 		tags: [],
 		type: "PAYMAN_WALLET",
 		payeeDetails: {
 			"payman-wallet-paytag": "mean.shop.apron/15",
-			"payman-wallet-name": "USD Handshake MX",
+			"payman-wallet-name": "Agent Wallet",
 			"payman-wallet-provider": "STRIPE",
 			"payman-wallet-id": "wlt-1f014a01-844a-6b2c-b3a6-3b7603b9cbdf",
 			"payman-wallet-org-name":
