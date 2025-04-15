@@ -3,16 +3,16 @@
 	"theme": "mint",
 	"name": "Payman AI Documentation",
 	"colors": {
-		"primary": "#FF7D61",
-		"light": "#FF7D61",
-		"dark": "#FF7D61"
+		"primary": "#0A3B44",
+		"light": "#F5F3EB",
+		"dark": "#0A3B44"
 	},
 	"favicon": "/logo/payman.png",
 	"navigation": {
 		"groups": [
 			{
 				"group": "Overview",
-				"pages": ["overview/quickstart"]
+				"pages": ["overview/quickstart", "overview/wallet-transfers"]
 			},
 			{
 				"group": "For Developers",
