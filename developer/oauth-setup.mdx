@@ -1,0 +1,72 @@
+---
+title: "OAuth Setup"
+description: "Let users sign in with Payman and connect wallets to your app"
+icon: "lock"
+---
+
+Payman OAuth allows your users to **securely link their wallets** to your application — without exposing credentials.
+
+It enables you to:
+- Authenticate users
+- Access their wallet balances
+- Send payments on their behalf (within defined policies)
+
+---
+
+## Step 1: Fill OAuth Config
+
+Inside your registered app → **OAuth Config** tab, fill out the following:
+
+- **Purpose**  
+  Describe why your app needs Payman access  
+  _(e.g. “This AI agent automates bill payments for users.”)_
+
+- **Required URLs**
+  - **Privacy URL**
+  - **Terms of Service URL**
+  - **Redirect URLs**  
+    Where users will land after authentication
+
+- **Originating Domains**  
+  Domains from which your frontend will initiate the OAuth request
+
+---
+
+## Step 2: Select Scopes
+
+Choose only what your app needs:
+
+- `read:balance`
+- `write:send_payment`
+- `write:create_payee`
+- `read:list_wallets`
+- etc.
+
+Users will see these permissions during the consent flow.
+
+---
+
+## Step 3: Add Limits (Required)
+
+You must also define:
+- **Per Transaction Limit**
+- **Daily Limit**
+- **Monthly Limit**
+- **Threshold**  
+  _(When exceeded, manual approval is required)_
+
+> These enforce how much money your app can request to move via user policies.
+
+---
+
+## Step 4: Submit OAuth Request
+
+Once filled:
+- Click **Submit OAuth Request**
+- Your app will be reviewed and approved by Payman Admins
+
+Once approved, you’ll be able to use the full OAuth flow to link wallets.
+
+---
+
+

@@ -1,6 +1,6 @@
 {
 	"$schema": "https://mintlify.com/docs.json",
-	"theme": "mint",
+	"theme": "maple",
 	"name": "Payman AI Documentation",
 	"colors": {
 		"primary": "#0A3B44",
@@ -12,37 +12,25 @@
 		"groups": [
 			{
 				"group": "Overview",
-				"pages": ["overview/quickstart", "overview/wallet-transfers"]
+				"pages": ["overview/introduction", "overview/user-vs-developer"]
+			},
+			{
+				"group": "For Users",
+				"pages": [
+					"user/wallets",
+					"user/payees",
+					"user/requests",
+					"user/policies"
+				]
 			},
 			{
 				"group": "For Developers",
 				"pages": [
-					"sdks/setup-and-installation",
-					"sdks/create-payees",
-					"sdks/send-payments",
-					"sdks/search-payees",
-					"sdks/check-balances"
-				]
-			},
-			{
-				"group": "Guides ",
-				"pages": ["guides/bill-payment-agent"]
-			},
-			{
-				"group": "APIs",
-				"pages": [
-					"api-reference/get-access-key",
-					"api-reference/introduction",
-					"api-reference/error-handling"
-				]
-			},
-			{
-				"group": "API Endpoints",
-				"pages": [
-					"api-reference/endpoint/send-payment",
-					"api-reference/endpoint/create-payee",
-					"api-reference/endpoint/search-payees",
-					"api-reference/endpoint/get-balance"
+					"developer/app-registration",
+					"developer/generate-credentials",
+					"developer/oauth-setup",
+					"developer/webhooks",
+					"developer/payman-sdk"
 				]
 			}
 		],

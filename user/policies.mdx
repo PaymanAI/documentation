@@ -1,0 +1,85 @@
+---
+title: "Policies"
+description: "Set limits, thresholds, and approval rules for your wallet and agents"
+icon: "shield-check"
+---
+
+## What is a Policy?
+
+A **policy** is a rule that controls how your wallet can be used — especially when linked to your AI agent or third-party app through OAuth.
+
+Policies ensure your money doesn’t move without your intent.
+
+They define:
+
+- **How much** can be spent
+- **When** human approval is required
+
+---
+
+## System vs Custom Policies
+
+You’ll find two kinds of policies inside your Payman dashboard:
+
+- **System Policies** — Predefined templates like:
+  - Minimalist (low trust, ultra-restricted)
+  - Personal Use (light user)
+  - Startup, Enterprise, Family, etc.
+
+- **Custom Policies** — You can create your own by defining:
+  - Policy name & description
+  - Spend limits
+  - Thresholds for triggering manual requests
+
+> 💡 You can always **clone a system policy** to start from a template.
+
+---
+
+## Policies Are Mandatory
+
+Anytime you connect a wallet to a third-party app (or build your own app), you must **associate a policy** with it.
+
+Whether you’re:
+
+- A **developer** registering your own app
+- A **user** granting access to someone else’s
+
+A policy is required to set the **rules for how your wallet will behave**.
+
+---
+
+## Spend Controls You Can Set
+
+When creating a policy, you’ll be asked to define:
+
+- **Transaction Threshold** – Amount beyond which approval is needed
+- **Per Transaction Limit** – Max allowed in a single payment
+- **Daily Limit** – Total allowed spend per day
+- **Monthly Limit** – Cumulative cap per month
+
+These give you fine-grained control over automated or agent-triggered payments.
+
+---
+
+## How to Create or Use a Policy
+
+1. Open the [Payman Dashboard](https://dashboard.paymanai.com)
+2. Go to **Policies**
+3. Click **“Create Policy”** to start from scratch
+4. Or choose from the existing **System Policies**
+5. Assign the policy when:
+   - Registering your app
+   - Connecting a wallet via OAuth
+   - Reviewing access rules
+
+---
+
+## Why It Matters
+
+Policies are your **safety net** when agents or apps act on your behalf.
+
+With well-defined policies:
+
+- Routine payments go through smoothly
+- Suspicious or large requests get flagged
+- You retain **complete control** over your funds
