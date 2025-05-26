@@ -6,59 +6,97 @@ icon: "laptop"
 
 ---
 
-<Note>
-	To use Payman programmatically, you must register your app and link it to a
-	wallet, payees, and a policy.
-</Note>
+## Why Register an App?
+
+Registering an app allows you to **automate payments, manage wallets, and interact with Payman via SDK**.
+
+Each app gets a unique set of credentials, access control via policies, OAuth access and full visibility into payment activity — ensuring secure and governed automation.
+
+---
 
 ## Step 1: Enable Developer Mode
 
-In the [Dashboard](https://app.paymanai.com), toggle the **“Developers”** switch in the sidebar to unlock developer features.
+In the [Payman Dashboard](https://app.paymanai.com), toggle the **"Developers"** switch in the sidebar.
+
+This unlocks:
+
+-   Ability to register apps
+-   Access to **TSD wallets** for testing
+
 
 ---
 
 ## Step 2: Register the App
 
 1. Go to **Apps → Register App**
-2. Enter:
-    - App Name
-    - Description
-    - (Optional) Website
+2. Enter the following details:
+    - **App Name**
+    - **Description**
+    - (Optional) **Website**
 3. Click **Save**
+
+You’ll now see your app listed and ready to configure.
 
 ---
 
 ## Step 3: Configure the App
 
-Each app must be linked to:
+Each app must be connected to:
 
--   A specific **Wallet** (or allow all)
--   One or more **Payees**
--   **One Policy** (required)
+-   **At least One Wallet**  
+    Select a specific wallet or allow access to all.
 
-> One app = one policy.  
-> This defines how much money the app can move and when approval is needed.
+-   **At least one Payee**  
+    Choose who this app can send money to — bank accounts, wallets, or test payees.
 
-Choose a system policy or create a custom one in **Policies**.
+-   **One Policy (required)**  
+    Every app must be governed by a policy that defines limits, thresholds, and approval rules.
+
+> One app = one policy  
+> You can choose a system policy or clone/customize your own in the **Policies** tab.
 
 ---
 
 ## After Registration
 
-You’ll see 4 tabs in your app view:
+Once your app is saved and configured, you’ll see 5 tabs in the app view:
 
-| Tab              | Purpose                        |
-| ---------------- | ------------------------------ |
-| **Overview**     | App details and setup summary  |
-| **Credentials**  | Generate Client ID and Secret  |
-| **Webhooks**     | (Optional) Add callback URLs   |
-| **OAuth Config** | (Optional) Set up Payman OAuth |
+| Tab              | Purpose                                               |
+| ---------------- | ----------------------------------------------------- |
+| **Overview**     | Basic details, configuration summary, app status      |
+| **Credentials**  | Generate **Client ID** and **Client Secret**          |
+| **Webhooks**     | (Optional) Add callback URLs to receive event updates |
+| **OAuth Config** | (Optional) Set up Payman OAuth for third-party access |
+| **Playground**   | Test your app’s configuration                         |
 
-Once registered and configured, proceed to generate credentials and start using the SDK.
+You can generate both **Test Credentials** (TSD wallet) and **Live Credentials** (USD/USDC wallets) once your app is ready and linked to an approved policy.
+
+---
+
+## Playground
+
+The **Playground** tab allows you to **test your app's configuration and authentication flows** right from the dashboard — no Postman or code needed.
+
+It supports both:
+
+-   **Client Credentials Flow**: For backend automation
+-   **Authorization Code Flow**: For apps that use Payman OAuth to access wallets on behalf of end users
+
+
+---
+
+## What's Next?
+
+Once your app is registered:
+
+-   Use the **Payman TypeScript SDK** to start building
+-   Use your **credentials** to authenticate and send payments
+-   Monitor activity and logs via the dashboard
+
 
 ---
 
 <Note>
-	{" "}
-	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+	**Need help?** Reach out to
+	[support@paymanai.com](mailto:support@paymanai.com)
 </Note>

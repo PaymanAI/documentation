@@ -1,5 +1,5 @@
 ---
-title: "Set Up Policies"
+title: "Understanding Policies"
 description: "Set limits, thresholds, and approval rules for your wallet and agents"
 icon: "shield-check"
 ---
@@ -8,86 +8,116 @@ icon: "shield-check"
 
 ## What is a Policy?
 
-A **policy** defines how much money can move from your wallet and when your approval is required.
+A **Policy** in Payman is a programmable rule set that defines **how**, **when**, and **how much** money can move from your wallet — especially when agents or third-party apps are involved.
 
-It protects your wallet—especially when used by agents or third-party apps.
+Think of it as your **financial firewall**:
+> No funds can move without matching the conditions set in your policy.
 
-A policy sets:
+A policy helps you:
 
--   **Spend limits** (per transaction, daily, monthly)
--   **Approval thresholds** (when manual approval is triggered)
+- Prevent unauthorized transfers
+- Control daily/transactional limits
+- Ensure approvals for high-value or unusual activity
 
 ---
 
-## Types of Policies
+## System Policies
 
--   **System Policies**  
-    Predefined templates like:
+Payman provides several built-in system policies designed for different use cases.
 
-    -   Minimalist
-    -   Personal Use
-    -   Startup, Enterprise, etc.
+| Policy Name     | Description                                                                 |
+|-----------------|-----------------------------------------------------------------------------|
+| **Minimalist**  | Low-trust, ultra-restricted. For cautious users or low-activity wallets.    |
+| **Personal Use**| Light usage — for individuals with basic recurring payments or automation.  |
+| **Professional**| Balanced flexibility and control for freelancers or contractors.            |
+| **Startup**     | Designed for small teams managing payouts, expenses, or business ops.       |
+| **Enterprise**  | High-volume, high-trust accounts with human oversight.                      |
+| **Family**      | Moderate flexibility, but approval required for high-value transactions.    |
 
--   **Custom Policies**  
-    You define:
-    -   Name & description
-    -   Spend limits
-    -   Thresholds
+> You can **clone and customize** any system policy to fit your needs.
 
-> You can clone a system policy and customize it.
+---
+
+## Custom Policies
+
+You can also create your own policies from scratch.
+
+Customizable fields include:
+
+- **Policy name & description**
+- **Spend limits**
+- **Approval thresholds**
+- **Transaction rules**
 
 ---
 
 ## Spend Controls
 
-Each policy includes:
+Each policy defines the following limits:
 
-| Control             | Description                                  |
-| ------------------- | -------------------------------------------- |
-| **Threshold**       | Amount above which manual approval is needed |
-| **Per Transaction** | Max allowed per payment                      |
-| **Daily Limit**     | Max allowed per day                          |
-| **Monthly Limit**   | Max allowed per month                        |
+| Control             | Description                                                               |
+|---------------------|---------------------------------------------------------------------------|
+| **Threshold**       | Amount above which manual approval is needed                              |
+| **Per Transaction** | Maximum amount allowed per single payment                                 |
+| **Daily Limit**     | Maximum total amount allowed per day                                      |
+| **Monthly Limit**   | Maximum total amount allowed per month                                    |
+
+> 🔍 **Threshold vs Approval**  
+> The **threshold** is the point at which your **approval** is required.  
+> For example: if your threshold is ₹1,000, any payment above that will trigger a manual approval request.
 
 ---
 
 ## When Are Policies Required?
 
-Always.  
+Always.
+
 You **must assign a policy** when:
 
--   Creating an agentic app
--   Connecting your wallet via OAuth
--   Letting any app act on your wallet
+- Creating an AI agent or app
+- Connecting a wallet via OAuth
+- Letting any automation act on your wallet
 
-Without a policy, your wallet cannot be used programmatically.
+No policy = no access. Policies are mandatory for any programmatic money movement.
 
 ---
 
 ## How to Set a Policy
 
-1. Go to **Policies** in the [Dashboard](https://dashboard.paymanai.com)
-2. Click **Create Policy** or choose a system one
-3. Set your limits
-4. Assign the policy to your app or wallet
+1. Go to the **Policies** tab in the [Payman Dashboard](https://dashboard.paymanai.com)
+2. Click **Create Policy**, or select a system policy
+3. Set spend limits and thresholds
+4. Assign the policy to your app, agent, or wallet
+5. Done — your wallet is now protected by programmable rules
+
+---
+
+## Cloning & Customizing Policies
+
+System policies are not editable directly — but you can **clone** any of them and tailor it to your needs.
+
+Once cloned, you can:
+
+- Change the name and description
+- Adjust spend limits and thresholds
+- Apply it to any wallet or app you own
+
+Cloned policies are private to your account or organization.
 
 ---
 
 ## Why It Matters
 
-Policies are the **guardrails** for automated payments.
+Policies are your **guardrails**. They make sure:
 
-They make sure:
+- Small or routine payments flow automatically
+- Unusual or high-risk transactions are paused for approval
+- Your wallet stays safe — even with autonomous agents involved
 
--   Small, routine transactions go through
--   Large or unexpected payments get flagged
--   You’re always in control
-
-No wallet connected to an app can move money unless it's governed by a policy.
+> No wallet connected to an app or agent can move money unless it's governed by a policy.
 
 ---
 
 <Note>
-	{" "}
-	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com)
 </Note>

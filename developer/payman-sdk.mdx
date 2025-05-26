@@ -1,9 +1,42 @@
 ---
 title: "SDK Integration"
-description: "Use the official Node.js SDK to interact with Payman APIs using client credentials or OAuth"
+description: "Use the official SDK to interact with Payman APIs "
 icon: "code"
 ---
 
+---
+
+## Quickstart
+
+The Payman SDK makes it ridiculously easy to automate financial workflows with AI agents.
+
+**Get started in 3 steps:**
+
+```bash
+# Step 1: Install the SDK
+npm install @paymanai/payman-ts
+
+# Step 2: Initialize the Client
+import { PaymanClient } from "@paymanai/payman-ts";
+
+const payman = PaymanClient.withCredentials({
+  clientId: "your-client-id",
+  clientSecret: "your-client-secret"
+});
+
+# Step 3: Make a request
+const response = await payman.ask("Send $100 to Alice");
+console.log(response);
+```
+>That’s it — no API orchestration, no complex setup. The ```.ask()``` method handles everything.
+---
+## What Payman SDK Does
+
+The Payman SDK lets you:
+- Authenticate using client credentials, or authorization code.
+- Automate payments, send money, manage payees, and more
+- Use ```.ask()``` to issue natural language instructions
+- Attach metadata, stream real-time updates, and manage sessions
 ---
 
 ## Installation
@@ -31,15 +64,14 @@ These credentials are required to authenticate API requests.
 
 The SDK supports 3 authentication methods:
 
-1. Using Client Credentials (recommended for server-side applications)
+1. Using Client Credentials (recommended)
 
 ```ts
 import { PaymanClient } from "@paymanai/payman-ts";
 
 const payman = PaymanClient.withCredentials({
 	clientId: process.env.PAYMAN_CLIENT_ID!,
-	clientSecret: process.env.PAYMAN_CLIENT_SECRET!,
-	environment: "TEST", // or "LIVE"
+	clientSecret: process.env.PAYMAN_CLIENT_SECRET!
 });
 ```
 
@@ -49,7 +81,6 @@ const payman = PaymanClient.withCredentials({
 const payman = PaymanClient.withAuthCode(
 	{
 		clientId: "your-client-id",
-		environment: "TEST",
 	},
 	"your-auth-code"
 );
@@ -63,8 +94,7 @@ const payman = PaymanClient.withToken(
 	{
 		accessToken: "your-access-token",
 		expiresIn: 3600,
-	},
-	"TEST" // or "LIVE"
+	}
 );
 ```
 
@@ -175,22 +205,6 @@ try {
 	}
 }
 ```
-
----
-
-## Test vs Live Environments
-
-Use the appropriate environment based on whether you're developing or going live.
-
-| Environment | Use Case          | Wallet Type | Credentials |
-| ----------- | ----------------- | ----------- | ----------- |
-| `TEST`      | Sandbox testing   | TSD         | Test        |
-| `LIVE`      | Real transactions | USD / USDC  | Live        |
-
-> Use `environment: "TEST"` during development.  
-> Switch to `"LIVE"` when you're ready to go live.
-
-This SDK gives you full control to send money, manage payees, and automate agent actions — safely and simply.
 
 ---
 

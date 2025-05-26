@@ -27,9 +27,10 @@
 				"pages": [
 					"developer/app-registration",
 					"developer/generate-credentials",
-					"developer/oauth-setup",
 					"developer/payman-sdk",
-					"developer/webhooks"
+					"developer/oauth-setup",
+					"developer/webhooks",
+					"developer/playground"
 				]
 			}
 		],
