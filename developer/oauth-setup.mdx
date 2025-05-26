@@ -6,39 +6,59 @@ icon: "lock"
 
 ---
 
+## Why Use OAuth?
+
+Payman’s OAuth system allows your application to securely request and manage access to wallets, payees, and transactions — either for your own account or on behalf of your users.
+
+It supports both:
+
+-   Client Credentials Flow — for apps that automate actions using your own Payman resources (e.g. agent-based automation or backend apps).
+-   Authorization Code Flow — for apps that connect to end users’ wallets via OAuth, with granular permissions and full user consent.
+
+Whether you’re building a backend integration or a third-party app, OAuth ensures safe, scoped, and revocable access to financial actions.
+
+---
+
 ## Getting Started
 
-### 1. Request Developer Access
+### Step 1: Request Developer Access
 
-1. Request an invite to the Payman Developer Program
-2. Once approved, you'll get an invite code
-3. Register using the invite code
-4. Go to the Developers section and register your application
+To begin using OAuth:
 
-### 2. Credentials
+1. **Request an invite** to Payman.
+2. Once approved, you’ll receive an **invite code**.
+3. Use the invite code to **register** on the Payman Dashboard.
+4. Navigate to the **Developers** section and **register your application**.
 
-After registration, you'll get:
+---
 
--   **Test Credentials** (auto-provided):
+### Step 2: Get Your Credentials
 
-    -   For test wallets (TSD) and test payees
-    -   Comes with:
+After registering your app, Payman provides two sets of credentials:
 
-        -   A test wallet (1000 TSD)
-        -   A test payee
-        -   A default spend-limit policy
+-   **Test Credentials** (auto-created):
 
--   **Live Credentials** (requires approval):
+    -   Works with test wallets (TSD) and test payees
+    -   You’ll also get:
+        -   A TSD test wallet (with 1000 TSD)
+        -   A default test payee
+        -   A default policy for spend control
 
-    -   For real wallets (USD/USDC) and live payees
+-   **Live Credentials** (approval required):
+    -   Enables real payments with USD and USDC wallets
+    -   Requires KYC and policy approval
 
 ---
 
 ## Authentication Methods
 
-### 1. Client Credentials Flow
+Payman supports 3 OAuth-based authentication strategies depending on your use case:
 
-Use this to access your own Payman resources (ideal for backend/server apps).
+### 1. Client Credentials Flow (Machine-to-Machine)
+
+This method is ideal for backend apps or AI agents that need to access **your own** resources (e.g., wallets or payees created under your account).
+
+You'll use your app's **Client ID** and **Client Secret** to request a token.
 
 ```ts
 import { PaymanClient } from "@paymanai/payman-ts";
@@ -58,35 +78,61 @@ const transactionsResponse = await client.ask("show my last 5 transactions");
 
 ---
 
-### 2. Authorization Code Flow
+### 2. Authorization Code Flow (OAuth with End Users)
 
-Use this to access user resources via OAuth (requires config approval).
+Use this when your app needs to access **another user’s** wallets or payees via OAuth.
+
+It involves:
+
+1. Redirecting users to a Payman consent screen
+2. Users grant specific permissions (scopes)
+3. Your app receives an authorization code
+4. You exchange the code for an access token
 
 #### OAuth Configuration Requirements
 
-| Field              | Description                                                          |
-| ------------------ | -------------------------------------------------------------------- |
-| Purpose            | Why you need access                                                  |
-| URLs               | Privacy Policy, Terms, Redirect URIs (max 5), Origin Domains (max 5) |
-| Scopes             | Permissions you request                                              |
-| Transaction Limits | Max allowed per transaction                                          |
+When registering an app for OAuth, you must provide:
 
-#### Available Scopes
+| Field                  | Description                                                |
+| ---------------------- | ---------------------------------------------------------- |
+| **Purpose**            | Why your app needs access                                  |
+| **Redirect URIs**      | Where the user is redirected after granting access (max 5) |
+| **Origin Domains**     | Allowed domains for your frontend (max 5)                  |
+| **Scopes**             | Which permissions you're requesting                        |
+| **Transaction Limits** | Maximum allowed per transaction                            |
 
--   `read_balance`
--   `read_list_wallets`
--   `read_list_payees`
--   `read_list_transactions`
--   `write_create_payee`
--   `write_send_payment`
--   `write_create_wallet`
+---
 
-#### Step 1: Add the Connect Button
+#### Available OAuth Scopes
+
+Each scope grants your app specific capabilities:
+
+| Scope                    | Permission                           |
+| ------------------------ | ------------------------------------ |
+| `read_balance`           | View wallet balances                 |
+| `read_list_wallets`      | View list of connected wallets       |
+| `read_list_payees`       | View all existing payees             |
+| `read_list_transactions` | View wallet transaction history      |
+| `write_create_payee`     | Create a new payee                   |
+| `write_send_payment`     | Send money to an existing payee      |
+| `write_create_wallet`    | Programmatically create a new wallet |
+
+Only request the scopes you actually need.
+
+---
+
+## Integrating OAuth
+
+### Step 1: Add the Payman Connect Button
+
+Use the following script to add a customizable OAuth connect button to your site or app.
+
+This button launches the OAuth consent flow. Users are prompted to grant access to their Payman wallets and approve your requested scopes.
 
 ```html
 <div id="payman-connect"></div>
 <script
-	src="https://connect.payman.ai/js/pm-connect.js"
+	src="https://app.paymanai.com/js/pm-connect.js"
 	data-client-id="your-client-id"
 	data-scopes="read_balance read_list_payees"
 	data-redirect-uri="https://your-app.com/oauth/callback"
@@ -106,7 +152,18 @@ Use this to access user resources via OAuth (requires config approval).
 | `strategy`          | Script loading strategy | No       |
 | `data-styles`       | Custom styles           | No       |
 
-#### Step 2: Handle the OAuth Callback (Frontend)
+---
+
+### Step 2: Handle OAuth Callback (Frontend)
+
+Once the user authorizes access, Payman will redirect back to your specified `redirect_uri` with an authorization `code`.
+
+Use the provided code snippet to:
+
+-   Extract the code from the redirect URL
+-   Send it to your backend for secure token exchange
+
+> ⚠️ **Security Note:** Never exchange OAuth codes in frontend code. Always pass them to your backend to handle token exchange securely using your client secret.
 
 ```ts
 window.addEventListener("message", function (event) {
@@ -135,7 +192,15 @@ async function exchangeCodeForToken(code: string) {
 }
 ```
 
-#### Step 3: Backend Token Exchange (Express.js)
+---
+
+### Step 3: Token Exchange (Backend)
+
+Your server will exchange the auth code for an access token using the client credentials.
+
+This token gives your app permission to act on the user's behalf for the scopes granted.
+
+> ✅ Tokens expire — always track the `expiresIn` and refresh if needed.
 
 ```ts
 import express from "express";
@@ -170,9 +235,13 @@ app.post("/api/oauth/token", async (req, res) => {
 
 ---
 
-### 3. Direct Access Token Method
+## Method 3: Direct Access Token Method
 
-Use this method primarily for React Native clients or when you already have an access token.
+This is useful in mobile development environments like React Native, or if you've already obtained an access token through other means (e.g. Playground, backend exchange).
+
+You simply initialize the SDK using the existing token.
+
+> 🚫 **Warning:** Never hardcode or expose access tokens in frontend web apps. Use environment variables or secure storage.
 
 ```ts
 const client = PaymanClient.withToken("your-client-id", {
@@ -191,9 +260,11 @@ const createPayee = await client.ask(
 
 ## Testing Your Integration
 
--   Use test credentials during development
--   Use the dashboard Playground to simulate scenarios
--   Test OAuth with a test Payman account
+Use your **test credentials** during development:
+
+-   Simulate requests with test wallets (TSD)
+-   Use **Playground** in the Dashboard to validate your app setup before building
+-   Perform OAuth flows using a test Payman account
 
 ### Testing Snippets
 

@@ -1,50 +1,76 @@
 ---
 title: "What is Payman?"
-description: "A simple overview of Payman."
+description: "A comprehensive overview of Payman for Users and Developers."
 icon: "bolt"
 ---
 
 ---
 
 ![Introducing Payman](/images/intro.png)
-Payman is the first secure financial platform built specifically to let AI agents move money without direct access to customer funds.
 
-When you sign up on [Payman](https://app.paymanai.com), you get:
+## Why Payman?
 
--   A **test wallet (TSD)** with 1000 TSD for sandbox testing.
--   The option to subscribe to **USD** (for US users) or **USDC** (for international users) wallets for real transactions.
+Traditional payment systems assume a human is behind every transaction. But today, AI agents also need the ability to move money — safely, with rules, and under human control.
 
-### What You Can Do
+Payman bridges this gap. It’s a secure financial platform where both humans and AI agents can transact with complete transparency and programmable policy enforcement. Every payment is governed by user-defined rules — so nothing moves without oversight.
 
-Whether you're a user or developer, you can:
+## Getting Started with Payman
 
--   **Create or subscribe to wallets**
--   **Set policies** to define spending limits and approval rules
--   **Add payees**, such as test payees, crypto wallets or US bank accounts
--   **Approve or deny requests** when spending exceeds the policy
+To access Payman, **Users** and **Developers** must first request an invite code. Once you receive your invite code, you can register on the [Payman Dashboard](https://app.paymanai.com). After registration, you can set up your wallets, policies, and begin using the platform's features.
 
-### What Developers Can Do
+> **Note:** Invite codes are required to ensure secure onboarding and controlled access during our early access phase.
 
-Developers have access to everything users can do, plus:
+### Wallets
 
--   **Register apps** that require automated payments
--   **Configure wallets and policies** specific to an app
--   **Use client credentials** to perform transactions (TSD in sandbox, USD/USDC in production)
--   **Enable OAuth** to let their own users sign up with Payman and give wallet access (requires approval)
+-   **USD Wallet**: Available for US-based users for real USD transactions.
+-   **USDC Wallet**: Available for both US and International users for real USDC (stablecoin) transactions.
+-   **Test Wallet (TSD)**: Every account is provisioned with a test wallet containing 1000 TSD for simulation purposes. This lets you safely build and test before going live.
 
-### Built for Control and Automation
+> **Note:** There is no subscription required to create or use wallets. All wallets are managed directly from your Payman Dashboard after registration.
 
-Payman supports both dashboard and programmatic usage:
+## User Features
 
--   Fully managed through a simple dashboard
--   Integrate with our **Node.js SDK**
--   Explore and test via the **Playground**
+**Users** on Payman can:
 
-Payman is built to bring payments to AI agents, while keeping transparency, safety, and user approval at the core.
+-   **Create Wallets**: Set up USD or USDC wallets for real transactions.
+-   **Set Policies**: Define spending limits, approval rules, and other controls to govern how funds can be accessed or moved.
+-   **Add Payees**: Add recipients such as test payees, crypto wallets, or US bank accounts.
+-   **Approve or Deny Requests**: Receive notifications and approve or deny payment requests that exceed your defined policies, ensuring you always have the final say.
+
+## Developer Features
+
+**Developers** have access to all User features, plus:
+
+-   **Register Applications**: Set up apps that require automated or programmatic payments.
+-   **Configure App-Specific Wallets and Policies**: Tailor wallets and policies to the needs of each application.
+-   **Use Client Credentials**: Authenticate securely for server-to-server automation using TSD, USD, or USDC.
+-   **Enable OAuth for End Users**: Allow your users to sign up with Payman and grant wallet access to your app (requires approval).
+
+## Role Overview
+
+Here’s a quick breakdown of who does what in Payman:
+
+| Role          | Purpose                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **User**      | Creates wallets, defines policies, approves or denies payments                          |
+| **Developer** | Builds apps, configures programmatic access, uses SDKs or OAuth                         |
+| **AI Agent**  | Executes actions via developer apps — but always under user-defined limits and policies |
+
+## Built for Control and Automation
+
+Payman is designed for both dashboard-based control and full programmatic automation:
+
+-   **Dashboard**: Manage everything through a user-friendly web interface.
+-   **TypeScript SDK**: Integrate Payman into your applications using our official TypeScript SDK for robust, type-safe automation.
+-   **Playground**: Explore and test API calls and workflows interactively before deploying to production.
+
+Common use cases include AI-driven payroll, expense approvals, reimbursements, and autonomous tipping — all without giving agents unrestricted access to funds.
+
+Whether you're an AI developer or just need programmable money movement, Payman gives you full control and safety by design.
 
 ---
 
 <Note>
-	{" "}
-	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+	**Need help?** Reach out to
+	[support@paymanai.com](mailto:support@paymanai.com)
 </Note>

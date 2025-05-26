@@ -27,10 +27,15 @@
 				"pages": [
 					"developer/app-registration",
 					"developer/generate-credentials",
-					"developer/oauth-setup",
 					"developer/payman-sdk",
-					"developer/webhooks"
+					"developer/oauth-setup",
+					"developer/webhooks",
+					"developer/playground"
 				]
+			},
+			{
+				"group": "Resources",
+				"pages": ["resources/glossary", "resources/prompt"]
 			}
 		],
 		"global": {
