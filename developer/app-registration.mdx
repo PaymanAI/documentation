@@ -1,0 +1,64 @@
+---
+title: "Registering an App"
+description: "Create an app on Payman to generate API credentials and connect wallets"
+icon: "laptop"
+---
+
+---
+
+<Note>
+	To use Payman programmatically, you must register your app and link it to a
+	wallet, payees, and a policy.
+</Note>
+
+## Step 1: Enable Developer Mode
+
+In the [Dashboard](https://app.paymanai.com), toggle the **“Developers”** switch in the sidebar to unlock developer features.
+
+---
+
+## Step 2: Register the App
+
+1. Go to **Apps → Register App**
+2. Enter:
+    - App Name
+    - Description
+    - (Optional) Website
+3. Click **Save**
+
+---
+
+## Step 3: Configure the App
+
+Each app must be linked to:
+
+-   A specific **Wallet** (or allow all)
+-   One or more **Payees**
+-   **One Policy** (required)
+
+> One app = one policy.  
+> This defines how much money the app can move and when approval is needed.
+
+Choose a system policy or create a custom one in **Policies**.
+
+---
+
+## After Registration
+
+You’ll see 4 tabs in your app view:
+
+| Tab              | Purpose                        |
+| ---------------- | ------------------------------ |
+| **Overview**     | App details and setup summary  |
+| **Credentials**  | Generate Client ID and Secret  |
+| **Webhooks**     | (Optional) Add callback URLs   |
+| **OAuth Config** | (Optional) Set up Payman OAuth |
+
+Once registered and configured, proceed to generate credentials and start using the SDK.
+
+---
+
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>

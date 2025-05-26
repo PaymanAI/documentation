@@ -1,0 +1,93 @@
+---
+title: "Set Up Policies"
+description: "Set limits, thresholds, and approval rules for your wallet and agents"
+icon: "shield-check"
+---
+
+---
+
+## What is a Policy?
+
+A **policy** defines how much money can move from your wallet and when your approval is required.
+
+It protects your wallet—especially when used by agents or third-party apps.
+
+A policy sets:
+
+-   **Spend limits** (per transaction, daily, monthly)
+-   **Approval thresholds** (when manual approval is triggered)
+
+---
+
+## Types of Policies
+
+-   **System Policies**  
+    Predefined templates like:
+
+    -   Minimalist
+    -   Personal Use
+    -   Startup, Enterprise, etc.
+
+-   **Custom Policies**  
+    You define:
+    -   Name & description
+    -   Spend limits
+    -   Thresholds
+
+> You can clone a system policy and customize it.
+
+---
+
+## Spend Controls
+
+Each policy includes:
+
+| Control             | Description                                  |
+| ------------------- | -------------------------------------------- |
+| **Threshold**       | Amount above which manual approval is needed |
+| **Per Transaction** | Max allowed per payment                      |
+| **Daily Limit**     | Max allowed per day                          |
+| **Monthly Limit**   | Max allowed per month                        |
+
+---
+
+## When Are Policies Required?
+
+Always.  
+You **must assign a policy** when:
+
+-   Creating an agentic app
+-   Connecting your wallet via OAuth
+-   Letting any app act on your wallet
+
+Without a policy, your wallet cannot be used programmatically.
+
+---
+
+## How to Set a Policy
+
+1. Go to **Policies** in the [Dashboard](https://dashboard.paymanai.com)
+2. Click **Create Policy** or choose a system one
+3. Set your limits
+4. Assign the policy to your app or wallet
+
+---
+
+## Why It Matters
+
+Policies are the **guardrails** for automated payments.
+
+They make sure:
+
+-   Small, routine transactions go through
+-   Large or unexpected payments get flagged
+-   You’re always in control
+
+No wallet connected to an app can move money unless it's governed by a policy.
+
+---
+
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>

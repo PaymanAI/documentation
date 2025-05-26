@@ -1,0 +1,200 @@
+---
+title: "SDK Integration"
+description: "Use the official Node.js SDK to interact with Payman APIs using client credentials or OAuth"
+icon: "code"
+---
+
+---
+
+## Installation
+
+```bash
+npm install @paymanai/payman-ts
+```
+
+---
+
+## Environment Setup
+
+Before using the SDK, create a .env file and add:
+
+```env
+PAYMAN_CLIENT_ID=your-client-id
+PAYMAN_CLIENT_SECRET=your-client-secret
+```
+
+These credentials are required to authenticate API requests.
+
+---
+
+## Initialize the SDK
+
+The SDK supports 3 authentication methods:
+
+1. Using Client Credentials (recommended for server-side applications)
+
+```ts
+import { PaymanClient } from "@paymanai/payman-ts";
+
+const payman = PaymanClient.withCredentials({
+	clientId: process.env.PAYMAN_CLIENT_ID!,
+	clientSecret: process.env.PAYMAN_CLIENT_SECRET!,
+	environment: "TEST", // or "LIVE"
+});
+```
+
+2. Using OAuth Authorization Code (for OAuth flow):
+
+```ts
+const payman = PaymanClient.withAuthCode(
+	{
+		clientId: "your-client-id",
+		environment: "TEST",
+	},
+	"your-auth-code"
+);
+```
+
+3. Using an Existing Access Token (when you already have a token):
+
+```ts
+const payman = PaymanClient.withToken(
+	"your-client-id",
+	{
+		accessToken: "your-access-token",
+		expiresIn: 3600,
+	},
+	"TEST" // or "LIVE"
+);
+```
+
+---
+
+## Making a Request
+
+### 1. Basic usage (Recommended)
+
+```ts
+const response = await payman.ask("List all payees");
+console.log(response);
+```
+
+### 2. Get Raw JSON-RPC Response
+
+```ts
+const raw = await payman.ask("List all payees", undefined, true);
+console.log(raw);
+```
+
+### 3. Streaming Responses
+
+Use this to get updates in real-time:
+
+```ts
+await payman.ask("List all wallets", {
+	onMessage: (res) => {
+		console.log("Formatted:", res);
+	},
+});
+```
+
+Or get raw responses:
+
+```ts
+await payman.ask(
+	"List all wallets",
+	{
+		onMessage: (res) => {
+			console.log("Raw:", res);
+		},
+	},
+	true
+);
+```
+
+### 4. Starting New Sessions with Metadata
+
+```ts
+const response = await payman.ask("Hello!", {
+	newSession: true,
+	metadata: { source: "web-app" },
+});
+```
+
+---
+
+## Adding Metadata
+
+Attach contextual data to requests.
+
+```ts
+await payman.ask("Pay John $100", {
+	metadata: {
+		source: "mobile-app",
+		userId: "abc123",
+	},
+	messageMetadata: {
+		priority: "high",
+	},
+	partMetadata: {
+		currency: "USD",
+	},
+});
+```
+
+---
+
+## Session & Token Management
+
+-   Sessions persist across requests.
+-   Use newSession: true to force a reset.
+-   The SDK auto-refreshes tokens before expiry.
+-   You can manually check or get access tokens:
+
+```ts
+const token = payman.getAccessToken();
+const isExpired = payman.isAccessTokenExpired();
+```
+
+---
+
+## Error Handling
+
+The SDK uses Axios internally. Catch errors like this:
+
+```ts
+try {
+	await payman.ask("Send $500 to Alex");
+} catch (err) {
+	if (err.response) {
+		console.error("API Error:", err.response.data);
+	} else if (err.request) {
+		console.error("No response:", err.request);
+	} else {
+		console.error("Setup error:", err.message);
+	}
+}
+```
+
+---
+
+## Test vs Live Environments
+
+Use the appropriate environment based on whether you're developing or going live.
+
+| Environment | Use Case          | Wallet Type | Credentials |
+| ----------- | ----------------- | ----------- | ----------- |
+| `TEST`      | Sandbox testing   | TSD         | Test        |
+| `LIVE`      | Real transactions | USD / USDC  | Live        |
+
+> Use `environment: "TEST"` during development.  
+> Switch to `"LIVE"` when you're ready to go live.
+
+This SDK gives you full control to send money, manage payees, and automate agent actions — safely and simply.
+
+---
+
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>
