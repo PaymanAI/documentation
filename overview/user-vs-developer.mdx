@@ -1,56 +1,42 @@
 ---
 title: "User vs Developer"
-description: "Understand the difference between using Payman as a user or integrating it as a developer"
+description: "Are you a Payman User or a Payman Developer?"
 icon: "users"
 ---
----
-Payman is built for **two types of people**: those who use Payman wallets and policies to manage their own money, and those who build apps or agents that interact with them.
 
 ---
 
-## 👤 Users
+![User vs Developer](/images/UservsDev.png)
+Payman is for:
 
-Users are individuals who:
+-   **Users**: who manage their own money using wallets, policies, and payees.
+-   **Developers**: who build apps or AI agents that programmatically interact with the Payman platform.
 
--   Want to create and manage **USD or USDC wallets**
--   Set up **policies** to control how and when money moves
--   Add payees and **review or approve payment requests**
--   **Sign in to third-party apps using Payman OAuth**
+Here’s a full breakdown of what each can do:
 
-If a developer has integrated Payman OAuth into their app, users can log in using their Payman account. During sign-in, users select:
+| Feature / Action                         | User | Developer |
+| ---------------------------------------- | :--: | :-------: |
+| Create and manage wallets                |  ✅  |    ✅     |
+| Subscribe to USD / USDC wallets          |  ✅  |    ✅     |
+| Set policies (spending limits, approval) |  ✅  |    ✅     |
+| Add and manage payees                    |  ✅  |    ✅     |
+| Approve or deny payment requests         |  ✅  |    ✅     |
+| View dashboard and track activity        |  ✅  |    ✅     |
+| Register apps for automated payments     |  ❌  |    ✅     |
+| Assign wallets and policies to apps      |  ❌  |    ✅     |
+| Use client credentials to send payments  |  ❌  |    ✅     |
+| Use the Node.js SDK                      |  ❌  |    ✅     |
+| Generate test and live credentials       |  ❌  |    ✅     |
+| Access the developer playground          |  ❌  |    ✅     |
+| Request Payman OAuth access              |  ❌  |    ✅     |
+| Let their users sign in via Payman OAuth |  ❌  |    ✅     |
+| Automate payments and wallet actions     |  ❌  |    ✅     |
 
--   Which **wallet** to link
--   Which **policy** should govern its use
-
-This gives users full control and **guardrails** over how their wallet can be accessed or used by the third-party application — including spend limits, thresholds, and approval logic.
-
----
-
-## 🛠️ Developers
-
-Developers are users who also want to:
-
--   Build apps or AI agents that **move money programmatically**
--   Use the **Payman SDK** and **APIs** to create, pay, and manage
--   Implement **OAuth** to let users connect their wallets to your app
-
-By registering an app, a developer can:
-
--   Integrate Payman into their own platform
--   Allow users to sign in and link their Payman account
--   Respect user-defined policies and thresholds automatically
-
-If you're building anything that involves financial automation using Payman — you're a developer.
+> In short: **Users manage their own funds**, while **developers build apps that can manage funds on their behalf or on behalf of others**.
 
 ---
 
-### TL;DR
-
-| Concept               | Users            | Developers            |
-| --------------------- | ---------------- | --------------------- |
-| Create Wallets        | ✅               | ✅                    |
-| Set Policies          | ✅               | ✅                    |
-| Send Payments via SDK | ❌               | ✅                    |
-| Use OAuth Flow        | ✅ (as a signer) | ✅ (as an integrator) |
-
-> 💡 **Every developer is a user**, but not every user is a developer.
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>

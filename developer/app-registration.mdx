@@ -3,56 +3,62 @@ title: "Registering an App"
 description: "Create an app on Payman to generate API credentials and connect wallets"
 icon: "laptop"
 ---
----
-To integrate Payman into your product, you must first **register your app** and configure access.
 
 ---
+
+<Note>
+	To use Payman programmatically, you must register your app and link it to a
+	wallet, payees, and a policy.
+</Note>
 
 ## Step 1: Enable Developer Mode
 
-On your [Payman Dashboard](https://dashboard.paymanai.com):
-- Toggle the **“Developers”** switch in the sidebar
-
-This unlocks the **Apps** section where you can register and manage developer credentials.
+In the [Dashboard](https://app.paymanai.com), toggle the **“Developers”** switch in the sidebar to unlock developer features.
 
 ---
 
-## Step 2: Register Your App
+## Step 2: Register the App
 
 1. Go to **Apps → Register App**
-2. Fill in:
-   - App Name
-   - Description
-   - (Optional) Website
-
-Click **Save** to create the app.
+2. Enter:
+    - App Name
+    - Description
+    - (Optional) Website
+3. Click **Save**
 
 ---
 
-## Step 3: App Configuration
+## Step 3: Configure the App
 
 Each app must be linked to:
-- A **Wallet** (or allow "all wallets")
-- One or more **Payees**
-- Exactly **one Policy**
 
-> 🔐 **One App = One Policy**
+-   A specific **Wallet** (or allow all)
+-   One or more **Payees**
+-   **One Policy** (required)
 
-This determines how much money the app is allowed to move, based on daily/monthly limits and thresholds.
+> One app = one policy.  
+> This defines how much money the app can move and when approval is needed.
 
-You can:
-- Choose a **system policy** (like `sys-minimalist-policy`)
-- Or create a custom one in the **Policies** tab
+Choose a system policy or create a custom one in **Policies**.
 
 ---
 
-## What Happens After Registration?
+## After Registration
 
-You'll see **4 tabs** in your app:
+You’ll see 4 tabs in your app view:
 
-1. **Overview** – app info + config summary
-2. **Credentials** – where you generate Client ID / Secret
-3. **Webhooks** – set callback URLs (optional)
-4. **OAuth Config** – setup Sign In with Payman (if needed)
+| Tab              | Purpose                        |
+| ---------------- | ------------------------------ |
+| **Overview**     | App details and setup summary  |
+| **Credentials**  | Generate Client ID and Secret  |
+| **Webhooks**     | (Optional) Add callback URLs   |
+| **OAuth Config** | (Optional) Set up Payman OAuth |
 
-Continue to the next section to generate credentials.
+Once registered and configured, proceed to generate credentials and start using the SDK.
+
+---
+
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>

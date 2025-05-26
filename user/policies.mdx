@@ -1,85 +1,93 @@
 ---
-title: "Policies"
+title: "Set Up Policies"
 description: "Set limits, thresholds, and approval rules for your wallet and agents"
 icon: "shield-check"
 ---
+
 ---
+
 ## What is a Policy?
 
-A **policy** is a rule that controls how your wallet can be used — especially when linked to your AI agent or third-party app through OAuth.
+A **policy** defines how much money can move from your wallet and when your approval is required.
 
-Policies ensure your money doesn’t move without your intent.
+It protects your wallet—especially when used by agents or third-party apps.
 
-They define:
+A policy sets:
 
-- **How much** can be spent
-- **When** human approval is required
-
----
-
-## System vs Custom Policies
-
-You’ll find two kinds of policies inside your Payman dashboard:
-
-- **System Policies** — Predefined templates like:
-  - Minimalist (low trust, ultra-restricted)
-  - Personal Use (light user)
-  - Startup, Enterprise, Family, etc.
-
-- **Custom Policies** — You can create your own by defining:
-  - Policy name & description
-  - Spend limits
-  - Thresholds for triggering manual requests
-
-> 💡 You can always **clone a system policy** to start from a template.
+-   **Spend limits** (per transaction, daily, monthly)
+-   **Approval thresholds** (when manual approval is triggered)
 
 ---
 
-## Policies Are Mandatory
+## Types of Policies
 
-Anytime you connect a wallet to a third-party app (or build your own app), you must **associate a policy** with it.
+-   **System Policies**  
+    Predefined templates like:
 
-Whether you’re:
+    -   Minimalist
+    -   Personal Use
+    -   Startup, Enterprise, etc.
 
-- A **developer** registering your own app
-- A **user** granting access to someone else’s
+-   **Custom Policies**  
+    You define:
+    -   Name & description
+    -   Spend limits
+    -   Thresholds
 
-A policy is required to set the **rules for how your wallet will behave**.
-
----
-
-## Spend Controls You Can Set
-
-When creating a policy, you’ll be asked to define:
-
-- **Transaction Threshold** – Amount beyond which approval is needed
-- **Per Transaction Limit** – Max allowed in a single payment
-- **Daily Limit** – Total allowed spend per day
-- **Monthly Limit** – Cumulative cap per month
-
-These give you fine-grained control over automated or agent-triggered payments.
+> You can clone a system policy and customize it.
 
 ---
 
-## How to Create or Use a Policy
+## Spend Controls
 
-1. Open the [Payman Dashboard](https://dashboard.paymanai.com)
-2. Go to **Policies**
-3. Click **“Create Policy”** to start from scratch
-4. Or choose from the existing **System Policies**
-5. Assign the policy when:
-   - Registering your app
-   - Connecting a wallet via OAuth
-   - Reviewing access rules
+Each policy includes:
+
+| Control             | Description                                  |
+| ------------------- | -------------------------------------------- |
+| **Threshold**       | Amount above which manual approval is needed |
+| **Per Transaction** | Max allowed per payment                      |
+| **Daily Limit**     | Max allowed per day                          |
+| **Monthly Limit**   | Max allowed per month                        |
+
+---
+
+## When Are Policies Required?
+
+Always.  
+You **must assign a policy** when:
+
+-   Creating an agentic app
+-   Connecting your wallet via OAuth
+-   Letting any app act on your wallet
+
+Without a policy, your wallet cannot be used programmatically.
+
+---
+
+## How to Set a Policy
+
+1. Go to **Policies** in the [Dashboard](https://dashboard.paymanai.com)
+2. Click **Create Policy** or choose a system one
+3. Set your limits
+4. Assign the policy to your app or wallet
 
 ---
 
 ## Why It Matters
 
-Policies are your **safety net** when agents or apps act on your behalf.
+Policies are the **guardrails** for automated payments.
 
-With well-defined policies:
+They make sure:
 
-- Routine payments go through smoothly
-- Suspicious or large requests get flagged
-- You retain **complete control** over your funds
+-   Small, routine transactions go through
+-   Large or unexpected payments get flagged
+-   You’re always in control
+
+No wallet connected to an app can move money unless it's governed by a policy.
+
+---
+
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>

@@ -4,8 +4,7 @@
 	"name": "Payman AI Documentation",
 	"colors": {
 		"primary": "#0A3B44",
-		"light": "#F5F3EB",
-		"dark": "#0A3B44"
+		"light": "#F5F3EB"
 	},
 	"favicon": "/logo/payman.png",
 	"navigation": {
@@ -17,7 +16,7 @@
 			{
 				"group": "For Users",
 				"pages": [
-					"user/wallets",
+					"user/wallet",
 					"user/payees",
 					"user/requests",
 					"user/policies"
@@ -29,8 +28,8 @@
 					"developer/app-registration",
 					"developer/generate-credentials",
 					"developer/oauth-setup",
-					"developer/webhooks",
-					"developer/payman-sdk"
+					"developer/payman-sdk",
+					"developer/webhooks"
 				]
 			}
 		],
@@ -47,9 +46,9 @@
 					"icon": "discord"
 				},
 				{
-					"anchor": "Twitter",
+					"anchor": "X/Twitter",
 					"href": "https://www.x.com/paymanai",
-					"icon": "X"
+					"icon": "x-twitter"
 				}
 			]
 		}

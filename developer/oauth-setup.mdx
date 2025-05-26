@@ -1,72 +1,231 @@
 ---
-title: "OAuth Setup"
-description: "Let users sign in with Payman and connect wallets to your app"
+title: "OAuth Integration"
+description: "Integrate Payman’s OAuth to securely access APIs using Client Credentials or Authorization Code flows."
 icon: "lock"
 ---
----
-Payman OAuth allows your users to **securely link their wallets** to your application — without exposing credentials.
-
-It enables you to:
-- Authenticate users
-- Access their wallet balances
-- Send payments on their behalf (within defined policies)
 
 ---
 
-## Step 1: Fill OAuth Config
+## Getting Started
 
-Inside your registered app → **OAuth Config** tab, fill out the following:
+### 1. Request Developer Access
 
-- **Purpose**  
-  Describe why your app needs Payman access  
-  _(e.g. “This AI agent automates bill payments for users.”)_
+1. Request an invite to the Payman Developer Program
+2. Once approved, you'll get an invite code
+3. Register using the invite code
+4. Go to the Developers section and register your application
 
-- **Required URLs**
-  - **Privacy URL**
-  - **Terms of Service URL**
-  - **Redirect URLs**  
-    Where users will land after authentication
+### 2. Credentials
 
-- **Originating Domains**  
-  Domains from which your frontend will initiate the OAuth request
+After registration, you'll get:
 
----
+-   **Test Credentials** (auto-provided):
 
-## Step 2: Select Scopes
+    -   For test wallets (TSD) and test payees
+    -   Comes with:
 
-Choose only what your app needs:
+        -   A test wallet (1000 TSD)
+        -   A test payee
+        -   A default spend-limit policy
 
-- `read:balance`
-- `write:send_payment`
-- `write:create_payee`
-- `read:list_wallets`
-- etc.
+-   **Live Credentials** (requires approval):
 
-Users will see these permissions during the consent flow.
+    -   For real wallets (USD/USDC) and live payees
 
 ---
 
-## Step 3: Add Limits (Required)
+## Authentication Methods
 
-You must also define:
-- **Per Transaction Limit**
-- **Daily Limit**
-- **Monthly Limit**
-- **Threshold**  
-  _(When exceeded, manual approval is required)_
+### 1. Client Credentials Flow
 
-> These enforce how much money your app can request to move via user policies.
+Use this to access your own Payman resources (ideal for backend/server apps).
+
+```ts
+import { PaymanClient } from "@paymanai/payman-ts";
+
+const client = PaymanClient.withClientCredentials({
+	clientId: "your-client-id",
+	clientSecret: "your-client-secret",
+});
+
+const walletResponse = await client.ask("list all wallets and their balances");
+const createPayeeResponse = await client.ask(
+	"create a new payee named John Doe with email john@example.com"
+);
+const paymentResponse = await client.ask("send 100 TSD to John Doe");
+const transactionsResponse = await client.ask("show my last 5 transactions");
+```
 
 ---
 
-## Step 4: Submit OAuth Request
+### 2. Authorization Code Flow
 
-Once filled:
-- Click **Submit OAuth Request**
-- Your app will be reviewed and approved by Payman Admins
+Use this to access user resources via OAuth (requires config approval).
 
-Once approved, you’ll be able to use the full OAuth flow to link wallets.
+#### OAuth Configuration Requirements
+
+| Field              | Description                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| Purpose            | Why you need access                                                  |
+| URLs               | Privacy Policy, Terms, Redirect URIs (max 5), Origin Domains (max 5) |
+| Scopes             | Permissions you request                                              |
+| Transaction Limits | Max allowed per transaction                                          |
+
+#### Available Scopes
+
+-   `read_balance`
+-   `read_list_wallets`
+-   `read_list_payees`
+-   `read_list_transactions`
+-   `write_create_payee`
+-   `write_send_payment`
+-   `write_create_wallet`
+
+#### Step 1: Add the Connect Button
+
+```html
+<div id="payman-connect"></div>
+<script
+	src="https://connect.payman.ai/js/pm-connect.js"
+	data-client-id="your-client-id"
+	data-scopes="read_balance read_list_payees"
+	data-redirect-uri="https://your-app.com/oauth/callback"
+	data-target="#payman-connect"
+	data-dark-mode="false"
+	strategy="afterInteractive"
+	data-styles='{"borderRadius": "8px", "fontSize": "14px"}'></script>
+```
+
+| Attribute           | Description             | Required |
+| ------------------- | ----------------------- | -------- |
+| `data-client-id`    | Your client ID          | Yes      |
+| `data-scopes`       | Requested scopes        | Yes      |
+| `data-redirect-uri` | Redirect after auth     | Yes      |
+| `data-target`       | Where to inject button  | Yes      |
+| `data-dark-mode`    | Dark mode toggle        | No       |
+| `strategy`          | Script loading strategy | No       |
+| `data-styles`       | Custom styles           | No       |
+
+#### Step 2: Handle the OAuth Callback (Frontend)
+
+```ts
+window.addEventListener("message", function (event) {
+	if (event.data.type === "payman-oauth-redirect") {
+		const url = new URL(event.data.redirectUri);
+		const code = url.searchParams.get("code");
+		exchangeCodeForToken(code);
+	}
+});
+
+async function exchangeCodeForToken(code: string) {
+	const response = await fetch("/api/oauth/token", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ code }),
+	});
+
+	const { accessToken, expiresIn } = await response.json();
+
+	const client = PaymanClient.withToken("your-client-id", {
+		accessToken,
+		expiresIn,
+	});
+	const payeesResponse = await client.ask("list all payees");
+	const balanceResponse = await client.ask("what's my wallet balance?");
+}
+```
+
+#### Step 3: Backend Token Exchange (Express.js)
+
+```ts
+import express from "express";
+import { PaymanClient } from "@paymanai/payman-ts";
+
+const app = express();
+app.use(express.json());
+
+app.post("/api/oauth/token", async (req, res) => {
+	try {
+		const { code } = req.body;
+		const client = PaymanClient.withAuthCode(
+			{
+				clientId: process.env.PAYMAN_CLIENT_ID,
+				clientSecret: process.env.PAYMAN_CLIENT_SECRET,
+			},
+			code
+		);
+
+		const tokenResponse = await client.getAccessToken();
+
+		res.json({
+			accessToken: tokenResponse.accessToken,
+			expiresIn: tokenResponse.expiresIn,
+		});
+	} catch (error) {
+		console.error("Token exchange failed:", error);
+		res.status(500).json({ error: "Token exchange failed" });
+	}
+});
+```
 
 ---
 
+### 3. Direct Access Token Method
 
+Use this method primarily for React Native clients or when you already have an access token.
+
+```ts
+const client = PaymanClient.withToken("your-client-id", {
+	accessToken: "your-access-token",
+	expiresIn: 3600,
+});
+
+const response = await client.ask("list all wallets");
+const transactions = await client.ask("show my last 10 transactions");
+const createPayee = await client.ask(
+	"create a new payee named Jane Smith with email jane@example.com"
+);
+```
+
+---
+
+## Testing Your Integration
+
+-   Use test credentials during development
+-   Use the dashboard Playground to simulate scenarios
+-   Test OAuth with a test Payman account
+
+### Testing Snippets
+
+```ts
+const testClient = PaymanClient.withClientCredentials({
+	clientId: "pm-test-your-test-client-id",
+	clientSecret: "your-test-client-secret",
+});
+
+const wallets = await testClient.ask("list all wallets");
+const payee = await testClient.ask(
+	"create a new payee named Test User with email test@example.com"
+);
+const payment = await testClient.ask("send 50 TSD to Test User");
+```
+
+---
+
+## Best Practices
+
+1. Use test mode in development
+2. Never expose client secrets in frontend code
+3. Always handle OAuth errors gracefully
+4. Store and refresh tokens securely
+5. Request only the scopes you need
+6. Use env variables for secrets
+7. Monitor token expiry
+8. Cache tokens appropriately
+
+---
+
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>

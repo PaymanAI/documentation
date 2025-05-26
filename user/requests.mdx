@@ -1,55 +1,48 @@
 ---
-title: "Requests"
+title: "Approve Payment Requests"
 description: "Understand how to review and approve payment attempts made by agents or apps"
 icon: "check-double"
 ---
----
-## What Are Requests?
-
-A **request** appears when a payment attempt requires **manual approval** from you.
-
-These requests are generated when:
-
-- A payment initiated by an agent or app **exceeds the threshold** defined in your policy
-- The payment is made via:
-  - An app you've connected through **OAuth**
-  - A script or agent using the **Payman SDK** with your credentials
-
-In both cases, Payman pauses the transaction and asks you to approve it.
 
 ---
+
+## What is a Request?
+
+A **request** shows up when a payment needs **your approval**.
+
+Triggered when:
+
+-   The amount exceeds your **policy threshold**
+-   Sent via an app or agent
+
+Payman pauses the transaction until you approve or deny.
 
 ## Example
 
-You’ve set a policy with:
+Policy:
 
-- Daily Limit: `$500`
-- Threshold: `$100`
+-   Daily limit: $500
+-   Threshold: $100
 
-| Agent Action       | What Happens?            |
-| ------------------ | ------------------------ |
-| Tries to send $50  | Auto-approved            |
-| Tries to send $150 | Triggers manual request  |
+| Action           | Result         |
+| ---------------- | -------------- |
+| Agent sends $50  | Auto-approved  |
+| Agent sends $150 | Needs approval |
 
----
+## Where to Review
 
-## Where Do Requests Appear?
+1. Go to the **Requests** tab in your [Dashboard](https://dashboard.paymanai.com)
+2. See amount, payee, and app info
+3. Click **Approve** or **Deny**
 
-1. Go to your [Payman Dashboard](https://dashboard.paymanai.com)
-2. Navigate to the **Requests** tab
+## Why This Matters
 
-Each pending request includes:
-- Amount & payee
-- Which agent or app triggered the request
-- Option to **Approve** or **Deny**
-
-> 💡 You may also receive email or in-app alerts when new requests are waiting.
+Requests ensure **you stay in control**.  
+If anything exceeds your set limits, you'll always get the final say—whether it's from your own app or a third-party.
 
 ---
 
-## Why Requests Exist
-
-Policies are your protection layer.  
-If something goes beyond what you've allowed, Payman makes sure it gets your explicit OK.
-
-Whether it's your own SDK or a third-party app using OAuth — **you stay in control**.
+<Note>
+	{" "}
+	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
+</Note>
