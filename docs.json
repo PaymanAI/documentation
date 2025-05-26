@@ -32,6 +32,10 @@
 					"developer/webhooks",
 					"developer/playground"
 				]
+			},
+			{
+				"group": "Resources",
+				"pages": ["resources/glossary", "resources/prompt"]
 			}
 		],
 		"global": {

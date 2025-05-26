@@ -1,0 +1,53 @@
+---
+title: "Glossary"
+description: "Detailed descriptions of Payman-specific terms and jargons."
+icon: "book"
+---
+
+| Term                   | Description                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Payman**             | A secure financial platform designed for AI agents and humans to move money with full control.       |
+| **AI Agent**           | An automated entity that can perform transactions under user-defined policies and controls.          |
+| **USD Wallet**         | A wallet for real USD transactions, available to US-based users only.                                |
+| **USDC Wallet**        | A wallet for real USDC (stablecoin) transactions, available to both US and international users.      |
+| **TSD Wallet**         | A test wallet with 1000 TSD for simulation purposes, used for testing transactions safely.           |
+| **Paytag**             | A human-readable identifier for Payman wallets (e.g., `surge.produce.leg/26`) used for transfers.    |
+| **Policy**             | A set of programmable rules that define how, when, and how much money can move from a wallet.        |
+| **Payee**              | An entity to which money is sent, such as a bank account, crypto wallet, or test account.            |
+| **Invite Code**        | A code required to register on Payman, ensuring secure onboarding and controlled access.             |
+| **OAuth**              | A protocol for secure authorization, allowing apps to access resources on behalf of users.           |
+| **Client Credentials** | Authentication method using a client ID and secret for server-to-server communication.               |
+| **Authorization Code** | OAuth flow for apps needing access to another user's resources, involving user consent.              |
+| **Playground**         | A sandbox environment for testing Payman functionalities without real money movement.                |
+| **Webhook**            | A mechanism to receive real-time updates from Payman for events like payments and balance changes.   |
+| **SDK**                | Software Development Kit (TypeScript) for integrating Payman functionalities into applications.      |
+| **Dashboard**          | The web interface for managing Payman accounts, wallets, policies, and more.                         |
+| **Developer Mode**     | A setting in the Payman Dashboard that unlocks additional features for developers, like TSD wallets. |
+| **KYC Verification**   | Know Your Customer process for verifying identity with documents like a government-issued ID.        |
+| **Session**            | A persistent state across requests in the SDK, allowing for continuous interaction.                  |
+| **Token**              | A digital key used for authentication and authorization in API requests.                             |
+| **Access Token**       | A temporary credential that grants access to Payman APIs for a specific duration.                    |
+| **Threshold**          | The amount above which manual approval is needed for a transaction.                                  |
+| **Spend Limit**        | The maximum amount allowed for transactions over a specified period, like daily or monthly.          |
+| **Approval**           | The process of manually authorizing a transaction that exceeds set limits or thresholds.             |
+| **Request**            | A payment attempt that requires user approval due to policy constraints.                             |
+| **App Registration**   | The process of creating an application in Payman to generate credentials and configure access.       |
+| **Client ID**          | A public identifier for your registered application.                                                 |
+| **Client Secret**      | A private key used to authenticate your application (never expose in frontend code).                 |
+| **Scope**              | Specific permissions granted to an application (e.g., read_balance, write_send_payment).             |
+| **System Policy**      | Pre-built policies provided by Payman (Minimalist, Personal Use, Professional, etc.).                |
+| **Custom Policy**      | User-created policies with personalized spending limits and approval rules.                          |
+| **ACH**                | Automated Clearing House - electronic network for financial transactions in the US.                  |
+| **USDC**               | USD Coin - a stablecoin pegged to the US Dollar, used for crypto transactions.                       |
+| **TSD**                | Test Dollar - Payman's test currency for simulation purposes (not real money).                       |
+| **Metadata**           | Additional contextual information attached to requests or transactions.                              |
+| **Streaming**          | Real-time data flow for receiving live updates during API calls.                                     |
+| **Grant Type**         | The OAuth flow method used (Client Credentials or Authorization Code).                               |
+| **Redirect URI**       | The URL where users are sent after OAuth authorization.                                              |
+| **Origin Domain**      | Allowed domains for frontend applications in OAuth configuration.                                    |
+| **Transaction Limit**  | Maximum allowed amount per individual transaction in OAuth apps.                                     |
+
+<Note>
+	**Need help?** Reach out to
+	[support@paymanai.com](mailto:support@paymanai.com)
+</Note>
