@@ -1,0 +1,94 @@
+---
+title: "Quickstart"
+description: "Get up and running with Payman in 5 minutes"
+icon: "rocket"
+---
+
+## Prerequisites
+
+-   Request an [invite code](https://app.paymanai.com) and register on Payman
+-   Enable Developer Mode in your dashboard
+
+## Step 1: Install the SDK
+
+```bash
+npm install @paymanai/payman-ts
+```
+
+## Step 2: Register Your App
+
+1. Go to your [Payman Dashboard](https://app.paymanai.com)
+2. Navigate to **Apps** → **Register App**
+3. Fill in your app details and save
+4. Configure your app with:
+    - At least one wallet (TSD for testing)
+    - At least one payee
+    - A policy (choose "Personal Use" to start)
+
+## Step 3: Get Your Credentials
+
+1. Go to the **Credentials** tab in your app
+2. Generate **Test Credentials**
+3. Copy your **Client ID** and **Client Secret**
+
+## Step 4: Set Up Environment
+
+Create a `.env` file in your project:
+
+```env
+PAYMAN_CLIENT_ID=your-client-id
+PAYMAN_CLIENT_SECRET=your-client-secret
+```
+
+## Step 5: Write Your First Integration
+
+```typescript
+import { PaymanClient } from "@paymanai/payman-ts";
+
+// Initialize the client
+const payman = PaymanClient.withClientCredentials({
+	clientId: process.env.PAYMAN_CLIENT_ID!,
+	clientSecret: process.env.PAYMAN_CLIENT_SECRET!,
+});
+
+async function quickDemo() {
+	try {
+		// Check your wallets
+		const wallets = await payman.ask("List all wallets and their balances");
+		console.log("My wallets:", wallets);
+
+		// Create a test payee
+		const newPayee = await payman.ask(
+			"Create a payee of type Test Rails called John Doe"
+		);
+		console.log("New Payee Detail:", newPayee);
+
+		// View your payees
+		const payees = await payman.ask("List all payees");
+		console.log("My payees:", payees);
+
+		// Send a test payment (using TSD test funds)
+		const payment = await payman.ask("Send 10 TSD to John Doe");
+		console.log("Payment sent:", payment);
+	} catch (error) {
+		console.error("Error:", error.message);
+	}
+}
+
+quickDemo();
+```
+
+## Step 6: Run Your Code
+
+```bash
+node your-file.js
+```
+
+That's it! You've successfully integrated with Payman and sent your first payment.
+
+>🎉 **Ready for production?** You've just completed testing with TSD (Test Dollar) funds. To process real payments, generate **Live Credentials** in your dashboard, add USD or USDC wallets, and update your environment variables - your existing code will work seamlessly with real money!
+
+<Note>
+	**Need help?** Reach out to
+	[support@paymanai.com](mailto:support@paymanai.com)
+</Note>{" "}
