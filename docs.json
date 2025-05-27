@@ -11,7 +11,11 @@
 		"groups": [
 			{
 				"group": "Overview",
-				"pages": ["overview/introduction", "overview/user-vs-developer"]
+				"pages": [
+					"overview/introduction",
+					"overview/user-vs-developer",
+					"overview/quickstart"
+				]
 			},
 			{
 				"group": "For Users",
