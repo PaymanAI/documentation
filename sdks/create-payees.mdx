@@ -5,8 +5,8 @@ icon: "user-plus"
 ---
 
 <Note>
-	Payees can also be added manually in the [Payman
-	Dashboard](https://app.paymanai.com/dashboard).
+  Payees can also be added manually in the [Payman
+  Dashboard](https://app.paymanai.com/dashboard).
 </Note>
 
 <Tabs>
@@ -68,8 +68,8 @@ console.log(`Payee created: ${payee.id}`);
 ````
 
 <Note>
-	Use the returned `id` when sending payments to this payee. You can also find
-	payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+  Use the returned `id` when sending payments to this payee. You can also find
+  payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
 </Note>
 
 ### Parameters
@@ -171,8 +171,8 @@ console.log(`Payee created: ${payee.id}`);
 ````
 
 <Note>
-	Use the returned `id` when sending payments to this payee. You can also find
-	payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+  Use the returned `id` when sending payments to this payee. You can also find
+  payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
 </Note>
 
 ### Parameters
@@ -257,8 +257,8 @@ console.log(`Payee created: ${payee.id}`);
 ````
 
 <Note>
-	Use the returned `id` when sending payments to this payee. You can also find
-	payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+  Use the returned `id` when sending payments to this payee. You can also find
+  payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
 </Note>
 
 ### Parameters
@@ -301,6 +301,87 @@ console.log(`Payee created: ${payee.id}`);
     "payman-wallet-org-name": "98206de2eb7f683ca99db9befeb09130",
     "payman-wallet-provider": "8a98c86b49d93794705dd64bcdbbe3ab"
   }
+}
+```
+
+</Tab>
+
+<Tab title="Test Payee">
+<Tabs>
+<Tab title="Python">
+```python
+payee = payman.payments.create_payee(
+    type="TEST_RAILS",
+    name="Test Account",
+    tags=["test", "sandbox"]
+)
+
+print(f"Payee created: {payee.id}")
+
+````
+
+<Note>
+    Use the returned `id` when sending payments to this payee. You can also find payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `type` | str | Must be `'TEST_RAILS'` |
+| `name` | str | Descriptive name |
+| `tags` | list[str] | Optional labels |
+</Tab>
+
+<Tab title="Node.js">
+```typescript
+const payee = await payman.payments.createPayee({
+    type: "TEST_RAILS",
+    name: "Test Account",
+    tags: ["test", "sandbox"]
+});
+
+console.log(`Payee created: ${payee.id}`);
+````
+
+<Note>
+  Use the returned `id` when sending payments to this payee. You can also find
+  payee IDs in the [Payman Dashboard](https://app.paymanai.com/dashboard).
+</Note>
+
+### Parameters
+
+| Parameter | Type     | Description            |
+| --------- | -------- | ---------------------- |
+| `type`    | string   | Must be `'TEST_RAILS'` |
+| `name`    | string   | Descriptive name       |
+| `tags`    | string[] | Optional labels        |
+
+</Tab>
+</Tabs>
+
+## Response
+
+Both SDKs return a similar response object:
+
+```typescript
+{
+  "id": "string",                 // Unique payee identifier (e.g., 'pd-1f001934-7...')
+  "name": "string",               // User-assigned name of the payee
+  "type": "TEST_RAILS", // Type of payee
+  "organizationId": "string",      // Your organization ID
+  "status": "ACTIVE" | "DELETED", // Current status
+  "contactDetails": {              // Optional contact information
+    "email": "string",
+    "phoneNumber": "string",
+    "address": "string"
+  },
+  "tags": ["string"],               // Optional categorization tags
+  "createdAt": "string",            // ISO timestamp of creation
+  "updatedAt": "string",            // ISO timestamp of last update
+  "createdBy": "string",            // ID of the creator
+  "updatedBy": "string",            // ID of the last updater
+  "payeeDetails": {},                // Payee-specific details (varies by type)
+  "searchHashes": {},                // Search optimization data
 }
 ```
 
