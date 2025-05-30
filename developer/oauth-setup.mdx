@@ -136,13 +136,12 @@ This button launches the OAuth consent flow. Users are prompted to grant access 
 ```html
 <div id="payman-connect"></div>
 <script
-	src="https://app.paymanai.com/js/pm-connect.js"
+	src="https://app.paymanai.com/js/pm.js"
 	data-client-id="your-client-id"
-	data-scopes="read_balance read_list_payees"
+	data-scopes="read_balance,read_list_wallets,read_list_payees,read_list_transactions,write_create_payee,write_send_payment,write_create_wallet"
 	data-redirect-uri="https://your-app.com/oauth/callback"
 	data-target="#payman-connect"
 	data-dark-mode="false"
-	strategy="afterInteractive"
 	data-styles='{"borderRadius": "8px", "fontSize": "14px"}'></script>
 ```
 
