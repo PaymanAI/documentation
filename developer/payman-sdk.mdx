@@ -1,6 +1,6 @@
 ---
-title: "SDK Integration"
-description: "Use the official SDK to interact with Payman APIs "
+title: "Payman SDK Integration"
+description: "Use the official SDKs to interact with Payman APIs "
 icon: "code"
 ---
 
@@ -11,6 +11,9 @@ icon: "code"
 The Payman SDK makes it ridiculously easy to automate financial workflows with AI agents.
 
 **Get started in 3 steps:**
+
+<Tabs>
+  <Tab title="TypeScript SDK">
 
 ```bash
 # Step 1: Install the SDK
@@ -28,7 +31,33 @@ const payman = PaymanClient.withCredentials({
 const response = await payman.ask("Send $100 to Alice");
 console.log(response);
 ```
->That’s it — no API orchestration, no complex setup. The ```.ask()``` method handles everything.
+
+  </Tab>
+
+  <Tab title="Python SDK">
+```bash
+# Step 1: Install dependencies
+python3 -m pip install payman-sdk-python
+
+# Step 2: Initialize the Client
+
+from payman_sdk import PaymanClient
+
+payman = PaymanClient.with_credentials({
+"client_id": "your-client-id",
+"client_secret": "your-client-secret"
+})
+
+# Step 3: Make a request
+
+response = payman.ask("Send $100 to Alice")
+print(response)
+
+````
+  </Tab>
+</Tabs>
+
+>That's it — no API orchestration, no complex setup. The ```.ask()``` method handles everything.
 ---
 ## What Payman SDK Does
 
@@ -40,11 +69,20 @@ The Payman SDK lets you:
 ---
 
 ## Installation
+<Tabs>
+  <Tab title="TypeScript SDK">
 
 ```bash
 npm install @paymanai/payman-ts
 ```
+  </Tab>
+  <Tab title="Python SDK">
 
+```bash
+python3 -m pip install payman-sdk-python
+```
+  </Tab>
+</Tabs>
 ---
 
 ## Environment Setup
@@ -63,6 +101,9 @@ These credentials are required to authenticate API requests.
 ## Initialize the SDK
 
 The SDK supports 3 authentication methods:
+<Tabs>
+  <Tab title="TypeScript SDK">
+
 
 1. Using Client Credentials (recommended)
 
@@ -71,7 +112,7 @@ import { PaymanClient } from "@paymanai/payman-ts";
 
 const payman = PaymanClient.withCredentials({
 	clientId: process.env.PAYMAN_CLIENT_ID!,
-	clientSecret: process.env.PAYMAN_CLIENT_SECRET!
+	clientSecret: process.env.PAYMAN_CLIENT_SECRET!,
 });
 ```
 
@@ -89,18 +130,58 @@ const payman = PaymanClient.withAuthCode(
 3. Using an Existing Access Token (when you already have a token):
 
 ```ts
-const payman = PaymanClient.withToken(
-	"your-client-id",
-	{
-		accessToken: "your-access-token",
-		expiresIn: 3600,
-	}
-);
+const payman = PaymanClient.withToken("your-client-id", {
+	accessToken: "your-access-token",
+	expiresIn: 3600,
+});
 ```
+  </Tab>
+
+  <Tab title="Python SDK">
+
+
+1. Using Client Credentials (recommended)
+
+```python
+from payman_sdk import PaymanClient
+
+payman = PaymanClient.with_credentials({
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret"
+})
+```
+
+2. Using OAuth Authorization Code (for OAuth flow):
+
+```python
+payman = PaymanClient.with_auth_code(
+    {
+        "client_id": "your-client-id",
+        "environment": "TEST"
+    },
+    "your-auth-code"
+)
+```
+
+3. Using an Existing Access Token (when you already have a token):
+
+```python
+payman = PaymanClient.with_token(
+    "your-client-id",
+    {
+        "access_token": "your-access-token",
+        "expires_in": 3600
+    }
+)
+```
+  </Tab>
+</Tabs>
 
 ---
 
 ## Making a Request
+<Tabs>
+  <Tab title="TypeScript SDK">
 
 ### 1. Basic usage (Recommended)
 
@@ -150,12 +231,53 @@ const response = await payman.ask("Hello!", {
 	metadata: { source: "web-app" },
 });
 ```
+  </Tab>
+  <Tab title="Python SDK">
+
+### 1. Basic usage (Recommended)
+
+```python
+response = payman.ask("List all payees")
+print(response)
+```
+
+### 2. Get Raw JSON-RPC Response
+
+```python
+raw_response = payman.ask("List all payees", raw=True)
+print(raw_response)
+```
+
+### 3. Streaming Responses
+
+Use this to get updates in real-time:
+
+```python
+payman.ask("List all wallets", {
+    "on_message": lambda res: print("Formatted:", res)
+})
+```
+
+
+### 4. Starting New Sessions with Metadata
+
+```python
+response = payman.ask("Hello!", {
+    "new_session": True,
+    "metadata": { "source": "web-app" }
+})
+```
+  </Tab>
+</Tabs>
 
 ---
 
 ## Adding Metadata
 
 Attach contextual data to requests.
+
+<Tabs>
+  <Tab title="TypeScript SDK">
 
 ```ts
 await payman.ask("Pay John $100", {
@@ -171,6 +293,25 @@ await payman.ask("Pay John $100", {
 	},
 });
 ```
+  </Tab>
+  <Tab title="Python SDK">
+
+```python
+payman.ask("Pay John $100", {
+    "metadata": {
+        "source": "mobile-app",
+        "user_id": "abc123"
+    },
+    "message_metadata": {
+        "priority": "high"
+    },
+    "part_metadata": {
+        "currency": "USD"
+    }
+})
+```
+  </Tab>
+</Tabs>
 
 ---
 
@@ -180,17 +321,30 @@ await payman.ask("Pay John $100", {
 -   Use newSession: true to force a reset.
 -   The SDK auto-refreshes tokens before expiry.
 -   You can manually check or get access tokens:
+<Tabs>
+  <Tab title="TypeScript SDK">
 
 ```ts
 const token = payman.getAccessToken();
 const isExpired = payman.isAccessTokenExpired();
 ```
+  </Tab>
+  <Tab title="Python SDK">
 
+```python
+token = payman.get_access_token()
+is_expired = payman.is_access_token_expired()
+```
+  </Tab>
+</Tabs>
 ---
 
 ## Error Handling
 
 The SDK uses Axios internally. Catch errors like this:
+
+<Tabs>
+  <Tab title="TypeScript SDK">
 
 ```ts
 try {
@@ -205,6 +359,23 @@ try {
 	}
 }
 ```
+  </Tab>
+  <Tab title="Python SDK">
+
+```python
+import requests
+
+try:
+    response = payman.ask("Send $500 to Alex")
+except requests.exceptions.RequestException as e:
+    if hasattr(e, "response") and e.response is not None:
+        print("API Error:", e.response.json())
+        print("Status Code:", e.response.status_code)
+    else:
+        print("Setup error:", str(e))
+```
+  </Tab>
+</Tabs>
 
 ---
 
@@ -212,3 +383,4 @@ try {
 	{" "}
 	**Need help?** Reach out to [support@paymanai.com](mailto:support@paymanai.com){" "}
 </Note>
+````
