@@ -101,7 +101,7 @@ When registering an app for OAuth, you must provide:
 | ---------------------- | ---------------------------------------------------------- |
 | **Purpose**            | Why your app needs access                                  |
 | **Redirect URIs**      | Where the user is redirected after granting access (max 5) |
-| **Origin Domains**     | Allowed domains for your frontend (max 5)                  |
+| **Origin Domains**     | Allowed domains for your frontend (max 5) - Make sure you add **https://app.paymanai.com/** as one of the originating domains  |
 | **Scopes**             | Which permissions you're requesting                        |
 | **Transaction Limits** | Maximum allowed per transaction                            |
 
@@ -138,12 +138,16 @@ This button launches the OAuth consent flow. Users are prompted to grant access 
 <script
 	src="https://app.paymanai.com/js/pm.js"
 	data-client-id="your-client-id"
-	data-scopes="read_balance,read_list_wallets,read_list_payees,read_list_transactions,write_create_payee,write_send_payment,write_create_wallet"
+	data-scopes="read_balance,read_list_payees,read_list_transactions,write_create_payee"
 	data-redirect-uri="https://your-app.com/oauth/callback"
 	data-target="#payman-connect"
 	data-dark-mode="false"
-	data-styles='{"borderRadius": "8px", "fontSize": "14px"}'></script>
+	strategy="afterInteractive"
+	data-styles='{"borderRadius": "8px", "fontSize": "14px"}'>
+</script>
+=======
 ```
+> Add more **data-scopes** as needed, always separate them with commas without spaces.
 
 | Attribute           | Description             | Required |
 | ------------------- | ----------------------- | -------- |
