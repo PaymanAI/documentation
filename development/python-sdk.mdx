@@ -1,0 +1,286 @@
+---
+title: "Python SDK"
+description: "Everything you need to know to use Payman with Python"
+icon: "python"
+---
+
+---
+
+Interact with the Payman AI Platform's API using Python. This SDK is designed for both end users and developers, making it easy to move money, automate workflows, and build powerful AI-driven financial applications.
+
+---
+
+## Installation
+
+```bash
+pip install paymanai-sdk
+```
+
+<Info>Python >=3.9 is required for full compatibility.</Info>
+
+## Environment Setup
+
+Before running the SDK, set up your environment variables in a `.env` file at the root of your project:
+
+```env
+PAYMAN_CLIENT_ID=your-client-id
+PAYMAN_CLIENT_SECRET=your-client-secret
+```
+
+<Note>
+	Get these credentials from your Payman dashboard after registering an app.
+	They are required for both SDK usage.
+</Note>
+
+---
+
+## Authentication & Initialization
+
+You can initialize the client in several ways, depending on your use case:
+
+### Using Client Credentials (Recommended)
+
+```python
+from payman_sdk.client import PaymanClient
+from payman_sdk.types import PaymanConfig
+
+config: PaymanConfig = {
+    'client_id': 'your_client_id',
+    'client_secret': 'your_client_secret',
+    'name': 'my_client',  # optional
+    'session_id': 'ses-existing-session-id'  # optional, for resuming conversations
+}
+client = PaymanClient.with_credentials(config)
+```
+
+### Using an Authorization Code (OAuth)
+
+```python
+config: PaymanConfig = {
+    'client_id': 'your_client_id',
+    'client_secret': 'your_client_secret'
+}
+auth_code = 'your_auth_code'
+client = PaymanClient.with_auth_code(config, auth_code)
+```
+
+### Using an Access Token or Refresh Token
+
+```python
+client_id = 'your_client_id'
+token_info = {
+    'accessToken': 'your_access_token',  # required if refreshToken is not provided
+    'expiresIn': 3600,  # required if accessToken is provided
+    'refreshToken': 'your_refresh_token'  # optional, enables automatic refresh
+}
+client = PaymanClient.with_token(client_id, token_info, name='my_client')
+```
+
+You can also initialize with only a refresh token:
+
+```python
+client_id = 'your_client_id'
+token_info = {
+    'refreshToken': 'your_refresh_token'
+}
+client = PaymanClient.with_token(client_id, token_info)
+```
+
+---
+
+## Making Requests
+
+### Get a Formatted Response
+
+```python
+response = client.ask("How much money do I have in my wallet?")
+print(response)
+```
+
+### Get a Raw Response
+
+```python
+raw_response = client.ask("How much money do I have in my wallet?", raw=True)
+print(raw_response)
+```
+
+### Streaming Requests
+
+```python
+def on_message(response):
+    print("Formatted response:", response)
+
+client.ask("How much money do I have in my wallet?", {
+    'on_message': on_message
+})
+```
+
+<Tip>
+	Use the <code>on_message</code> callback for real-time updates, long-running
+	tasks, or progress monitoring. You can also stream raw responses by passing{" "}
+	<code>raw=True</code>.
+</Tip>
+
+---
+
+## Using Metadata
+
+You can attach metadata at different levels to customize and track your requests:
+
+**Request-level metadata:**
+
+```python
+client.ask("Pay Tyllen 50$?", {
+    'metadata': {
+        'source': 'mobile-app',
+        'userId': 'user123',
+        'requestId': 'req456'
+    }
+})
+```
+
+**Message-level metadata:**
+
+```python
+client.ask("Create a new payee with the email tyllen@paymanai.com", {
+    'message_metadata': {
+        'priority': 'high',
+        'category': 'payee creation'
+    }
+})
+```
+
+**Part-level metadata:**
+
+```python
+client.ask("List all wallets", {
+    'part_metadata': {
+        'currency': 'USD',
+        'format': 'text'
+    }
+})
+```
+
+---
+
+## Session Management
+
+<Info>
+	Sessions allow you to maintain context across multiple requests. Each client
+	instance manages its own session by default, so you can have ongoing
+	conversations or workflows that remember previous actions.
+</Info>
+
+### How Sessions Work
+
+-   Every client instance starts a new session unless you provide a `session_id`.
+-   The session ID is included in every response from `client.ask()`.
+-   You can use this session ID to resume a conversation or workflow at any time, even across different client instances or after a restart.
+
+### Resuming a Session
+
+To resume a previous session, pass the `session_id` when initializing the client:
+
+```python
+# Start a conversation
+response1 = client.ask("How much money do I have in my wallet?")
+session_id = response1['sessionId']  # Save this for later
+
+# Resume the conversation with a new client instance
+config = {
+    'client_id': 'your_client_id',
+    'client_secret': 'your_client_secret',
+    'session_id': session_id
+}
+client2 = PaymanClient.with_credentials(config)
+response2 = client2.ask("What did we talk about earlier?")
+```
+
+You can also resume with the `with_token` method:
+
+```python
+client3 = PaymanClient.with_token(
+    'your_client_id',
+    {
+        'accessToken': 'your_access_token',
+        'expiresIn': 3600
+    },
+    session_id=session_id
+)
+```
+
+To get the current session ID from any client instance:
+
+```python
+current_session_id = client.get_session_id()
+```
+
+<Check>
+	Session management is essential for building conversational agents,
+	multi-step workflows, or any scenario where you want to maintain state
+	across requests.
+</Check>
+
+---
+
+## Token Management
+
+Tokens are fetched and refreshed automatically. You can also access them directly if needed:
+
+```python
+token_info = client.get_access_token()
+if token_info:
+    print(token_info.get('accessToken'), token_info.get('expiresIn'))
+
+refresh_token = client.get_refresh_token()
+if refresh_token:
+    print(refresh_token)
+```
+
+<Check>
+	Tokens refresh automatically before they expire. If you provide a refresh
+	token, the SDK will use it as needed.
+</Check>
+
+---
+
+## Error Handling
+
+All API calls will raise an exception if the request fails. You can catch and handle these exceptions as needed:
+
+```python
+try:
+    response = client.ask("What's the weather?")
+except requests.exceptions.RequestException as e:
+    if hasattr(e, 'response'):
+        print(e.response.json())
+        print(e.response.status_code)
+    else:
+        print('Error:', str(e))
+```
+
+---
+
+## API Reference (At a Glance)
+
+**PaymanClient Static Methods**
+
+-   `with_credentials(config: PaymanConfig) -> PaymanClient`
+-   `with_auth_code(config: PaymanConfig, auth_code: str) -> PaymanClient`
+-   `with_token(client_id: str, token_info: Dict[str, Any], ...) -> PaymanClient`
+
+**Instance Methods**
+
+-   `ask(text: str, options: Optional[AskOptions] = None, raw: bool = False)`
+-   `get_access_token() -> Optional[Dict[str, Any]]`
+-   `get_refresh_token() -> Optional[str]`
+-   `is_access_token_expired() -> bool`
+-   `get_session_id() -> str`
+-   `get_client_name() -> Optional[str]`
+
+---
+
+<Note>
+	Need help? Email us at{" "}
+	<a href='mailto:support@paymanai.com'>support@paymanai.com</a>
+</Note>
