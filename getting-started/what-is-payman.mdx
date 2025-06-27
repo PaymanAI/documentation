@@ -1,0 +1,102 @@
+---
+title: "What is Payman?"
+description: "Understand the magic of Payman and how it helps AI agents move money, safely and programmatically."
+icon: "question"
+---
+
+---
+
+![Introducing Payman](/images/intro.png)
+
+# Meet Payman
+
+> **Payman lets your AI agents move money.** Safely. On autopilot. With rules you control.
+
+Whether you're building an AI assistant, an automated payroll system, or a bot that tips users, Payman gives you the building blocks:
+
+-   **Wallets**
+-   **Payees**
+-   **Policies**
+-   Our core function: `payman.ask()`
+
+---
+
+## Why Does Payman Exist?
+
+<Info>
+	AI-first world, agents also need to take action like _"send $100 to John"_
+	or _"create a new payee for this vendor"_. That's where Payman comes in.
+</Info>
+
+Think of Payman as the **secure financial layer** between your AI and your money.
+
+---
+
+## The Magic of `payman.ask()`
+
+<Tip>
+	This is the star of the show. You send **natural language instructions**,
+	and the Payman Agent turns them into real actions like:
+</Tip>
+
+```ts
+await payman.ask("Send $15 to Alice with note 'thanks for lunch'");
+```
+
+It will:
+
+-   ✅ Create a payee
+-   ✅ Check your wallet balance
+-   ✅ Apply policies
+-   ✅ Trigger payment
+-   ✅ Send a response back — all in one line
+
+---
+
+## Built for Everyone: Dashboard + SDK
+
+You can use Payman through:
+
+-   🖥️ **A simple dashboard** — no code needed
+-   🧑‍💻 **SDKs (TypeScript & Python)** — for total programmatic control
+
+---
+
+## Key Concepts (At a Glance)
+
+| Concept      | Description                                                              |
+| ------------ | ------------------------------------------------------------------------ |
+| **Wallets**  | Where your money lives (USD, USDC, or TSD for testing)                   |
+| **Payees**   | People/entities you want to pay                                          |
+| **Policies** | Spending rules: how much, how often, when to ask for approval            |
+| **Agent**    | The smart backend that converts your natural language prompt into action |
+
+---
+
+## Who Uses Payman?
+
+| Role           | What They Do                                                   |
+| -------------- | -------------------------------------------------------------- |
+| **Users**      | Create wallets, define policies, approve/deny transactions     |
+| **Developers** | Build apps, register integrations, use SDKs                    |
+| **AI Agents**  | Trigger actions via `payman.ask()` - always governed by policy |
+
+<Warning>
+	Payman is built so **no money moves without your consent** — even when an AI
+	agent is in charge.
+</Warning>
+
+---
+
+## Try It Out
+
+-   🚀 Head to [Quickstart](../development/quickstart) and send your first test payment
+-   🧪 Use the [Playground](../developer-guide/playground) to try real prompts
+-   🖥️ Or explore the [Dashboard Guide](../dashboard-guide)
+
+---
+
+<Note>
+	Need help? Reach out to{" "}
+	<a href='mailto:support@paymanai.com'>support@paymanai.com</a>
+</Note>

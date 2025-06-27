@@ -2,6 +2,7 @@
 	"$schema": "https://mintlify.com/docs.json",
 	"theme": "maple",
 	"name": "Payman AI Documentation",
+
 	"colors": {
 		"primary": "#0A3B44",
 		"light": "#F5F3EB"
@@ -10,33 +11,41 @@
 	"navigation": {
 		"groups": [
 			{
-				"group": "Overview",
+				"group": "Getting Started",
 				"pages": [
-					"overview/introduction",
-					"overview/quickstart",
-					"overview/user-vs-developer"
+					"getting-started/what-is-payman",
+					"getting-started/ask"
 				]
 			},
 			{
-				"group": "For Users",
+				"group": "Start Building",
 				"pages": [
-					"user/wallet",
-					"user/payees",
-					"user/requests",
-					"user/policies"
+					"development/quickstart",
+					"development/typescript-sdk",
+					"development/python-sdk"
 				]
 			},
 			{
-				"group": "For Developers",
+				"group": "Developer Guide",
 				"pages": [
-					"developer/app-registration",
-					"developer/generate-credentials",
-					"developer/payman-sdk",
-					"developer/oauth-setup",
-					"developer/webhooks",
-					"developer/playground"
+					"developer-guide/app-registration",
+					"developer-guide/generate-credentials",
+					"developer-guide/oauth-setup",
+					"developer-guide/sdk-response",
+					"developer-guide/webhooks",
+					"developer-guide/playground"
 				]
 			},
+			{
+				"group": "Dashboard Guide",
+				"pages": [
+					"dashboard-guide/wallet",
+					"dashboard-guide/payees",
+					"dashboard-guide/requests",
+					"dashboard-guide/policies"
+				]
+			},
+
 			{
 				"group": "Resources",
 				"pages": ["resources/glossary", "resources/prompt"]

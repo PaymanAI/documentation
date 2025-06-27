@@ -1,0 +1,80 @@
+---
+title: "SDK Responses"
+description: "See what a typical response from the Payman SDK looks like and how to use it."
+icon: "info"
+---
+
+When you call `payman.ask()` in your code, you receive a structured response object. This object contains not only the main answer to your prompt, but also useful metadata for tracking, auditing, and advanced workflows.
+
+---
+
+## Example Response
+
+Here is a real-world example of a response you might get from the SDK:
+
+```json
+{
+	"taskId": "tsk-5085db82-caa4-4f6a-a7d6-95a610eefe40",
+	"requestId": "req-3f9454d6-6d2a-4df7-ad24-fe81fcb538e6",
+	"sessionId": "ses-e4a71cad-9e5a-4333-8db4-acd8ff74987d",
+	"status": "COMPLETED",
+	"statusMessage": "Processing completed successfully",
+	"timestamp": "2025-06-27T16:31:41.510422505Z",
+	"artifacts": [
+		{
+			"name": "response",
+			"description": "AI Assistant Response",
+			"content": "Here's a summary of your wallets and their current balances:\n\n1. AAHI Agent Wallet (paytag: tube.tense.cask/53)\n   - Spendable Balance: $989.99\n   - Pending Balance: $0.00\n   - Currency: TSD\n\n2. Demo Wallet (paytag: kite.flap.halo/88)\n   - Spendable Balance: $969.97\n   - Pending Balance: $0.00\n   - Currency: TSD\n\n3. TSD Wallet (paytag: adverb.exasperate.dust/74)\n   - Spendable Balance: $964.96\n   - Pending Balance: $0.00\n   - Currency: TSD\n\nAll wallets are in TSD currency with no pending transactions. Is there anything specific you would like to do with these wallets?",
+			"type": "text",
+			"timestamp": "2025-06-27T16:31:41.584Z",
+			"metadata": {}
+		}
+	],
+	"metadata": {
+		"timestamp": "2025-06-27T16:31:30.892Z",
+		"agentId": "ai-1f042092-f548-6635-8646-6f0238b93691",
+		"orgId": "org-1efef51b-02c3-6bbd-894e-4324bac0f4d1"
+	}
+}
+```
+
+---
+
+## Key Fields
+
+-   **content** (inside `artifacts`):
+
+    <Info>
+    	This is the main answer to your prompt. For most use cases, you will
+    	display or process this field in your app.
+    </Info>
+
+-   **status**: Indicates if the request was completed, failed, or is still in progress.
+-   **sessionId**: Used to track and resume conversations or workflows.
+-   **taskId** and **requestId**: Useful for debugging, logging, or support.
+-   **metadata**: Contains additional context about the agent, organization, and timestamps.
+
+---
+
+## How to Use the Response
+
+In your code, you typically want to extract the main answer from the first artifact:
+
+```python
+response = client.ask("Show my wallet balances")
+main_content = response['artifacts'][0]['content']
+print(main_content)
+```
+
+<Tip>
+	If you use streaming, you will receive updates to the artifacts as they are
+	generated. For most synchronous use cases, just use the first artifact's
+	`content`.
+</Tip>
+
+---
+
+<Note>
+	If you need to debug or audit, you can log the full response object. For
+	most user-facing features, just show the `content` field.
+</Note>{" "}

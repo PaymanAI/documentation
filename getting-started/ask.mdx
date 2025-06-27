@@ -1,0 +1,78 @@
+---
+title: "How `payman.ask()` Works"
+description: "Use natural language to trigger real payments, actions, and approvals — all in one line."
+icon: "brackets-round"
+---
+
+![ask-demo](/images/ask.png)
+
+## One Function. Infinite Power.
+
+`payman.ask()` is how your AI agent interacts with money — using **natural language**.
+
+You send a message like:
+
+```ts
+await payman.ask("Send $10 to Jane for lunch");
+```
+
+And Payman handles the rest:
+
+-   Creates or looks up the payee
+-   Applies wallet and policy rules
+-   Sends the payment (if allowed)
+-   Returns a structured response
+
+It's like having a finance team inside a single function.
+
+---
+
+## Examples You Can Use
+
+<Info>These all work in both test mode (TSD) and live wallets.</Info>
+
+**Send a payment**
+
+```ts
+await payman.ask("Send $5 to Kevin for snacks");
+```
+
+**Create a new payee**
+
+```ts
+await payman.ask("Add a payee named Riya with USDC wallet 0xabc...");
+```
+
+**Check balance**
+
+```ts
+await payman.ask("What's my balance in the USD wallet?");
+```
+
+**Trigger policy approval**
+
+```ts
+await payman.ask("Send $5000 to Marketing budget");
+```
+
+<Tip>
+	If this exceeds your daily or per-payment limit, the request will be flagged
+	for approval — based on your wallet's policy.
+</Tip>
+
+---
+
+## What's Happening Under the Hood?
+
+Each time you call `payman.ask()`, the following happens:
+
+1. 🔍 **Intent Parsing** — The message is sent to the Payman Agent, which understands what action is being requested.
+2. 🧠 **Policy Evaluation** — The agent checks your wallet's limits and spending rules.
+3. 🧾 **Execution or Request** — If allowed, the action happens instantly. If not, it's queued for user approval.
+4. ✅ **Structured Response** — You get a JSON response detailing what happened (or what needs approval).
+
+---
+
+<Note>
+	Need help? Email [support@paymanai.com](mailto:support@paymanai.com)
+</Note>
