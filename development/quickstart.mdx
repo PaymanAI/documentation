@@ -1,0 +1,143 @@
+---
+title: "Quickstart"
+description: "Get up and running with Payman in 5 minutes"
+icon: "bolt"
+---
+
+Ready to watch your AI agent move money? Let's go. This quickstart helps you send your first payment using **test wallets (TSD)** in either **TypeScript** or **Python**.
+
+---
+
+## 🛠️ Prerequisites
+
+Before writing code, you need to set things up:
+
+1. 👉 [Request an invite](https://app.paymanai.com) and sign in
+2. 🔁 In the dashboard, toggle **Developer Mode** — this activates **TSD wallets**
+3. 🧠 Go to the **Apps** tab and **register a new app**
+    - Add at least one **test payee** (type: `Test Rails`)
+    - Configure your **wallets** and choose a **policy**
+4. 🔐 Copy your **Client ID** and **Client Secret** from the Credentials tab
+
+You're ready to build.
+
+---
+
+## 📦 Start Building!
+
+<Tabs>
+  <Tab title="TypeScript">
+    ### 1. Install the SDK
+    ```bash
+    npm install @paymanai/payman-ts
+    ```
+
+    ### 2. Set up your .env
+    ```env
+    PAYMAN_CLIENT_ID=your-client-id
+    PAYMAN_CLIENT_SECRET=your-client-secret
+    ```
+
+    ### 3. Send Your First Payment
+    ```ts
+    import { PaymanClient } from "@paymanai/payman-ts";
+    import "dotenv/config";
+
+    const payman = PaymanClient.withCredentials({
+      clientId: process.env.PAYMAN_CLIENT_ID!,
+      clientSecret: process.env.PAYMAN_CLIENT_SECRET!,
+    });
+
+    async function runDemo() {
+      try {
+        const wallets = await payman.ask("List all wallets and their balances");
+        console.log("💰 Wallets:", wallets);
+
+        const payee = await payman.ask("Create a payee of type Test Rails named John Doe");
+        console.log("👤 Payee Created:", payee);
+
+        const payees = await payman.ask("List all payees");
+        console.log("📜 All Payees:", payees);
+
+        const payment = await payman.ask("Send 10 TSD to John Doe");
+        console.log("✅ Payment Sent:", payment);
+      } catch (err: any) {
+        console.error("❌ Error:", err.message);
+      }
+    }
+
+    runDemo();
+    ```
+
+    ### 4. Run it
+    ```bash
+    node index.ts
+    ```
+
+  </Tab>
+  <Tab title="Python">
+    ### 1. Install the SDK
+    ```bash
+    pip install paymanai-sdk
+    ```
+
+    ### 2. Set up your .env
+    ```env
+    PAYMAN_CLIENT_ID=your-client-id
+    PAYMAN_CLIENT_SECRET=your-client-secret
+    ```
+
+    ### 3. Send Your First Payment
+    ```python
+    import os
+    from payman_sdk.client import PaymanClient
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    config = {
+        "client_id": os.getenv("PAYMAN_CLIENT_ID"),
+        "client_secret": os.getenv("PAYMAN_CLIENT_SECRET")
+    }
+
+    client = PaymanClient.with_credentials(config)
+
+    def run_demo():
+        try:
+            wallets = client.ask("List all wallets and their balances")
+            print("💰 Wallets:", wallets)
+
+            payee = client.ask("Create a payee of type Test Rails named John Doe")
+            print("👤 Payee Created:", payee)
+
+            payees = client.ask("List all payees")
+            print("📜 All Payees:", payees)
+
+            payment = client.ask("Send 10 TSD to John Doe")
+            print("✅ Payment Sent:", payment)
+        except Exception as e:
+            print("❌ Error:", str(e))
+
+    run_demo()
+    ```
+
+  </Tab>
+</Tabs>
+
+---
+
+🎉 That's It
+
+You just:
+
+-   Set up the SDK
+-   Created a test payee
+-   Sent money using Payman!
+
+> ✅ **Ready for production?** Just switch from TSD wallets to USD/USDC, and use your Live Credentials!
+
+<Note>
+	Need help? Reach out to{" "}
+	<a href='mailto:support@paymanai.com'>support@paymanai.com</a>
+</Note>
+```

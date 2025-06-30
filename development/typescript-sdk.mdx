@@ -1,0 +1,250 @@
+---
+title: "TypeScript SDK"
+description: "Everything you need to know to use Payman with TypeScript"
+icon: "code"
+---
+
+---
+
+The easiest way to move money with your AI agent. Built for TypeScript developers who want power, safety, and speed.
+
+---
+
+## Quick Install
+
+```bash
+npm install @paymanai/payman-ts
+```
+
+<Info>Node.js 20+ is required for full compatibility.</Info>
+
+---
+
+## Environment Setup
+
+Before you start, add your credentials to a `.env` file in your project root:
+
+```env
+PAYMAN_CLIENT_ID=your-client-id
+PAYMAN_CLIENT_SECRET=your-client-secret
+```
+
+<Note>Get these from your Payman dashboard after registering an app.</Note>
+
+---
+
+## Authentication & Initialization
+
+You can initialize the client in several ways, depending on your use case:
+
+### Client Credentials (Recommended)
+
+```ts
+import { PaymanClient } from "@paymanai/payman-ts";
+
+const payman = PaymanClient.withCredentials({
+	clientId: process.env.PAYMAN_CLIENT_ID!,
+	clientSecret: process.env.PAYMAN_CLIENT_SECRET!,
+	name: "my-client", // optional
+	sessionId: "ses-abc", // optional
+});
+```
+
+### OAuth Authorization Code
+
+```ts
+const payman = PaymanClient.withAuthCode(
+	{
+		clientId: "your-client-id",
+		clientSecret: "your-client-secret",
+	},
+	"your-auth-code"
+);
+```
+
+### Access Token or Refresh Token
+
+```ts
+const payman = PaymanClient.withToken(
+	{
+		clientId: "your-client-id",
+	},
+	{
+		accessToken: "your-access-token",
+		expiresIn: 3600,
+		refreshToken: "your-refresh-token",
+	}
+);
+```
+
+---
+
+## Making Requests
+
+Ask questions, send money, or trigger actions—all in one line.
+
+### Formatted Response (default)
+
+```ts
+const response = await payman.ask("How much money do I have in my wallet?");
+console.log(response);
+```
+
+### Raw JSON Response
+
+```ts
+const raw = await payman.ask("How much money do I have in my wallet?", {
+	outputFormat: "json",
+});
+console.log(raw);
+```
+
+### Streaming Responses
+
+```ts
+await payman.ask("List all payees", {
+	onMessage: (msg) => console.log("Live:", msg),
+	outputFormat: "markdown",
+});
+```
+
+<Tip>
+	Use <code>onMessage</code> for real-time updates, long-running tasks, or
+	progress monitoring. Streaming is ideal for workflows where you want to
+	process results as they arrive.
+</Tip>
+
+---
+
+## Metadata
+
+Attach metadata to requests for extra context and control over how your requests are processed:
+
+```ts
+await payman.ask("Pay Tyllen $50?", {
+	metadata: { source: "mobile-app", userId: "user123" },
+	messageMetadata: { priority: "high" },
+	partMetadata: { currency: "USD" },
+});
+```
+
+---
+
+## Session Management
+
+<Info>
+	Sessions allow you to maintain context across multiple requests. Each client
+	instance manages its own session by default, so you can have ongoing
+	conversations or workflows that remember previous actions.
+</Info>
+
+### How Sessions Work
+
+-   Every time you create a client, a new session is started unless you provide a `sessionId`.
+-   The session ID is included in every response from `payman.ask()`.
+-   You can use this session ID to resume a conversation or workflow at any time, even across different client instances or after a restart.
+
+### Resuming a Session
+
+To resume a previous session, pass the `sessionId` when initializing the client:
+
+```ts
+// Start a conversation
+const first = await payman.ask("How much money do I have?");
+const sessionId = first.sessionId; // Save this for later
+
+// Resume the conversation with a new client instance
+const payman2 = PaymanClient.withCredentials({
+	clientId: "your-client-id",
+	clientSecret: "your-client-secret",
+	sessionId,
+});
+const response2 = await payman2.ask("What did we talk about earlier?");
+```
+
+You can also resume with the `withToken` method:
+
+```ts
+const payman3 = PaymanClient.withToken(
+	{
+		clientId: "your-client-id",
+		sessionId: sessionId,
+	},
+	{
+		accessToken: "your-access-token",
+		expiresIn: 3600,
+	}
+);
+```
+
+To get the current session ID from any client instance:
+
+```ts
+const currentSessionId = payman.getSessionId();
+```
+
+<Check>
+	Session management is essential for building conversational agents,
+	multi-step workflows, or any scenario where you want to maintain state
+	across requests.
+</Check>
+
+---
+
+## Token Management
+
+Tokens are fetched and refreshed automatically. You can also access them directly if needed:
+
+```ts
+const tokenInfo = await payman.getAccessToken();
+const refreshToken = payman.getRefreshToken();
+```
+
+<Check>
+	Tokens refresh automatically before they expire. If you provide a refresh
+	token, the SDK will use it as needed.
+</Check>
+
+---
+
+## Error Handling
+
+All API calls throw if something goes wrong. Catch and inspect errors as needed:
+
+```ts
+try {
+	const res = await payman.ask("What's my balance?");
+} catch (error: any) {
+	if (error.response) {
+		console.error(error.response.data);
+	} else {
+		console.error(error.message);
+	}
+}
+```
+
+---
+
+## API Reference (At a Glance)
+
+**Static Methods**
+
+-   `withCredentials(config)`
+-   `withAuthCode(config, code)`
+-   `withToken(config, tokenInfo)`
+
+**Instance Methods**
+
+-   `ask(text, options?)`
+-   `getAccessToken()`
+-   `getRefreshToken()`
+-   `isAccessTokenExpired()`
+-   `getSessionId()`
+-   `getClientName()`
+
+---
+
+<Note>
+	Need help? Email us at{" "}
+	<a href='mailto:support@paymanai.com'>support@paymanai.com</a>
+</Note>
